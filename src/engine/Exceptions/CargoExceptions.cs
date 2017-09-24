@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Engine.Exceptions
-{
-    class NotEnoughCargoSpaceException : Exception { }
-    class NotEnoughOfCargoKindException : Exception { }
+namespace Engine.Exceptions {
+    class NotEnoughCargoSpaceException : Exception {
+    }
+    class NotEnoughOfCargoKindException : Exception {
+    }
 }

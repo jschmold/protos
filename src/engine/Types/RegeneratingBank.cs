@@ -4,13 +4,11 @@ using System.Text;
 using Engine.Exceptions;
 using static System.Math;
 
-namespace Engine.Types
-{
+namespace Engine.Types {
     /// <summary>
     /// A bank with regeneration and decay added on.
     /// </summary>
-    public class RegeneratingBank : Bank
-    {
+    public class RegeneratingBank : Bank {
         /// <summary>
         /// The default decay rate of the bank
         /// </summary>
@@ -25,8 +23,7 @@ namespace Engine.Types
         /// Calls onFailure, or throws NotEnoughEnergyException if there is not enough energy in the bank.
         /// </summary>
         /// <param name="onFailure">The function to call if there is not enough energy in the bank.</param>
-        public void Decay(Action onFailure = null)
-        { Decay(DecayRate, onFailure); }
+        public void Decay(Action onFailure = null) => Decay(DecayRate, onFailure);
 
 
         /// <summary>
@@ -35,25 +32,27 @@ namespace Engine.Types
         /// </summary>
         /// <param name="amt">The amount to remove from the bank.</param>
         /// <param name="onFailure">The function to call if there is not enough energy in the bank.</param>
-        public void Decay(uint amt, Action onFailure = null)
-        {
-            if (onFailure == null)
-                onFailure = () => { throw new NotEnoughEnergyException(); };
-            if ((int)Quantity - (int)amt < 0)
-            { onFailure.Invoke(); }
+        public void Decay(uint amt, Action onFailure = null) {
+            if (onFailure == null) {
+                onFailure = () => {
+                    throw new NotEnoughEnergyException( );
+                };
+            }
+
+            if ((int)Quantity - (int)amt < 0) {
+                onFailure.Invoke( );
+            }
             Quantity -= amt;
         }
         /// <summary>
         /// Regenerate the energy bank by the set RegenRate. Will cap out at MaxEnergy.
         /// </summary>
-        public void Regen()
-        { Regen(RegenRate); }
+        public void Regen() => Regen(RegenRate);
 
         /// <summary>
         /// Regenerate the energy bank by a an amount. Will cap out at MaxEnergy.
         /// </summary>
         /// <param name="amt">The amount to add to the bank. </param>
-        public void Regen(uint amt)
-        { Quantity = Min(this + amt, Maximum); }
+        public void Regen(uint amt) => Quantity = Min(this + amt, Maximum);
     }
 }

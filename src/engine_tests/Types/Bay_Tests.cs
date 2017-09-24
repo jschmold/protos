@@ -6,14 +6,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Engine.Types;
 using Engine.Exceptions;
 
-namespace EngineTests.Types
-{
+namespace EngineTests.Types {
     [TestClass]
-    public class Bay_Tests
-    {
+    public class Bay_Tests {
         [TestMethod]
-        public void AddOccupant_Works()
-        {
+        public void AddOccupant_Works() {
             Bay bay = new Bay(null, 20);
             bay.AddOccupant(new Worker {
                 Name = "TestWorker"
@@ -23,8 +20,7 @@ namespace EngineTests.Types
         }
 
         [TestMethod]
-        public void AddOccupant_RespectsLimit()
-        {
+        public void AddOccupant_RespectsLimit() {
             Bay bay = new Bay(null, 2);
             bay.AddOccupant(new Worker {
                 Name = "TestWorker1"
@@ -38,22 +34,20 @@ namespace EngineTests.Types
         }
 
         [TestMethod]
-        public void AddOccupant_CollectionWorks()
-        {
+        public void AddOccupant_CollectionWorks() {
             Bay bay = new Bay(null, 10);
-            List<Worker> work = new List<Worker>();
-            for (int i = 0; i < 9; i++)
+            List<Worker> work = new List<Worker>( );
+            for (int i = 0 ; i < 9 ; i++)
                 work.Add(new Worker { Name = $"Worker_{i}" });
             bay.AddOccupant(work);
-            for (int i = 0; i < 9; i++)
+            for (int i = 0 ; i < 9 ; i++)
                 Assert.IsTrue(bay.Occupants[i].Name == $"Worker_{i}", $"Missing worker {i}");
         }
 
         [TestMethod]
-        public void AddOccupant_RunsFailureInsteadOfException()
-        {
+        public void AddOccupant_RunsFailureInsteadOfException() {
             Bay bay = new Bay(null, 10);
-            for (int i = 0; i < 10; i++)
+            for (int i = 0 ; i < 10 ; i++)
                 bay.AddOccupant(new Worker { Name = $"Worker_{i}" });
             bool works = false;
             bay.AddOccupant(new Worker { }, () => works = true);
@@ -61,8 +55,7 @@ namespace EngineTests.Types
         }
 
         [TestMethod]
-        public void RemoveOccupant_Works()
-        {
+        public void RemoveOccupant_Works() {
             Bay bay = new Bay(null, 10);
             Worker work = new Worker { Name = "TestWorker" };
             bay.AddOccupant(work);
@@ -71,4 +64,3 @@ namespace EngineTests.Types
         }
     }
 }
- 

@@ -1,12 +1,9 @@
 ﻿using System;
 
-namespace Engine
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            
+namespace Engine {
+    class Program {
+        static void Main(string[] args) {
+
         }
     }
 }

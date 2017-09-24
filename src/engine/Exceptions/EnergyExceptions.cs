@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Engine.Exceptions
-{
-    class NotEnoughEnergyException : Exception { }
+namespace Engine.Exceptions {
+    class NotEnoughEnergyException : Exception {
+    }
 }

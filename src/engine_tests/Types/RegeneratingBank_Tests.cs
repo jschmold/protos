@@ -1,16 +1,12 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Engine.Types;
 
-namespace Engine_Tests.Types
-{
+namespace Engine_Tests.Types {
     [TestClass]
-    public class RegeneratingBank_Tests
-    {
+    public class RegeneratingBank_Tests {
         [TestMethod]
-        public void FailsOnDecayTooLarge()
-        {
-            RegeneratingBank bank = new RegeneratingBank
-            {
+        public void FailsOnDecayTooLarge() {
+            RegeneratingBank bank = new RegeneratingBank {
                 Quantity = 4,
                 DecayRate = 5,
             };
@@ -20,22 +16,20 @@ namespace Engine_Tests.Types
         }
 
         [TestMethod]
-        public void DecayWorks()
-        {
-            RegeneratingBank bank = new RegeneratingBank
-            {
+        public void DecayWorks() {
+            RegeneratingBank bank = new RegeneratingBank {
                 Quantity = 4,
                 DecayRate = 2
             };
-            bank.Decay(onFailure: () => { Assert.Fail("Not enough energy. Something is wrong with the Quantity."); });
+            bank.Decay(onFailure: () => {
+                Assert.Fail("Not enough energy. Something is wrong with the Quantity.");
+            });
             Assert.IsTrue(bank == 2);
         }
 
         [TestMethod]
-        public void RegenWorks()
-        {
-            RegeneratingBank bank = new RegeneratingBank
-            {
+        public void RegenWorks() {
+            RegeneratingBank bank = new RegeneratingBank {
                 Quantity = 4,
                 Maximum = 10,
                 RegenRate = 4
@@ -43,63 +37,54 @@ namespace Engine_Tests.Types
             bank.Regen(1);
             Assert.IsTrue(bank == 5);
 
-            bank.Regen();
+            bank.Regen( );
             Assert.IsTrue(bank == 9, "Does not respect default regeneration value");
         }
 
 
         [TestMethod]
-        public void RegenRespectsCapacity()
-        {
-            RegeneratingBank bank = new RegeneratingBank
-            {
+        public void RegenRespectsCapacity() {
+            RegeneratingBank bank = new RegeneratingBank {
                 Quantity = 4,
                 Maximum = 5,
                 RegenRate = 5
             };
-            bank.Regen();
+            bank.Regen( );
             Assert.IsTrue(bank == 5, "Does not respect capacity");
         }
 
         [TestMethod]
-        public void PlusOperatorWorks()
-        {
-            RegeneratingBank bank = new RegeneratingBank
-            {
+        public void PlusOperatorWorks() {
+            RegeneratingBank bank = new RegeneratingBank {
                 Quantity = 4,
             };
             Assert.IsTrue(bank + 2 == 6, "+ operator does not work properly");
         }
 
         [TestMethod]
-        public void SubtractOperatorWorks()
-        {
-            RegeneratingBank bank = new RegeneratingBank
-            {
+        public void SubtractOperatorWorks() {
+            RegeneratingBank bank = new RegeneratingBank {
                 Quantity = 4
             };
             Assert.IsTrue(bank - 2 == 2, "- operator does not work properly");
         }
-        
+
         [TestMethod]
-        public void ImplicitOperatorUintExists()
-        {
+        public void ImplicitOperatorUintExists() {
             RegeneratingBank bank = new RegeneratingBank { Quantity = 3 };
             uint hi = bank;
             Assert.IsTrue(hi == (uint)3, "Something went wrong with the conversion");
         }
 
         [TestMethod]
-        public void ImplicitOperatorIntExists()
-        {
+        public void ImplicitOperatorIntExists() {
             RegeneratingBank bank = new RegeneratingBank { Quantity = 4 };
             int hi = bank;
             Assert.IsTrue(hi == (int)4, "Something went wrong with the conversion");
         }
 
         [TestMethod]
-        public void ImplicitOperatorStringExists()
-        {
+        public void ImplicitOperatorStringExists() {
             RegeneratingBank bank = new RegeneratingBank { Quantity = 4 };
             string amt = bank;
             Assert.IsTrue(amt == "4", "Something went wrong with the conversion");
