@@ -1,0 +1,321 @@
+Specification
+
+[Draft 1 Complete]
+1.0 : Overview
+	1.0.1  : Objective
+	1.0.2  : Target audience
+	1.0.3  : <add if needed>
+[Draft 1 Complete]
+1.1 : Mechanics Overview
+	1.1.1  : Crafting
+	1.1.2  : Research
+	1.1.3  : Construction
+	1.1.4  : Energy Management
+	1.1.5  : Population Management
+	1.1.6  : Oxygen management
+1.2 : Research Areas
+	1.2.1  : Physics
+	1.2.2  : AI
+	1.2.3  : Chemistry
+	1.2.4  : Aerospace
+	1.2.5  : Healthcare
+	1.2.6  : Materials
+	1.2.7  : Scanning
+	1.2.8  : Botany
+1.3 : Bay Categories
+	1.3.1  : Production
+	1.3.2  : Drone
+	1.3.3  : Bot
+	1.3.4  : Power generation 
+	1.3.5  : Power storage
+	1.3.6  : Research
+	1.3.7  : Food 
+	1.3.8  : Naturalized
+	1.3.9  : Entertainment
+	1.3.10 : Observation
+	1.3.11 : Command Center
+	1.3.12 : Refinery
+	1.3.13 : Medical
+	1.3.14 : Cargo
+	1.3.15 : Atmospheric refinery
+	1.3.16 : Living Quarters
+	1.3.17 : Docking 
+	1.3.18 : Knowledge
+	1.3.19 : Farm
+	1.3.20 : Oxygen storage
+	1.3.21 : Hibernation
+1.4 : Resources and recipes
+	1.4.1 Materials
+		1.4.1.1  : Plastic scrap
+		1.4.1.2  : Metal scrap
+		1.4.1.3  : Biowaste
+		1.4.1.4  : Wires
+		1.4.1.5  : High gauge wires
+		1.4.1.6  : Tubing
+		1.4.1.7  : Vent
+		1.4.1.8  : Panel
+		1.4.1.9  : Reinforced panel
+		1.4.1.10 : Plant pot
+		1.4.1.11 : Transistors
+		1.4.1.12 : Circuitboard
+		1.4.1.13 : Silicon based computer
+		1.4.1.14 : Quantum processor cluster
+		1.4.1.15 : Quantum computer
+		1.4.1.16 : Radio Antenna
+		1.4.1.17 : Entanglement Binding Generator
+		1.4.1.18 : Entanglement Based Communicator
+		1.4.1.19 : OLED Panel
+		1.4.1.20 : Holopanel
+		1.4.1.21 : Analog input device
+		1.4.1.22 : Digital input device
+		1.4.1.23 : Cranial Intention receiver -- Useful for advanced entertainment devices, and advanced EVA suits
+		1.4.1.24 : EVA Suit
+		1.4.1.25 : Augmented EVA Suit
+		1.4.1.26 : Glass Panel
+		1.4.1.27 : Reinforced Glass Panel
+		1.4.1.28 : Adhesives
+		1.4.1.29 : Alloy
+		1.4.1.30 : Organic Alloys
+		1.4.1.31 : Alloy Beam
+		1.4.1.32 : Metal Beam
+		1.4.1.33 : Synthetic Meat
+		1.4.1.34 : Nutrition Bar
+		1.4.1.35 : Fruit
+		1.4.1.36 : Water
+		1.4.1.37 : Medicines
+		1.4.1.38 : Organic Material
+		1.4.1.39 : Light
+		1.4.1.40 : High-powered Light
+		1.4.1.41 : Holographic Light
+		1.4.1.42 : Air filter
+		1.4.1.43 : Fabric
+		1.4.1.44 : Batteries
+		1.4.1.45 : Cell
+		1.4.1.46 : Compact cell
+		1.4.1.47 : Betavoltaic cell -- low power high life
+		1.4.1.48 : Semiconductors
+		1.4.1.49 : Superconductors
+		1.4.1.50 : Explosives
+		1.4.1.51 : Sensors
+	1.4.2 Bays
+		1.4.2.1  : 
+	1.4.3 Something else 
+1.5 : Workers
+	1.5.1  : Bots
+	1.5.2  : Drones
+	1.5.3  : Citizens
+1.6 : The Shell
+	1.6.1  : Overview
+	1.6.2  : Command structure
+	1.6.3  : Universal flags
+		1.6.3.1  : help
+		1.6.3.2  : status
+		1.6.3.3  : info
+		1.6.3.4  : usage
+	1.6.3  : Commands
+		1.6.3.1 : 
+		1.6.3.2 : 
+
+### 
+
+1.0 Overview
+	Project Protos is a game based around the idea of managing, operating, and expanding a space colony. The space colony starts out with limited resources, and it is up to the player to help the colony grow. However, the means through which the player chooses to interface with the game is entirely their choice. If they do not wish to use the way the game provided, they can discard it for something else, or even make their own way of playing.
+
+	1.0.1 Objective
+		The objective is to bring my end-goal of my life alive before the end of my life, but in the form of a video game. I have never seen a game that lets you choose how you wish to play it to a great degree, so I want to unleash everything I can into this game, and really unlock what the word videogame means.
+
+	1.0.2 Target Audience
+		The target audience is geared heavily towards technically inclined pc users, not necessarily gamers. Technicians can choose a web app, or a shell shipped with the game, and programmers can write their own utilities to play the game (which does enable them, to some extent, automate the gameplay to make it easier on them). This dynamic gameplay mechanic is crucial to the game because I want what feels "natural" to each gamer to be reality in this game.
+		Group: 16 to 45, interested in space, and generally skilled with a computer, but computer skills are not a requirement.
+
+1.1 Mechanics Overview
+	This is the region that lays out the general information on the mechanics of the gameplay, but not the nitty gritty details. This is where the general understanding of each gameplay mechanic is placed.
+
+	1.1.1 Crafting
+		Crafting is performed through production bays. Production bays can either be generalized, or specialized. Generalized production bays produce basic materials and resources, simply to get it done. Specialized production bays allow players to create higher quality, or high grade materials and resources that are not available to generalized production bays.
+
+		Crafting utilizes recipes, which are made up of a list of quantity-material pairs, energy cost, time cost, and optional research requirements. If the research requirements, material requirements, and energy requirements are all met, once the construction is started, after the time cost has elapsed, the material is added automatically to the bay's inventory, which can then be transported to a cargo bay.
+
+	1.1.2 Research
+		Research is performed through either generalized or specialized bays, much like crafting. Generalized bays permit a user to perform base level research. Specialized bays permit specific, exotic research. For example, a generalized bay may let you get up to tier 3 of a field, but a specialized bay in that area will let you reach the research field's arbitrary maximum.
+
+		Research can have requirements of other researches, and cost energy/materials to perform research. The research stations will create their own materials and equipment to perform researches once it has started. As such, every research has its own recipe like crafting.
+
+	1.1.3 Construction
+		Construction is fundamental to the expansion of the colony, and increasing the functionality of everything as a whole. Constructing new bays will add or increase functionality to a disc, and adding discs will increase the available space to the station. Constructing a new disc, power has to be manually applied to the disc to prevent unnecessary power drain. As such, these regions are (when unpowered) may or may not have life support, and are not safe for human workers. Only bots, or humans in EVA suits are permitted.
+
+		More details about construction specifics are covered in Workers 1.5
+
+	1.1.4 Energy Management
+		Everything on the station has power. Entire discs can have power disabled, redirected, enhanced, or enabled. Specific bays have all of this functionality as well. One spire can transfer power over to another, be isolated away completely, have energy cut completely, or have power enabled. Everything on the colony takes power, and as such, everything on the station that is not a person has energy controls.
+
+		Cutting energy to specific sections will frustrate citizens, so be cautious.
+	
+	1.1.5 Population Management
+		- Emotions, death, sacrifice
+		- Jobs, reproduction, families
+		- Wealth
+		- Education
+
+1.2 Research Areas
+	[
+		Details
+		Tiers
+		What they unlock
+	]
+	1.2.1 Physics
+	1.2.2 AI
+	1.2.3 Chemistry
+	1.2.4 Aerospace
+	1.2.5 Healthcare
+	1.2.6 Materials
+	1.2.7 Scanning
+	1.2.8 Botany
+
+1.3 Bay Categories
+	Bays are a fundamental component of the colony, as they are the individual components of every disc that increase functionality of the colony overall. Adding a bay adds new features to a colony, and therefore, increases its ability to be self sustaining in its growth. Bays have all of their own requirements, but all bays generally have a resource hold, and a task queue. The resource hold contains the resources diverted to it to perform tasks, and the task queue is the series of things it has been instructed to do, and will perform. These tasks can be canceled prior to their starting, and some bays permit you to cancel tasks mid-way. 
+
+	1.3.1 Production Bays
+		A production bay has production slots, an energy reserve, an energy pool, an energy feed, a resource hold, and a task queue. 
+		
+		The production slot is the location a single resource or material is created, and only a single item can be created at a time per production slot. 4 production slots in a single bay means the bay can produce 4 items at one time, a 5 prod slot bay can produce 5 items at once, and so on. 
+		
+		The energy pool is a power supply that the energy feed supplies. Since production requires a higher grade of power, it has to pass through the energy pool before reaching the production slots, and then being used. When the energy pool is filled, excess flows over to the energy reserve.
+		
+		The energy reserve is the backup power in case charging gets disabled for the bay in times of need. If power for example is needed for repairs around the station, it is still possible to have output of items and supplies, assuming the reserve is not empty, and the pool has some charge.
+		
+		The energy feed is the direct feed from the power grid.
+	1.3.2 Drone
+		Drone bays are meant to host and produce drones. They also act as charging stations for medium and small, where small drone charging stations are inside the bay, and medium charging stations are outside on the outer area of the disc. Large drones get their own charging bay (see 1.3.17).
+
+		A drone bay contains small drone storage slots, small drone charging slots, medium drone charging slots, a resource hold, an energy reserve, and an energy pool.
+
+		The small drone storage slots are used for storing excess drones, powering them down into a state that uses no energy. They're intended for when small drones are simply not needed.
+
+		The small and medium drone charging slots are intended to charge low-power drones. The charging station draws from the energy pool by default, but when the pool runs out, the reserve is drawn from. When both are depleted, the drones are considered inert, as if they're in storage.
+	1.3.3 Bot
+		Bot bays as the name suggests hosts bots, or autonomous workers. Bot bays host bot charging stations, an energy reserve, an energy pool, a resource hold, and a bot storage hold. 
+
+		The charging stations can be set to automatically charge any drones that are placed inside of it, or they can be set to automatic for a more fine-tuned control of energy consumption. In the situation that the power is cut off from the bay, it will draw first from the pool, then the reserve. Any uncharged bots that are placed in the charging station while there is no power supply will be rendered inert, and the charging station becomes effectively a storage location. If the bot has a charge over 10%, it will be ejected automatically.
+
+		The bot storage hold is intended to hold many bots in close quarters when they are not needed. A bot goes offline, and uses no power in this stage. If a bot was outfitted with a Betavoltaic Cell, it will maintain all of its capabilities while in storage. The amount of slots in bot storage are entirely up to the upgrade and outfit status of the bay.
+
+		The resource hold is used as a holding place for backup parts for the bots. Although you can use it to store other things, it is best to use these resource holds as a spare parts bin.
+	1.3.4 Power generation
+		Power generation bays all produce power to one or more spires in the colony. There is a dropoff of total power available when the bay has to pipe the power to another spire (a spire crossover). The general formula to determine dropoff is below. If you know your math, calculate an arithmetic series for the multiplier, where d = -0.15, SpireCount is n, and the first element is 1. Take the max power, multiply it by the multiplier, and you have your total power output for X Spire crossovers.
+			MaxPowerOutput * (1 + ((SpireCount - 1) * (-0.15)))
+			Eg) MaxPowerOutput = 2000
+				SpireCount = 2
+				2000 * (1 + ((2 - 1) * (-0.15)))
+				2000 * (1 + (1 * -0.15))
+				2000 * (1 + -0.15)
+				2000 * 0.85
+				1700
+		For those who don't care about the math, your power capacity when doing spire crossovers works like this: 100%, 85%, 70%, 55%, 40%, 25%, 10%. 
+
+		When generating power, you want to ensure that you have as much redundancy as possible, as the bays to take wear, and will sometimes need to go offline for repairs. If you do have redundancy, but taking a bay offline will cause certain bays to shut down, don't worry. You can always cut power to very specific bays to perform maintenance on power generation bays. 
+
+		The types of power production bays are: Fuel based, nuclear based, fusion based, solar, photovoltaic, and manual (exercise).
+
+		Fuel based power production bays utilize gases such as methanes, biowaste, or other forms of fire to produce power. These produce unreliable, unsustainable forms of power, and are not recommended for long-term solutions.
+
+		Nuclear based power production bays utilize nuclear sources of power to produce long-lasting, moderate forms of power. They can however melt down if not properly tended, destroying large sections of the colony. If you have a nuclear power bay, ensure you have it tended regularly.
+
+		Fusion based power production bays utilize fusion to produce power, but require a long time to become useful, and have a heavy power draw while powering up. Once a fusion reaction has been started, it produces a consistent flow of power to the grid. If power reaches 0 for any reason, a fusion power bay will turn off, and need to be restarted. 
+
+		Solar based power production bays use the sun to produce energy. They require slight attention, as they wear over time, but they are considered a reliable source of energy. They are extremely bright, and as such, only autonomous workers and human workers with high intensity polarizing eye guards are able to safely tend these.
+
+		Photovolataic based power production bays are a dual-function form of the solar power bays, where they produce less power, but also produce oxygen as the tradeoff. All the limitations of the solar bar apply to the photovoltaic bay.
+
+		Manual power production bays are exercise bays. They utilize a human or robot's exertion to produce power, although using a robot for this purpose is generally considered odd. Manual power production bays double as a place to increase happiness for civilians, at the tradeoff that they produce low levels of power. 
+	1.3.5 Power Storage
+		Power Storage bays are essentially large battery packs for the colony. They are entirely optional, but for the wary and paranoid, they are very advantageous. With power storage bays, excess power from the grid gets fed into the massive batteries contained in the power storage bays, and used when the draw on the grid is higher than the output of the grid. The capacity is dependent on each power storage bay.
+	1.3.6 Research
+		Research Bays are regions of the colony dedicated to furthering the knowledge of the colony as a whole. They are either generalized, or specialized in a specific field. Bays have a specialization limit of 1. They require at least 1 worker with General Studies to proceed, and specialized bays require at least 1 worker in the respective specialized field at base level 1 to facilitate research. A Physics specialized research bay for example requires at least 1 worker specializing in Physics, that also has General Studies. 
+
+		Workers that are not educated are not able to be used as researchers, and all researchers that unlock a new tier automatically have that tier applied to them.
+	1.3.7 Food 
+		Food bays fall into two categories: Production and Storage. A general food bay will have both storage and production, but will be limited in both respects. A general food bay will not be able to create the highest quality foods, and will not be able to store food that requires special care. A food bay specialized in storage will be able to store foods of all kinds, and a food bay specialized in food production will be able to create all kinds of foods. (This is the future, you really don't need research in food. We got that down.)
+	1.3.8 Naturalized
+		Naturalized bays are bays in which there is a heavy amount of greenery. This is not a food bay, but naturalized bays provide two major benefits. The first one is that it provides a place of solace for the civilian on board, giving them a place to be at peace. As such, it raises the general happiness of those who come here. The other major benefit is that it produces a high volume of new oxygen, instead of filtered oxygen (see 1.3.15). Fresh oxygen helps reduce the need for atmospheric refineries, but puts a strain on the water supply. 
+	1.3.9 Entertainment
+		Entertainment bays are where bored civilians go to become happier and more satisfied outside of work. Children will come here as well to play. Entertainment bays consume moderate amounts of power, and are a great way to increase the general happiness on the colony. 
+	1.3.10 Observation
+		Observation bays are almost entirely glass, and act as windows into space. Citizens can come here to increase their general happiness, and gaze at the stars or the orbiting planet. The observation bays have a similar effect on the population as Naturalized bays do, except that they do not consume power, and they do not put a strain on the water supply. As a result, however, they do not increase happiness as much as naturalized areas, or entertainment bays. 
+	1.3.11 Refinery
+		A refinery is the location that mining crews unload their unrefined ores to be refined into more useful materials. The refinery has an energy feed, an energy pool, an energy reserve, a resource hold, refinery slots, and an output hold. A refinery produces raw metals, but does nothing to create actual materials and goods (like beams and panels). The refinery's job is to turn scrap into blocks, and to turn ore into blocks.
+
+		The refinery slots can process 1 unit of scrap or 1 unit of ore at a time. Scrap and ore can be mixed into its queue, but it processes 1 at a time, and places it into the output hold when completed. The count of refinery slots is defined by the bay.
+
+		The output hold is the location where finished, refined materials end up. Things placed here can be moved elsewhere, or left here to be used as a storage location. Max capacity is defined by the bay.
+	1.3.12 Medical
+		Medical bays are where injured civilians go to get treatment. Medical bays are self contained, can do every kind of medical treatment, and are tended by workers specialized in medicine. Medical bays can be tended by both autonomous and living workers, but they are required to be specialized in medicine or psychology. Medical bays have a resource hold, energy reserve(s), medicine lockup(s), and an energy feed.
+
+		The resource hold is intended for holding spare parts specific to the bay. 
+
+		The energy reserves are in place as a backup in case power goes out. Surgeries are not possible when the power is out. 
+
+		Medicine lockups are the location that medicines are stored. As such, only medical staff are permitted to access it, and citizens are not allowed to access it.
+	1.3.13 Cargo
+		Cargo holds are general purpose storage facilities. They can be upgraded to store more things, and if advanced physics fields are researched, they can be upgraded to access higher dimensions. 
+
+		The result of accessing higher dimensions is that the bay starts consuming power. If power is ever cut to the cargo hold while it has access to higher dimensions, all cargo stored in the higher dimensions is lost indefinitely. There is no chance of recovery. The more dimensions accessed by the cargo hold, the more power is consumed. See the details of the specific cargo hold for more details.
+	1.3.14 Atmospheric refinery
+		Atmospheric refineries are the the filtering stations of existing oxygen on the station. Due to the nature of refining air, oxygen is always lost during the refinining process. Atmospheric refineries have an energy feed, an energy reserve, and scrubbers. 
+
+		Each scrubber in the atmospheric refinery bays recycles a certain amount of oxygen, but the total oxygen capacity of the station will decay unless there are naturalized bays (see 1.3.8) to produce more oxygen. The higher the upgrade level of the scrubber, the lower the decay of oxygen supply. If there is no oxygen supply, or the oxygen falls below 20%, it is recommended you immediately move all inhabitants to another disc or spire.
+
+		There are upgrades to energy production bays that utilize photosynthesizing cells, that as a side effect, create oxygen.
+	1.3.15 Living Quarters
+		Living quarters are housing units that provide a sleeping location for civilians. They vary in quality, but provide the basics for the living members on the colony. They have an determined amount of slots for people, but the higher the upgrade, the higher the happiness level of those on board. 
+
+		There are 3 kinds of living quarter bays, intended for different groups of people. There are family bays, single bays, and group living.
+
+		Family bays are intended to offer a home to many families with children. Putting many families together means the happiness level of children and their families increases, as the kids can make friends at a younger age.
+
+		Single bays are intended for groups of single adults who are either working, or attending school. Single bays are quaint, and offer the most basic of luxuries. Single bays are not intended to house more than one person. 
+
+		Group living spaces are intended for temporary living situations. These are best located near research facilities where the researhers can lay their heads for a time, then return to work when they have recovered.
+	1.3.16 Docking 
+		Docking bays are specific to large and flagship drones. They are an entire disc, and offer docks for large drones, and flagship drones. They have massive cargo holds, and landing pads for both large and flagship drones. Landed drones automatically charge. Humans require EVA suits to be in docking bays, as docking bays are entirely devoid of atmosphere and gravity.
+
+		Docking bays do not require power for drones to land, nor do they require much attention. Docking bays are tended by small drones, bots, and human with EVA suits.
+	1.3.18 Knowledge
+		Knowledge bays are where citizens can go to specialize in a field, or become educated, regardless of age. Children are automatically sent here to gain a base-level amount of knowledge, but after they reach full maturity, they can specialize in fields such as Mining, Physics, General Studies, Refining, Maintenance, etc.
+
+		Knowledge bays do not require excessive amounts of power, and offer specialization in the fields that are researched only. You can not specialize in Tier 2 Physics if you have not reached Tier 2 Physics in research. However, to specialize in higher tiers, each worker must walk through the tiers to be able to perform research for a higher level. For example, Tier 5 of a research field can only be researched by a worker who has specialized in Tier 1, Tier 2, Tier 3, and Tier 4. 
+	1.3.19 Farm
+		Instead of synthesizing food in a food bay, some civilians gain some happiness knowing that their food was grown locally. As such, there are farm bays that are entirely naturalized areas that produce fruits and vegetables of all kinds. These can be tended either by humans or bots, and research in Botany only improves output. Any worker, even without specialization, can tend a Farm bay. However, if there are 100% untrained workers, the farm bay will produce 0 food. There must always be at least 1 worker that has Botany or Farming specialized for the farm bay to produce food. Workers will gain a Farming specialization after spending enough time tending the fields of a Farm Bay.
+
+		Farm bays generally do not consume much power, but they do produce food, oxygen, and happiness, whilst consuming large amounts of water. 
+	1.3.20 Oxygen storage
+		Oxygen storage bays are bays exclusive to storing oxygen. They only require power to draw from the oxygen reserves, or place more oxygen into the tanks. An oxygen storage bay has a specified amount of slots for oxygen storage, and these slots have a specified amount of oxygen they can store. Each slot can be upgraded to store more oxygen.
+
+		Drawing from the atmosphere to add oxygen into the reserves lowers the oxygen on the station.
+
+1.4 Resources and Recipes
+
+1.5 Workers
+	Workers in Protos come in many forms, both autonomous and human. They fall into three major categories, bots, drones, and citizens. These different categories of work have different effects on the station. For example, humans in customer service produce higher levels of happiness, whereas drones and bots can perform construction faster. The more humans that are employed, the higher the general level of happiness is on the station, whereas the higher level of autonomy is used, the quicker tasks will be completed. 
+
+	Bots and Human workers can both be specialized in a field of work to produce higher quality output, or in some cases, any output at all. 
+	1.5.1 Bots
+		Bots are the basic ground-unit in the station, used to supplement human workers in times of need while there is a shortage. A bot can be specialized to do specific areas, such as specializing in physics research. When specialized, a bot outputs higher quality work in all areas over a human, and only rests when requiring a recharge. 
+
+		Bots require charging, and will go inert wherever they are standing once they run out of power. Humans will find this extremely unsettling, so it is best to always have a charging station nearby. If a bot goes inert, another bot is able to carry the inert bot to a charging station, where you can issue a command to start charging the bot.
+
+		Bots can be sent out with Flagship Drones on expeditions to serve in place of humans.
+	1.5.2 Drones
+		Drones are intended for exterior work, including but not limited to repairs and mining. Drones are also capable of automatically defending the station against meteor showers, when equipped with Colonial Defense modules. Drones can also be interior workers, as there are many classes of drones.
+
+		Small Drones are the drones intended to do minor work, capable of internal and external work. It is not wise to send them out into the solar system, or you will not get them back. They have limited power supply, and should be used sparingly when it comes to high power consuming activities. 
+
+		Medium Drones are the standard drone, exterior only. They are capable of being outfitted with repair modules, colonial defense modules, and low-powered mining modules. They can not travel far out of system, and are not capable of long-range jumps, as it will kill their energy reserves. 
+
+		Large Drones are exterior only drones intended for higher powered operations, such as mining, heavy defense, constructing discs alongside Medium Drones, and long-distance jumps. They are capable of deeper space mining operations as a result, so jumping to the local asteroid belt is not only possible, it's recommended. 
+
+		Flagship Drones are exterior only drones that are intended for deep space travel, and have their own set of bays, albeit limited. They can carry humans, their own array of drones (small and medium only), supplies for humans, and cluster jump with large drones. They have their own set of upgrades, power production systems, and can sustain life indefinitely, assuming wear doesn't destroy those systems. Use these for serious expeditions. Flagship drones can not do construction.
+	1.5.3 Humans
+		Humans are the basic civilian on the colony. Reproduction is automatic and uncontrollable, so it is best to plan ahead. Working helps make humans feel happier, and knowing they have a role or purpose in life drastically increases the general happiness on board.
+
+		Humans require food and water in regular supply, require rest in living quarters, and have higher research capabilities. When a human is used for research, because of their creativity, they have a chance of completing the research early. Humans also have the ability to randomly mutate modifiers if they are specialized in a skill, where they add an output modifier to the bay they work in. The modifier can worsen or increase the general output of wherever they work.

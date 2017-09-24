@@ -1,0 +1,11 @@
+C:\Users\ImFlu\Desktop\Protos\src\engine\bin\Debug\netcoreapp2.0\engine.deps.json
+C:\Users\ImFlu\Desktop\Protos\src\engine\bin\Debug\netcoreapp2.0\engine.runtimeconfig.json
+C:\Users\ImFlu\Desktop\Protos\src\engine\bin\Debug\netcoreapp2.0\engine.runtimeconfig.dev.json
+C:\Users\ImFlu\Desktop\Protos\src\engine\bin\Debug\netcoreapp2.0\engine.dll
+C:\Users\ImFlu\Desktop\Protos\src\engine\bin\Debug\netcoreapp2.0\engine.pdb
+C:\Users\ImFlu\Desktop\Protos\src\engine\obj\Debug\netcoreapp2.0\engine source.csprojResolveAssemblyReference.cache
+C:\Users\ImFlu\Desktop\Protos\src\engine\obj\Debug\netcoreapp2.0\engine source.csproj.CoreCompileInputs.cache
+C:\Users\ImFlu\Desktop\Protos\src\engine\obj\Debug\netcoreapp2.0\engine source.AssemblyInfoInputs.cache
+C:\Users\ImFlu\Desktop\Protos\src\engine\obj\Debug\netcoreapp2.0\engine source.AssemblyInfo.cs
+C:\Users\ImFlu\Desktop\Protos\src\engine\obj\Debug\netcoreapp2.0\engine.dll
+C:\Users\ImFlu\Desktop\Protos\src\engine\obj\Debug\netcoreapp2.0\engine.pdb
