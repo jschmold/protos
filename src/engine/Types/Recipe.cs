@@ -26,10 +26,15 @@ namespace Engine.Types {
         /// </summary>
         public Bank Progress {
             get {
-                Bank prog = new Bank( );
+                Bank prog = new Bank {
+                    Maximum = 0,
+                    Quantity = 0
+                };
+                // The order of the below DOES MATTER.
+                // The maximum must FIRST be altered because it is used to check if adding to the quantity is valid.
                 Ingredients.ForEach(ing => {
+                    prog.Maximum += ing.Progress.Maximum;
                     prog.Quantity += ing.Progress.Quantity;
-                    prog.Maximum += ing.Progress.Quantity;
                 });
                 return prog;
             }
@@ -49,7 +54,8 @@ namespace Engine.Types {
         /// <param name="resReqs">The research requirements</param>
         /// <param name="prods">What is produced by the recipe, and how much</param>
         public Recipe(List<Ingredient<Resource>> ings, List<uint> resReqs, Quantified<Resource> prods) {
-            Ingredients = ings;
+            Ingredients = new List<Ingredient<Resource>>();
+            ings.ForEach(ing => Ingredients.Add(new Ingredient<Resource>(ing)));
             ResearchRequirements = resReqs;
             Produces = prods;
         }
@@ -62,11 +68,10 @@ namespace Engine.Types {
         /// <param name="produces">What is produced</param>
         /// <param name="quantity">How much is produced</param>
         public Recipe(List<Ingredient<Resource>> ings, List<uint> resReqs, Resource produces, uint quantity)
-            : this(ings, resReqs, new Quantified<Resource> { Contents = produces, Quantity = quantity }) { }
+            : this(ings, resReqs, new Quantified<Resource> (produces, quantity )) { }
 
         public Recipe(Recipe rec)
-            : this(rec.Ingredients, rec.ResearchRequirements, rec.Produces) { }
-
+            : this(rec.Ingredients, rec.ResearchRequirements, rec.Produces.Contents, rec.Produces.Quantity) { }
 
     }
 }

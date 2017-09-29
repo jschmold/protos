@@ -14,12 +14,11 @@ namespace Engine.Types {
             Contents = new List<Quantified<Resource>>( );
             Maximum = max;
             Quantity = 0;
-
         }
-        public ResourceBank(uint max, IEnumerable<Resource> res) :
-            this(max) => (res as List<Resource>).ForEach((cur) => Add(cur));
-        public ResourceBank(uint max, IEnumerable<(Resource, uint)> res) :
-            this(max) => (res as List<(Resource, uint)>).ForEach((cur) => Add(cur.Item1, amt: cur.Item2));
+        public ResourceBank(uint max, List<Quantified<Resource>> res) :
+            this(max) => Contents = res;
+        public ResourceBank(uint max, List<(Resource, uint)> res) :
+            this(max) => res.ForEach((cur) => Add(cur.Item1, amt: cur.Item2));
 
         /// <summary>
         /// Add a resource to the list
@@ -41,10 +40,15 @@ namespace Engine.Types {
             if (Contains(res)) {
                 this[res].Quantity += amt;
             } else {
-                Contents.Add(new Quantified<Resource> { Contents = res, Quantity = amt });
+                Contents.Add(new Quantified<Resource> (res, amt));
             }
             Quantity += res.Volume * amt;
         }
+        /// <summary>
+        /// Add a collection of resources
+        /// </summary>
+        /// <param name="res">The collection to add</param>
+        /// <param name="onFailure">What to do if any of them fails. Will run until failure.</param>
         public void AddRange(IEnumerable<Resource> res, Action onFailure = null) => (res as List<Resource>).ForEach(resource => Add(resource, onFailure: onFailure));
 
         /// <summary>

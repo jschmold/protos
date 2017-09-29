@@ -3,6 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace Engine.Exceptions {
-    class NotEnoughEnergyException : Exception {
+    public class NotEnoughEnergyException : Exception {
     }
 }

@@ -9,7 +9,7 @@ namespace Engine.Types {
         public Location Location {
             get; private set;
         }
-        public List<Worker> Occupants {
+        public List<Citizen> Occupants {
             get; private set;
         }
         public uint OccupantLimit {
@@ -23,7 +23,7 @@ namespace Engine.Types {
         public Bay(Location loc, uint occLimit) {
             Location = loc;
             OccupantLimit = occLimit;
-            Occupants = new List<Worker>( );
+            Occupants = new List<Citizen>( );
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace Engine.Types {
         /// </summary>
         /// <param name="work">The occupant to add</param>
         /// <param name="onFailure">The optional thing to do if it is not possible to add the occupant</param>
-        public void AddOccupant(Worker work, Action onFailure = null) {
+        public void AddOccupant(Citizen work, Action onFailure = null) {
             if (Occupants.Count + 1 > OccupantLimit) {
                 if (onFailure != null) {
                     onFailure.Invoke( );
@@ -49,7 +49,7 @@ namespace Engine.Types {
         /// </summary>
         /// <param name="workers">The collection of workers to add</param>
         /// <param name="onFailure">What to do if it is not possible to add all of the workers</param>
-        public void AddOccupant(IEnumerable<Worker> workers, Action onFailure = null) {
+        public void AddOccupant(IEnumerable<Citizen> workers, Action onFailure = null) {
             if (onFailure == null) {
                 onFailure = () => {
                     throw new PopulationExceedsMaximumException( );
@@ -67,7 +67,7 @@ namespace Engine.Types {
         /// Remove a single occupant from the bay
         /// </summary>
         /// <param name="work">The occupant to remove</param>
-        public void RemoveOccupant(Worker work) {
+        public void RemoveOccupant(Citizen work) {
             if (!Occupants.Contains(work)) {
                 return;
             }
@@ -79,8 +79,8 @@ namespace Engine.Types {
         /// Remove a collection of occupants from the bay
         /// </summary>
         /// <param name="workers">The collection to remove</param>
-        public void RemoveOccupant(IEnumerable<Worker> workers) {
-            foreach (Worker work in workers) {
+        public void RemoveOccupant(IEnumerable<Citizen> workers) {
+            foreach (Citizen work in workers) {
                 RemoveOccupant(work);
             }
         }

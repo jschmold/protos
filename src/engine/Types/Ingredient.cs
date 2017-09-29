@@ -29,6 +29,8 @@ namespace Engine.Types {
 
         public bool IsComplete => Progress.Quantity == Progress.Maximum;
 
+        public Ingredient(Ingredient<T> ing) : this(ing.Requirement, ing.Progress.Maximum, ing.WorkerCost, ing.StationCost) { }
+
         public Ingredient(Quantified<T> req, uint WorkerTotalCost, uint WorkerFrameCost, uint StationFrameCost) {
             Requirement = req;
             WorkerCost = WorkerFrameCost;

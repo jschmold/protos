@@ -25,8 +25,10 @@ namespace Engine.Types {
         /// </summary>
         public uint Maximum { get; set; } = uint.MaxValue;
 
-        public bool HasEnoughFor(int amt) => this - amt > 0;
-        public bool HasEnoughFor(uint amt) => this - amt > 0;
+        public bool HasEnoughFor(int amt) => this - amt >= 0;
+        public bool HasEnoughFor(uint amt) => (int)(this - amt) >= 0;
+
+        public bool IsFull => Quantity == Maximum;
 
         public static int operator +(Bank bank, int num) => (int)bank.Quantity + num;
 

@@ -12,7 +12,7 @@ namespace EngineTests.Types {
         [TestMethod]
         public void AddOccupant_Works() {
             Bay bay = new Bay(null, 20);
-            bay.AddOccupant(new Worker {
+            bay.AddOccupant(new Citizen {
                 Name = "TestWorker"
             });
 
@@ -22,23 +22,23 @@ namespace EngineTests.Types {
         [TestMethod]
         public void AddOccupant_RespectsLimit() {
             Bay bay = new Bay(null, 2);
-            bay.AddOccupant(new Worker {
+            bay.AddOccupant(new Citizen {
                 Name = "TestWorker1"
             });
-            bay.AddOccupant(new Worker {
+            bay.AddOccupant(new Citizen {
                 Name = "TestWorker2"
             });
             bool works = false;
-            bay.AddOccupant(new Worker { }, () => works = true);
+            bay.AddOccupant(new Citizen { }, () => works = true);
             Assert.IsTrue(works, "Did not respect limit");
         }
 
         [TestMethod]
         public void AddOccupant_CollectionWorks() {
             Bay bay = new Bay(null, 10);
-            List<Worker> work = new List<Worker>( );
+            List<Citizen> work = new List<Citizen>( );
             for (int i = 0 ; i < 9 ; i++)
-                work.Add(new Worker { Name = $"Worker_{i}" });
+                work.Add(new Citizen { Name = $"Worker_{i}" });
             bay.AddOccupant(work);
             for (int i = 0 ; i < 9 ; i++)
                 Assert.IsTrue(bay.Occupants[i].Name == $"Worker_{i}", $"Missing worker {i}");
@@ -48,19 +48,19 @@ namespace EngineTests.Types {
         public void AddOccupant_RunsFailureInsteadOfException() {
             Bay bay = new Bay(null, 10);
             for (int i = 0 ; i < 10 ; i++)
-                bay.AddOccupant(new Worker { Name = $"Worker_{i}" });
+                bay.AddOccupant(new Citizen { Name = $"Worker_{i}" });
             bool works = false;
-            bay.AddOccupant(new Worker { }, () => works = true);
+            bay.AddOccupant(new Citizen { }, () => works = true);
             Assert.IsTrue(works);
         }
 
         [TestMethod]
         public void RemoveOccupant_Works() {
             Bay bay = new Bay(null, 10);
-            Worker work = new Worker { Name = "TestWorker" };
+            Citizen work = new Citizen { Name = "TestWorker" };
             bay.AddOccupant(work);
             bay.RemoveOccupant(work);
-            Assert.IsFalse(bay.Occupants.Contains(work), "Worker was not removed");
+            Assert.IsFalse(bay.Occupants.Contains(work), "Citizen was not removed");
         }
     }
 }

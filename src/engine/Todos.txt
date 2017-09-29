@@ -1,0 +1,37 @@
+﻿
+ProductionBaySlot
+	Purpose: Handles the crafting capabilities in a Production bay.
+	Expend Ingredient on a Recipe
+	 - Take from Resources the materials needed
+	Expend Energy on Worker
+	 - Check if there's enough energy
+	 - If not enough, call onNotEnoughEnergy action or throw NotEnoughEnergyException
+	 - If enough, expend
+	Expend Energy on Reserve or Pool
+	 - Check if there's enough energy in Reserve or Pool
+		 If not, call onNotEnoughEnergy
+	 - Expend energy from pool if over 0, and reserve if pool is under 0.
+	ClearActive
+	 - Set active to null
+	 - Reinitialize WorkPairings
+	ActivateRecipe
+	 - If there's an active recipe, call ClearActive
+	 - Move recipe to Active
+	FinishRecipe
+	 - Check if the progress on Active is 100%
+	 - If so, put finished materials in the Resources
+	 - Call ClearActive
+	Think 
+	 - If there's an active, complete recipe, FinishRecipe
+	 - If there's an active recipe, that is not finished, keep working on it
+	  `- Expend station energy
+	  `- Iterate through every WorkerPairing
+		`- If progress on ingredient is done, get the next inactive ingredient (not in WorkerPairings and progress not 100%)
+		`- If progress on ingredient is not done, expend worker energy and add it to the progress of the ingredient
+	 - If there's no active recipe, but there is one in Queue, ActivateRecipe on the next element in queue (first in line)
+
+Create GameObject interface
+	Purpose: To create an interface that can be called by everything that is instantiated in the game, and is not a primitive type of the game.
+	  Examples: Bays, Workers, etc
+ - Think
+ - ThinkAsync (optional)

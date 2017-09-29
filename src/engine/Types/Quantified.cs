@@ -15,17 +15,22 @@ namespace Engine.Types {
             get; set;
         }
 
+        public Quantified(T cont, uint quan = 0) {
+            Contents = cont;
+            Quantity = quan;
+        }
+
         public static implicit operator T(Quantified<T> slot) => slot.Contents;
 
         // The operators of BankSlot<T> and a number
-        public static Quantified<T> operator +(Quantified<T> slot, uint amt) => new Quantified<T> { Contents = slot.Contents, Quantity = slot.Quantity + amt };
-        public static Quantified<T> operator +(Quantified<T> slot, int num) => new Quantified<T> { Contents = slot.Contents, Quantity = slot.Quantity + (uint)num };
-        public static Quantified<T> operator -(Quantified<T> slot, uint amt) => new Quantified<T> { Contents = slot.Contents, Quantity = slot.Quantity - amt };
-        public static Quantified<T> operator -(Quantified<T> slot, int num) => new Quantified<T> { Contents = slot.Contents, Quantity = slot.Quantity - (uint)num };
-        public static Quantified<T> operator *(Quantified<T> slot, int num) => new Quantified<T> { Contents = slot.Contents, Quantity = slot.Quantity * (uint)num };
-        public static Quantified<T> operator *(Quantified<T> slot, uint num) => new Quantified<T> { Contents = slot.Contents, Quantity = slot.Quantity * num };
-        public static Quantified<T> operator /(Quantified<T> slot, int num) => new Quantified<T> { Contents = slot.Contents, Quantity = slot.Quantity / (uint)num };
-        public static Quantified<T> operator /(Quantified<T> slot, uint num) => new Quantified<T> { Contents = slot.Contents, Quantity = slot.Quantity / num };
+        public static Quantified<T> operator +(Quantified<T> slot, uint amt) => new Quantified<T>(slot.Contents, slot.Quantity + amt);
+        public static Quantified<T> operator +(Quantified<T> slot, int num) => new Quantified<T>(slot.Contents, slot.Quantity + (uint)num);
+        public static Quantified<T> operator -(Quantified<T> slot, uint amt) => new Quantified<T>(slot.Contents, slot.Quantity - amt);
+        public static Quantified<T> operator -(Quantified<T> slot, int num) => new Quantified<T>(slot.Contents, slot.Quantity - (uint)num);
+        public static Quantified<T> operator *(Quantified<T> slot, int num) => new Quantified<T>(slot.Contents, slot.Quantity * (uint)num);
+        public static Quantified<T> operator *(Quantified<T> slot, uint num) => new Quantified<T>(slot.Contents, slot.Quantity * num);
+        public static Quantified<T> operator /(Quantified<T> slot, int num) => new Quantified<T>(slot.Contents, slot.Quantity / (uint)num);
+        public static Quantified<T> operator /(Quantified<T> slot, uint num) => new Quantified<T>(slot.Contents, slot.Quantity / num);
 
         // The operators of the number and a BankSlot<T>
         public static int operator +(int num, Quantified<T> slot) => num + (int)slot.Quantity;

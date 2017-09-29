@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace Engine.Exceptions {
-    class NotEnoughCargoSpaceException : Exception {
+    public class NotEnoughCargoSpaceException : Exception {
     }
-    class NotEnoughOfCargoKindException : Exception {
+    public class NotEnoughOfCargoKindException : Exception {
     }
 }
