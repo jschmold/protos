@@ -434,7 +434,7 @@ namespace EngineTests.Types {
             Enumerable.Range(0, 5)
                 .ToList( )
                 .ForEach(met => Slot.Lineup.Add(MetalRecipe));
-            while (!(Slot.Resources.Contains(Metal) && Slot.Resources[Metal] >= 5)) {
+            while (!Slot.Resources.Contains(Metal) || (Slot.Resources.Contains(Metal) && Slot.Resources[Metal] < 5)) {
                 Slot.Think( );
             }
             uint amt = Slot.Resources[0].Quantity;

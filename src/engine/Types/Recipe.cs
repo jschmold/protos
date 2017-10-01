@@ -54,8 +54,8 @@ namespace Engine.Types {
         /// <param name="resReqs">The research requirements</param>
         /// <param name="prods">What is produced by the recipe, and how much</param>
         public Recipe(List<Ingredient<Resource>> ings, List<uint> resReqs, Quantified<Resource> prods) {
-            Ingredients = new List<Ingredient<Resource>>();
-            ings.ForEach(ing => Ingredients.Add(new Ingredient<Resource>(ing)));
+            Ingredients = new List<Ingredient<Resource>>( );
+            ings.ForEach((Ingredient<Resource> ing) => Ingredients.Add(new Ingredient<Resource>(ing)));
             ResearchRequirements = resReqs;
             Produces = prods;
         }

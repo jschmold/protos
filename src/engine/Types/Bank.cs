@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using Engine.Exceptions;
 using static System.Math;
-using Newtonsoft.Json;
+
+
 namespace Engine.Types {
     /// <summary>
     /// A bank is when you want to limit the values on a uint amount of a thing. 
@@ -24,17 +25,12 @@ namespace Engine.Types {
         /// The maximum amount of energy the bank can hold
         /// </summary>
         public uint Maximum { get; set; } = uint.MaxValue;
-
         public bool HasEnoughFor(int amt) => this - amt >= 0;
         public bool HasEnoughFor(uint amt) => (int)(this - amt) >= 0;
-
         public bool IsFull => Quantity == Maximum;
 
         public static int operator +(Bank bank, int num) => (int)bank.Quantity + num;
-
         public static int operator -(Bank bank, int num) => (int)bank.Quantity - num;
-        public static uint operator +(Bank bank, uint? num) => bank.Quantity + num ?? 0;
-        public static uint operator -(Bank bank, uint? num) => bank.Quantity - num ?? 0;
         public static uint operator +(Bank bank, uint num) => bank.Quantity + num;
         public static uint operator -(Bank bank, uint num) => bank.Quantity - num;
         public static uint operator *(Bank bank, int num) => bank.Quantity * (uint)num;

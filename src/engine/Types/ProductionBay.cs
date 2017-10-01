@@ -10,7 +10,7 @@ namespace Engine.Types {
     /// A bay that produces a resource from a recipe of resources.
     /// </summary>
 
-    public class ProductionBay : Bay {
+    public class ProductionBay<T> : Bay {
         public ProductionBay(Location loc, uint occLimit) : base(loc, occLimit) {
         }
 
