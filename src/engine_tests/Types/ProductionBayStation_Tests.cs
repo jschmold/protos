@@ -413,7 +413,9 @@ namespace EngineTests.Types {
         public void Think_DoesStationEnergyWork() {
             var Slot = GetWorkingStation( );
             Slot.ActivateRecipe(MetalRecipe);
-            Slot.Think( );
+            for (int i = 0 ; i < 4 ; i++) {
+                Slot.Think( );
+            }
             Assert.IsTrue(Slot.Pool.IsFull == false, $"Expected some energy to go missing from thinking. Actual: {Slot.Pool.Quantity}");
         }
 

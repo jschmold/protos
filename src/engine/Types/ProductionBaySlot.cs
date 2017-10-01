@@ -190,9 +190,14 @@ namespace Engine.Types {
         });
 
         /// <summary>
-        /// Finish anything that is completed, and progress anything being worked on.
+        /// Finish anything that is completed, and progress anything being worked on. Queue up the next thing if Active was finished.
+        /// Otherwise, continue working on things.
         /// </summary>
         public void ManageProduction() {
+            // Is there a reason to do computation?
+            if ((Active == null && Lineup.Count == 0 ) || Workers.Count == 0) {
+                return;
+            }
             // Is what we are doing done? If so, finish it.
             if (Active.Progress.IsFull) {
                 FinishRecipe( );
@@ -201,25 +206,15 @@ namespace Engine.Types {
                 }
                 return;
             }
-            
-            // Yes I know modifying the thing you're iterating on is stupid, but I am not shuffling or changing the keys. Just the values.
-            // But basically, it's finding everyone whose work is 
-            Enumerable.Range(0, WorkPairings.Count)
-                .ToList( )
-                .ForEach((num) => {
-                    (Citizen worker, Ingredient<Resource> ingredient) = (WorkPairings.ElementAt(num));
-                    if (ingredient == null || ingredient.IsComplete) {
-                        var next = NextAvailableIngredient( );
-                        if (next == null) {
-                            return;
-                        }
-                        WorkPairings[worker] = next;
-                        ExpendIngredient(next);
+            for (int num = 0 ; num < WorkPairings.Count ; num++) {
+                (Citizen worker, Ingredient<Resource> ingredient) = (WorkPairings.ElementAt(num));
+                if (ingredient == null || ingredient.IsComplete) {
+                    var next = NextAvailableIngredient( );
+                    if (next == null) {
+                        continue;
                     }
-                });
-            // I don't know why this is needed, but for some reason, the energy doesn't degrade in the .ForEach
-            foreach (var (worker, ingredient) in WorkPairings) {
-                if (ingredient == null) {
+                    WorkPairings[worker] = next;
+                    ExpendIngredient(next);
                     continue;
                 }
                 try {
