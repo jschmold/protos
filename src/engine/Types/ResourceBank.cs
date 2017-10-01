@@ -4,8 +4,13 @@ using System.Text;
 using Engine.Exceptions;
 using System.Linq;
 using static System.Linq.Enumerable;
+using static Engine.Utilities.LangHelpers;
+
 namespace Engine.Types {
     public class ResourceBank : Bank {
+        /// <summary>
+        /// What is in the resource bank
+        /// </summary>
         public List<Quantified<Resource>> Contents {
             get; private set;
         }
@@ -29,12 +34,11 @@ namespace Engine.Types {
             if (amt == 0) {
                 return;
             }
-
             if (res == null) {
                 throw new ArgumentNullException("res");
             }
             if (!HasSpaceFor(res.Volume * amt)) {
-                onFailure.Invoke( );
+                DoOrThrow(onFailure, new NotEnoughCargoSpaceException( ));
                 return;
             }
             if (Contains(res)) {
@@ -58,12 +62,6 @@ namespace Engine.Types {
         /// <param name="amt">The amount of the resource to move</param>
         /// <param name="onFailure">The action to call when there is an attempt to remove more than is available.</param>
         public void Remove(Resource res, uint amt = 1, Action onFailure = null) {
-            if (onFailure == null) {
-                onFailure = () => {
-                    throw new NotEnoughOfCargoKindException( );
-                };
-            }
-
             // There's nothing to remove.
             if (!Contains(res)) {
                 return;
@@ -71,7 +69,7 @@ namespace Engine.Types {
 
             Quantified<Resource> slot = this[res];
             if ((int)slot.Quantity - (int)amt < 0) {
-                onFailure.Invoke( );
+                DoOrThrow(onFailure, new NotEnoughOfCargoKindException( ));
                 return;
             }
 
@@ -97,6 +95,11 @@ namespace Engine.Types {
         /// <returns></returns>
         public bool HasSpaceFor(Resource res, uint amt = 1) => HasSpaceFor(res.Volume * amt);
 
+        /// <summary>
+        /// Does the resource bank contain the resource?
+        /// </summary>
+        /// <param name="res">The resource to check</param>
+        /// <returns>If you need an explanation, go somewhere else</returns>
         public bool Contains(Resource res) {
             foreach (Quantified<Resource> cur in Contents) {
                 if (cur.Contents.Identifier == res.Identifier) {
@@ -106,6 +109,11 @@ namespace Engine.Types {
             return false;
         }
 
+        /// <summary>
+        /// Use a resource instance to lookup the quantity.
+        /// </summary>
+        /// <param name="res">The resource to lookup</param>
+        /// <returns>A Quantified Resource of how much is contained, or null</returns>
         public Quantified<Resource> this[Resource res] {
             get {
                 foreach (Quantified<Resource> cur in Contents) {
@@ -117,6 +125,12 @@ namespace Engine.Types {
                 return null;
             }
         }
+        /// <summary>
+        /// Get the resource at the index <paramref name="key"/>
+        /// </summary>
+        /// <param name="key">Index of the Resource to look up</param>
+        /// <returns>The Quantified Resource</returns>
+        /// <exception cref="IndexOutOfRangeException"></exception>
         public Quantified<Resource> this[int key] => Contents[key];
     }
 }

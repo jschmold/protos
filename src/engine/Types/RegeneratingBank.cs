@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Engine.Exceptions;
 using static System.Math;
+using static Engine.Utilities.LangHelpers;
 
 namespace Engine.Types {
     /// <summary>
@@ -33,14 +34,9 @@ namespace Engine.Types {
         /// <param name="amt">The amount to remove from the bank.</param>
         /// <param name="onFailure">The function to call if there is not enough energy in the bank.</param>
         public void Decay(uint amt, Action onFailure = null) {
-            if (onFailure == null) {
-                onFailure = () => {
-                    throw new NotEnoughEnergyException( );
-                };
-            }
-
             if ((int)Quantity - (int)amt < 0) {
-                onFailure.Invoke( );
+                DoOrThrow(onFailure, new NotEnoughEnergyException( ));
+                return;
             }
             Quantity -= amt;
         }

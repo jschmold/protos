@@ -8,9 +8,15 @@ namespace Engine.Types {
     /// </summary>
     /// <typeparam name="T">The type of thing you want to quantify</typeparam>
     public class Quantified<T> {
+        /// <summary>
+        /// The instance of type T to be quantified
+        /// </summary>
         public T Contents {
             get; set;
         }
+        /// <summary>
+        /// How much of the T instance there is
+        /// </summary>
         public uint Quantity {
             get; set;
         }

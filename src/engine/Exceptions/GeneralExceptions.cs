@@ -6,4 +6,6 @@ namespace Engine.Exceptions
 {
     public class NotYetCompletedException : Exception {
     }
+    public class LimitMetException : Exception {
+    }
 }

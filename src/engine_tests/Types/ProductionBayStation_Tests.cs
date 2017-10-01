@@ -437,9 +437,7 @@ namespace EngineTests.Types {
             while (!Slot.Resources.Contains(Metal) || (Slot.Resources.Contains(Metal) && Slot.Resources[Metal] < 5)) {
                 Slot.Think( );
             }
-            uint amt = Slot.Resources[0].Quantity;
-            uint mamt = Slot.Resources[1].Quantity;
-            Assert.IsTrue(Slot.Resources[Metal].Quantity >= 5, $"Expected at least 5 metal, actual: {Slot.Resources[Metal].Quantity}");
+            Assert.IsTrue(Slot.Resources[Metal].Quantity == 5, $"Expected at least 5 metal, actual: {Slot.Resources[Metal].Quantity}");
         }
         #endregion
     }

@@ -92,6 +92,7 @@ namespace Engine.Types {
             }
             Resources[expend].Quantity -= res.Requirement;
         }
+
         /// <summary>
         /// Expends energy from either the Pool or the Reserve. 
         /// Expends the remainder of the pool if it is not completely empty, then the rest from the reserve.
@@ -119,6 +120,7 @@ namespace Engine.Types {
             Active = null;
             WorkPairings = new Dictionary<Citizen, Ingredient<Resource>>( );
         }
+
         /// <summary>
         /// Clears the active recipe, and sets the rec to the active recipe.
         /// </summary>
@@ -129,6 +131,7 @@ namespace Engine.Types {
             }
             Active = new Recipe(rec);
         }
+
         /// <summary>
         /// Clears the active recipe and sets the recipe at Lineup[<paramref name="index"/>] as active.
         /// Once Lineup[<paramref name="index"/>] is activated, it is removed from the lineup.
@@ -142,6 +145,7 @@ namespace Engine.Types {
             ActivateRecipe(Lineup[index]);
             Lineup.RemoveAt(index);
         }
+
         /// <summary>
         /// Creates the new resource in the Resources repo and calls ClearActive.
         /// Throws NotYetCompletedException if Active is not yet done
@@ -168,31 +172,9 @@ namespace Engine.Types {
         /// The main function that is called on every loop to process this slot's functionality.
         /// Increments progress on all WorkPairings.
         /// </summary>
-        /// <example>
-        /// <para>
-        /// ProductionBayObj.Slots[index].Think()
-        /// </para>
-        /// </example>
         public void Think() {
             ManageWorkers( );
             ManageProduction( );
-            // Replacing below with ManageProduction
-            //foreach (var (worker, ingredient) in WorkPairings) {
-            //    if (ingredient == null) {
-            //        continue;
-            //    }
-            //    try {
-            //        if (ingredient.IsComplete) {
-
-            //            continue;
-            //        }
-            //        ExpendEnergy(ingredient.StationCost);
-            //        worker.Energy.Quantity -= ingredient.WorkerCost;
-            //        ingredient.Process(1);
-            //    } catch (NotEnoughEnergyException) {
-            //        continue;
-            //    }
-            //}
         }
 
         /// <summary>
@@ -207,7 +189,9 @@ namespace Engine.Types {
             }
         });
 
-
+        /// <summary>
+        /// Finish anything that is completed, and progress anything being worked on.
+        /// </summary>
         public void ManageProduction() {
             // Is what we are doing done? If so, finish it.
             if (Active.Progress.IsFull) {
@@ -215,6 +199,7 @@ namespace Engine.Types {
                 if (Lineup.Count > 0) {
                     ActivateRecipe(0);
                 }
+                return;
             }
             
             // Yes I know modifying the thing you're iterating on is stupid, but I am not shuffling or changing the keys. Just the values.
@@ -232,6 +217,7 @@ namespace Engine.Types {
                         ExpendIngredient(next);
                     }
                 });
+            // I don't know why this is needed, but for some reason, the energy doesn't degrade in the .ForEach
             foreach (var (worker, ingredient) in WorkPairings) {
                 if (ingredient == null) {
                     continue;
@@ -245,6 +231,10 @@ namespace Engine.Types {
                 }
             }
         }
+        /// <summary>
+        /// Get the next ingredient that is not being worked on and not completed.
+        /// </summary>
+        /// <returns></returns>
         private Ingredient<Resource> NextAvailableIngredient() {
             if (Active == null) {
                 return null;

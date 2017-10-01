@@ -4,13 +4,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using Engine.Exceptions;
+using static Engine.Utilities.LangHelpers;
 
 namespace Engine.Types {
     /// <summary>
     /// A bay that produces a resource from a recipe of resources.
     /// </summary>
-
-    public class ProductionBay<T> : Bay {
+    public class ProductionBay : Bay {
         public ProductionBay(Location loc, uint occLimit) : base(loc, occLimit) {
         }
 
@@ -52,13 +52,48 @@ namespace Engine.Types {
         /// <summary>
         /// A bank containing recipes, where the max is the maximum amount of slots  
         /// </summary>
-        public List<ProductionBaySlot> ProductionSlots {
+        private List<ProductionBaySlot> ProductionSlots {
             get; set;
         }
 
         /// <summary>
         /// The maximum amount of ongoing recipes that are processed
         /// </summary>
-        public uint ProductionSlotCount { get; set; } = 1;
+        public int ProductionSlotCount {
+            get => ProductionSlots.Count;
+        }
+        /// <summary>
+        /// The maximum amount of production slots permitted
+        /// </summary>
+        private uint MaxProductionSlots {
+            get; set;
+        }
+
+
+        public ProductionBay(Location loc, uint occupantLimit, List<Recipe> recs, (uint max, uint start) prodStations, (uint max, uint start) pool, (uint max, uint start) resv, uint cargoCapacity) : base(loc, occupantLimit) {
+            SupportedRecipes = recs;
+            MaxProductionSlots = prodStations.max;
+            EnergyPool = new RegeneratingBank {
+                Maximum = pool.max,
+                Quantity = pool.start
+            };
+            EnergyReserve = new RegeneratingBank {
+                Maximum = resv.max,
+                Quantity = resv.start
+            };
+            Resources = new ResourceBank(cargoCapacity);
+
+            // Create the slots
+            for (int i = 0 ; i < prodStations.start ; i++) {
+                ProductionSlots.Add(new ProductionBaySlot(EnergyPool, EnergyReserve, Resources));
+            }
+        }
+
+        public void AddProductionStation(Action onLimitMet = null) {
+            if (ProductionSlotCount == MaxProductionSlots) {
+                DoOrThrow(onLimitMet, new LimitMetException( ));
+            }
+
+        }
     }
 }

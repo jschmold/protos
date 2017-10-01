@@ -3,15 +3,25 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using Engine.Exceptions;
+using static Engine.Utilities.LangHelpers;
 
 namespace Engine.Types {
     public class Bay {
+        /// <summary>
+        /// Where is the bay?
+        /// </summary>
         public Location Location {
             get; private set;
         }
+        /// <summary>
+        /// The occupants in the bay
+        /// </summary>
         public List<Citizen> Occupants {
             get; private set;
         }
+        /// <summary>
+        /// The maximum amount of occupants allowed in the bay
+        /// </summary>
         public uint OccupantLimit {
             get; private set;
         }
@@ -33,12 +43,7 @@ namespace Engine.Types {
         /// <param name="onFailure">The optional thing to do if it is not possible to add the occupant</param>
         public void AddOccupant(Citizen work, Action onFailure = null) {
             if (Occupants.Count + 1 > OccupantLimit) {
-                if (onFailure != null) {
-                    onFailure.Invoke( );
-                } else {
-                    throw new PopulationExceedsMaximumException( );
-                }
-
+                DoOrThrow(onFailure, new PopulationExceedsMaximumException( ));
                 return;
             }
             Occupants.Add(work);
@@ -50,16 +55,10 @@ namespace Engine.Types {
         /// <param name="workers">The collection of workers to add</param>
         /// <param name="onFailure">What to do if it is not possible to add all of the workers</param>
         public void AddOccupant(IEnumerable<Citizen> workers, Action onFailure = null) {
-            if (onFailure == null) {
-                onFailure = () => {
-                    throw new PopulationExceedsMaximumException( );
-                };
-            }
             if (Occupants.Count + workers.Count( ) > OccupantLimit) {
-                onFailure.Invoke( );
+                DoOrThrow(onFailure, new PopulationExceedsMaximumException( ));
                 return;
             }
-
             Occupants.AddRange(workers);
         }
 
@@ -71,7 +70,6 @@ namespace Engine.Types {
             if (!Occupants.Contains(work)) {
                 return;
             }
-
             Occupants.Remove(work);
         }
 
