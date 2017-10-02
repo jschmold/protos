@@ -59,9 +59,7 @@ namespace Engine.Types {
         /// <summary>
         /// The maximum amount of ongoing recipes that are processed
         /// </summary>
-        public int ProductionSlotCount {
-            get => ProductionSlots.Count;
-        }
+        public int ProductionSlotCount => ProductionSlots.Count;
         /// <summary>
         /// The maximum amount of production slots permitted
         /// </summary>
@@ -70,7 +68,7 @@ namespace Engine.Types {
         }
 
 
-        public ProductionBay(Location loc, uint occupantLimit, List<Recipe> recs, (uint max, uint start) prodStations, (uint max, uint start) pool, (uint max, uint start) resv, uint cargoCapacity) : base(loc, occupantLimit) {
+        public ProductionBay(Location loc, uint occupantLimit, List<Recipe> recs, (uint max, uint start) prodStations, (uint max, uint start) pool, (uint max, uint start) resv, uint cargoCapacity, List<Recipe> supportedRecs) : base(loc, occupantLimit) {
             SupportedRecipes = recs;
             MaxProductionSlots = prodStations.max;
             EnergyPool = new RegeneratingBank {
@@ -87,6 +85,8 @@ namespace Engine.Types {
             for (int i = 0 ; i < prodStations.start ; i++) {
                 ProductionSlots.Add(new ProductionBaySlot(EnergyPool, EnergyReserve, Resources));
             }
+            SupportedRecipes = new List<Recipe>( );
+            supportedRecs.ForEach(SupportedRecipes.Add);
         }
 
         public void AddProductionStation(Action onLimitMet = null) {

@@ -234,11 +234,16 @@ namespace Engine.Types {
             if (Active == null) {
                 return null;
             }
-
+            int finishedOrWorkingOn = 0;
             foreach (var ingr in Active.Ingredients) {
-                if (!WorkPairings.ContainsValue(ingr)) {
-                    return ingr;
+                if (WorkPairings.ContainsValue(ingr)) {
+                    finishedOrWorkingOn += 1;
+                    if (finishedOrWorkingOn == Active.Ingredients.Count) {
+                        break;
+                    }
+                    continue;
                 }
+                return ingr;
             }
             return null;
         }
