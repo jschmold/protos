@@ -18,5 +18,14 @@ namespace Engine.Utilities
                 act.Invoke( );
             }
         }
+
+        public static bool ContainsAll(this List<Object> obj, List<Object> all) {
+            foreach (var val in all) {
+                if (!obj.Contains(val)) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }

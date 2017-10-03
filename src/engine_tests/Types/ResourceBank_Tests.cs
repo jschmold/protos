@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Engine_Tests.Types {
     [TestClass]
+    [TestCategory("Banks")]
     public class ResourceBank_Tests {
         Resource TestResource = new Resource {
             Identifier = 0x0000001,
@@ -16,7 +17,7 @@ namespace Engine_Tests.Types {
         };
 
         [TestMethod]
-        public void CargoAddWorks() {
+        public void ResourceBank_AddWorks() {
             ResourceBank cargo = new ResourceBank(20);
             cargo.Add(TestResource);
             bool found = false;
@@ -30,7 +31,7 @@ namespace Engine_Tests.Types {
         }
 
         [TestMethod]
-        public void CargoAdd_RespectsVolumeCapacity() {
+        public void ResourceBank_Add_RespectsVolumeCapacity() {
             ResourceBank cargo = new ResourceBank(2);
             cargo.Add(TestResource);
             cargo.Add(TestResource);
@@ -40,7 +41,7 @@ namespace Engine_Tests.Types {
         }
 
         [TestMethod]
-        public void CargoAdd_ModifiesVolume() {
+        public void ResourceBank_Add_ModifiesVolume() {
             ResourceBank cargo = new ResourceBank(20);
             uint curVol = cargo.Quantity;
             cargo.Add(TestResource);
@@ -48,21 +49,21 @@ namespace Engine_Tests.Types {
         }
 
         [TestMethod]
-        public void CargoAdd_ModifiesVolumeCorrectly() {
+        public void ResourceBank_Add_ModifiesVolumeCorrectly() {
             ResourceBank cargo = new ResourceBank(20);
             cargo.Add(TestResource, 8);
             Assert.IsTrue(cargo.Quantity == 8);
         }
 
         [TestMethod]
-        public void CargoBank_IndexerWorks() {
+        public void ResourceBank_Bank_IndexerWorks() {
             ResourceBank bank = new ResourceBank(20);
             bank.Add(TestResource, 5);
             Assert.IsNotNull(bank[TestResource]);
         }
 
         [TestMethod]
-        public void CargoRemoveWorks() {
+        public void ResourceBank_RemoveWorks() {
             ResourceBank bank = new ResourceBank(20);
             bank.Add(TestResource, 5);
 
@@ -71,7 +72,7 @@ namespace Engine_Tests.Types {
         }
 
         [TestMethod]
-        public void CargoRemove_RemovesProperQuantity() {
+        public void ResourceBank_Remove_RemovesProperQuantity() {
             ResourceBank cargo = new ResourceBank(20);
             cargo.Add(TestResource, 10);
             cargo.Remove(TestResource, 2);

@@ -4,7 +4,7 @@ using System.Text;
 using static Engine.Utilities.LangHelpers;
 
 namespace Engine.Types {
-    // Todo: Finish Research class 
+    // Todo: Finish Knowledge class 
     public class Knowledge {
         public Bank Progress {
             get; set;
@@ -23,5 +23,10 @@ namespace Engine.Types {
         public uint StationCost {
             get; set;
         }
+        public Skill Unlocks {
+            get; set;
+        }
+        public bool Completed => Progress.IsFull;
+
     }
 }

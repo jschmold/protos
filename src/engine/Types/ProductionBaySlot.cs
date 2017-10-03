@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using Engine.Exceptions;
-
+using static Engine.Utilities.LangHelpers;
 namespace Engine.Types {
 
     /// <summary>
@@ -27,11 +27,12 @@ namespace Engine.Types {
         /// The workers dedicated to this BayStation
         /// </summary>
         public List<Citizen> Workers {
-            get; set;
+            get; private set;
         }
 
         /// <summary>
-        /// A dictionary of workers and what they are working on (one ingredient at a time). Makes finding who is doing what easier.
+        /// A dictionary of workers and what they are working on (one ingredient at a time). 
+        /// Makes finding who is doing what easier.
         /// </summary>
         private Dictionary<Citizen, Ingredient<Resource>> WorkPairings;
 
@@ -64,12 +65,35 @@ namespace Engine.Types {
             get; set;
         }
 
-        public ProductionBaySlot(RegeneratingBank pool, RegeneratingBank reserve, ResourceBank resources) {
+        public ProductionBaySlot(RegeneratingBank pool, RegeneratingBank reserve, ResourceBank resources, uint seats) {
             Pool = pool;
             Reserve = reserve;
             Resources = resources;
+            Workers = new List<Citizen>( );
             WorkPairings = new Dictionary<Citizen, Ingredient<Resource>>( );
+            WorkerSeats = seats;
         }
+        /// <summary>
+        /// Create a new ProductionBaySlot, implying the WorkerSeat limit using the count of the Workers list
+        /// </summary>
+        /// <param name="pool">The pool of the ProductionBay</param>
+        /// <param name="reserve">The reserve of the ProductionBay</param>
+        /// <param name="resources">The ResourceBank of the ProductionBay</param>
+        /// <param name="workers">The list of workers to add to the bay</param>
+        public ProductionBaySlot(RegeneratingBank pool, RegeneratingBank reserve, ResourceBank resources, List<Citizen> workers) 
+            : this(pool, reserve, resources, (uint)workers.Count) => workers.ForEach(wk => Workers.Add(wk));
+
+        /// <summary>
+        /// Create a new ProductionBaySlot limiting the quantity of seats.
+        /// </summary>
+        /// <param name="pool">The pool of the ProductionBay</param>
+        /// <param name="reserve">The reserve of the ProductionBay</param>
+        /// <param name="resources"The ResourceBank of the ProductionBay></param>
+        /// <param name="seats">The maximum amount of workers in the station</param>
+        /// <param name="workers">The list of workers to grab from</param>
+        /// <remarks>Note: If the list of workers is larger than the seat count, it'll just grab the first 'seats' quantity of workers</remarks>
+        public ProductionBaySlot(RegeneratingBank pool, RegeneratingBank reserve, ResourceBank resources, uint seats, List<Citizen> workers)
+            : this(pool, reserve, resources, seats) => workers.ForEach(wk => AddWorker(wk, () => {}));
 
         /// <summary>
         /// Takes an ingredient from the resources repo and expends it.
@@ -177,11 +201,34 @@ namespace Engine.Types {
             ManageProduction( );
         }
 
+        // Todo AddWorker
+        public void AddWorker(Citizen wk, Action onLimitMet = null) {
+            if (Workers.Count == WorkerSeats) {
+                DoOrThrow(onLimitMet, new LimitMetException( ));
+                return;
+            }
+            Workers.Add(wk);
+        }
+
+        // Todo RemoveWorker
+        public void RemoveWorker(Citizen wk) {
+            for (int i = 0 ; i < Workers.Count ; i++) {
+                if (Workers[i] == wk) {
+                    Workers.RemoveAt(i);
+                    return;
+                }
+            }
+        }
+
+
         /// <summary>
         /// Gives workers a rest if their energy is not sufficient for the ingredient they're working on.
         /// Workers that have enough energy to work and are not working are put to work.
         /// </summary>
         public void ManageWorkers() => Workers.ForEach(wk => {
+            if (Active != null && !Active.MeetsRequirements(wk)) {
+                return;
+            }
             if (!WorkPairings.ContainsKey(wk) && wk.IsRested) {
                 WorkPairings.Add(wk, null);
             } else if (WorkPairings.ContainsKey(wk) && wk.NeedsRest) {

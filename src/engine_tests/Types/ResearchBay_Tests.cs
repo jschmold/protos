@@ -6,6 +6,7 @@ using Engine.Types;
 
 namespace EngineTests.Types {
     [TestClass]
+    [TestCategory("ResearchBay")]
     public class ResearchBay_Tests {
         Knowledge Science = new Knowledge {
 

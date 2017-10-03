@@ -35,6 +35,12 @@ namespace Engine.Types {
             get; set;
         }
         /// <summary>
+        /// What the citizen is capable of, and what they are trained on
+        /// </summary>
+        public List<Skill> Skills {
+            get; set;
+        } = new List<Skill>( );
+        /// <summary>
         /// A user-friendly indicator of the task currently being performed, as well as a locking indicator for what is holding the task.
         /// </summary>
         public CitizenActivity CurrentActivity {

@@ -8,6 +8,7 @@ using Engine.Exceptions;
 
 namespace EngineTests.Types {
     [TestClass]
+    [TestCategory("Bay")]
     public class Bay_Tests {
         [TestMethod]
         public void AddOccupant_Works() {

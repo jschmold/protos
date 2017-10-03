@@ -22,6 +22,7 @@ namespace Engine.Types {
             Disc = dsc;
             Region = (x, y);
         }
+
         public Location((int spire, int disc, int x, int y) loc) {
             Spire = loc.spire;
             Disc = loc.disc;
@@ -35,6 +36,7 @@ namespace Engine.Types {
         /// <param name="b">The second Location</param>
         /// <returns>A sum of the each parameter of the first and second location in a new Location object</returns>
         public static Location operator +(Location a, Location b) => new Location(a.Spire + b.Spire, a.Disc + b.Disc, a.Region.X + b.Region.X, a.Region.Y + b.Region.Y);
+
         /// <summary>
         /// Subtracts all of the parameters of a Location from one another.
         /// </summary>

@@ -6,6 +6,7 @@ using static Engine.Utilities.LangHelpers;
 namespace EngineTests.Types
 {
     [TestClass]
+    [TestCategory("LangHelpers")]
     public class LangHelpers_Tests
     {
         [TestMethod]

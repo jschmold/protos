@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using static Engine.Utilities.LangHelpers;
 
 namespace Engine.Types {
     /// <summary>
@@ -17,7 +18,7 @@ namespace Engine.Types {
         /// <summary>
         /// List of research requirement identifiers required for
         /// </summary>
-        public List<uint> ResearchRequirements {
+        public List<Skill> ResearchRequirements {
             get; set;
         }
 
@@ -53,7 +54,7 @@ namespace Engine.Types {
         /// <param name="ings">The Ingredient collection (really more of a blueprint)</param>
         /// <param name="resReqs">The research requirements</param>
         /// <param name="prods">What is produced by the recipe, and how much</param>
-        public Recipe(List<Ingredient<Resource>> ings, List<uint> resReqs, Quantified<Resource> prods) {
+        public Recipe(List<Ingredient<Resource>> ings, List<Skill> resReqs, Quantified<Resource> prods) {
             Ingredients = new List<Ingredient<Resource>>( );
             ings.ForEach((Ingredient<Resource> ing) => Ingredients.Add(new Ingredient<Resource>(ing)));
             ResearchRequirements = resReqs;
@@ -67,11 +68,17 @@ namespace Engine.Types {
         /// <param name="resReqs">The research requirements</param>
         /// <param name="produces">What is produced</param>
         /// <param name="quantity">How much is produced</param>
-        public Recipe(List<Ingredient<Resource>> ings, List<uint> resReqs, Resource produces, uint quantity)
+        public Recipe(List<Ingredient<Resource>> ings, List<Skill> resReqs, Resource produces, uint quantity)
             : this(ings, resReqs, new Quantified<Resource> (produces, quantity )) { }
 
         public Recipe(Recipe rec)
             : this(rec.Ingredients, rec.ResearchRequirements, rec.Produces.Contents, rec.Produces.Quantity) { }
 
+        /// <summary>
+        /// Does a citizen meet the requirements of a recipe
+        /// </summary>
+        /// <param name="wk">The citizen to test</param>
+        /// <returns>Whether or not the citizen meets the work requirements</returns>
+        public bool MeetsRequirements(Citizen wk) => ResearchRequirements == null || ResearchRequirements.Count == 0 || ResearchRequirements.TrueForAll((Skill sk) => wk.Skills.Contains(sk));
     }
 }

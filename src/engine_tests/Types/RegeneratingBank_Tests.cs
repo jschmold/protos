@@ -3,6 +3,7 @@ using Engine.Types;
 
 namespace Engine_Tests.Types {
     [TestClass]
+    [TestCategory("Banks")]
     public class RegeneratingBank_Tests {
         [TestMethod]
         public void FailsOnDecayTooLarge() {
