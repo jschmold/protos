@@ -6,3 +6,4 @@ src/engine_tests/bin/*
 src/engine_tests/obj/*
 src/.vs
 .vs
+.PRIVATE/
