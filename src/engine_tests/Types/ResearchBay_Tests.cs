@@ -19,11 +19,9 @@ namespace EngineTests.Types {
             bay.AddResearcher(new Citizen( ));
             Assert.IsTrue(bay.Researchers.Count == 1, $"Expected 1, actual {bay.Researchers.Count}");
         }
-
+        
         [TestMethod]
-        public void AddResearcher_ListensToLimit() {
-            
-        }
+        public void AddResearcher_ListensToLimit() => Assert.Fail("Unwritten test");
 
         [TestMethod]
         public void AddResearcher_ThrowsErrorAfterLimit() => Assert.Fail("Test not written");

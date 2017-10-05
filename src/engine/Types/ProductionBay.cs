@@ -11,9 +11,6 @@ namespace Engine.Types {
     /// A bay that produces a resource from a recipe of resources.
     /// </summary>
     public class ProductionBay : Bay {
-        public ProductionBay(Location loc, uint occLimit) : base(loc, occLimit) {
-        }
-
         /// <summary>
         /// The recipes supported by the production bay
         /// </summary>
@@ -91,7 +88,7 @@ namespace Engine.Types {
             Resources = new ResourceBank(cargoCapacity);
 
             // Create the slots
-            for (int i = 0 ; i < Math.Min(prodStations.start, prodStations.max); i++) {
+            for (int i = 0 ; i < Math.Min(prodStations.start, prodStations.max) ; i++) {
                 ProductionSlots.Add(new ProductionBaySlot(EnergyPool, EnergyReserve, Resources, 0));
             }
             SupportedRecipes = new List<Recipe>(recs);
@@ -119,7 +116,8 @@ namespace Engine.Types {
         /// </summary>
         /// <param name="rec">The recipe to craft</param>
         /// <exception cref="UnsupportedRecipeException"></exception>
-        public void Craft(Recipe rec) => throw new NotImplementedException( );
+        public void Craft(Recipe rec) => Craft(rec, FirstAvailableStation( ));
+
         /// <summary>
         /// Crafts a recipe at the slot indicated.
         /// </summary>
@@ -127,16 +125,47 @@ namespace Engine.Types {
         /// <param name="slot">The slot to craft at</param>
         /// <exception cref="IndexOutOfRangeException">Thrown when slot is not a valid index</exception>
         /// <exception cref="UnsupportedRecipeException">Thrown when the recipe is not supported by the bay</exception>
-        public void Craft(Recipe rec, uint slot) => throw new NotImplementedException( );
+        public void Craft(Recipe rec, int slot, Action onUnsupportedRecipe = null) {
+            if (slot < 0) {
+                throw new IndexOutOfRangeException("slot");
+            }
+            if (!SupportedRecipes.Contains(rec)) {
+                DoOrThrow(onUnsupportedRecipe, new UnsupportedRecipeException( ));
+            }
+            ProductionSlots[slot].ActivateRecipe(rec);
+        }
 
-        
+        /// <summary>
+        /// Gets the first one that is not being used, or the one with the smallest lineup
+        /// </summary>
+        /// <returns>The index of the station</returns>
+        public int FirstAvailableStation() {
+            int lineup = int.MaxValue;
+            int index = -1;
+            for (int i = 0 ; i < ProductionSlots.Count ; i++) {
+                var slot = ProductionSlots[i];
+                if (slot.Active == null || slot.Lineup.Count == 0) {
+                    index = i;
+                    break;
+                }
+                if (lineup > slot.Lineup.Count) {
+                    index = i;
+                    lineup = slot.Lineup.Count;
+                }
+            }
+            return index;
+        }
+
         /// <summary>
         /// Move a worker from one station to another
         /// </summary>
         /// <param name="wk">The worker to move</param>
         /// <param name="from">What station the worker is at</param>
         /// <param name="to">What station the worker is to move to</param>
-        public void TransferWorkerBetweenStartions(Citizen wk, ProductionBaySlot from, ProductionBay to) => throw new NotImplementedException( );
+        public void TransferWorkerBetweenStations(Citizen wk, ProductionBaySlot from, ProductionBaySlot to) {
+            from.Workers.Remove(wk);
+            to.AddWorker(wk);
+        }
 
     }
 }

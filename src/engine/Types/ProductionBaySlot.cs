@@ -201,7 +201,6 @@ namespace Engine.Types {
             ManageProduction( );
         }
 
-        // Todo AddWorker
         public void AddWorker(Citizen wk, Action onLimitMet = null) {
             if (Workers.Count == WorkerSeats) {
                 DoOrThrow(onLimitMet, new LimitMetException( ));
@@ -210,7 +209,6 @@ namespace Engine.Types {
             Workers.Add(wk);
         }
 
-        // Todo RemoveWorker
         public void RemoveWorker(Citizen wk) {
             for (int i = 0 ; i < Workers.Count ; i++) {
                 if (Workers[i] == wk) {

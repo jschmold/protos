@@ -4,7 +4,6 @@ using System.Text;
 using static Engine.Utilities.LangHelpers;
 
 namespace Engine.Types {
-    // Todo: Finish Knowledge class 
     public class Knowledge {
         public Bank Progress {
             get; set;

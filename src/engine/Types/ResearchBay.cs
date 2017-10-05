@@ -57,12 +57,18 @@ namespace Engine.Types {
         }
 
         public void Think() => throw new NotImplementedException( );
-        public void Research(Knowledge res) => throw new NotImplementedException( );
-        public void Cancel() => throw new NotImplementedException( );
-        public void AddResearcher(Citizen wk, Action onFailure = null) => throw new NotImplementedException( );
-        public void RemoveResearcher(Action onFailure = null) => throw new NotImplementedException( );
 
-        public bool IsQualified(Citizen wk) => throw new NotImplementedException( );
+        public void Research(Knowledge res) => throw new NotImplementedException( );
+
+        public void Cancel() => throw new NotImplementedException( );
+
+        public void AddResearcher(Citizen wk, Action onFailure = null) => throw new NotImplementedException( );
+
+        public void RemoveResearcher(Citizen wk) => throw new NotImplementedException( );
+        public void RemoveResearcher(int index) => throw new NotImplementedException( );
+
+
+        public bool IsQualified(Citizen wk) => KnowledgeRepo.TrueForAll((kw) => wk.Skills.Contains(kw.Unlocks));
         public bool HasResearcher(Citizen wk) => Researchers.Contains(wk);
         public bool IsResearched(Knowledge knw) => KnowledgeRepo.Contains(knw);
         public bool CanResearch(Knowledge knw) => SupportedResearches.Contains(knw);
