@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using static Engine.Utilities.LangHelpers;
+using Engine.Exceptions;
+using Engine.Utilities;
+
 
 namespace Engine.Types {
     /*
@@ -58,14 +62,19 @@ namespace Engine.Types {
 
         public void Think() => throw new NotImplementedException( );
 
-        public void Research(Knowledge res) => throw new NotImplementedException( );
+        /// <summary>
+        /// Start the research on a piece of knowledge
+        /// </summary>
+        /// <param name="know">The knowledge to research</param>
+        public void Research(Knowledge know) => throw new NotImplementedException( );
 
         public void Cancel() => throw new NotImplementedException( );
 
-        public void AddResearcher(Citizen wk, Action onFailure = null) => throw new NotImplementedException( );
+        public void AddResearcher(Citizen wk, Action onLimitReached = null) =>
+            Perform(Researchers.Count >= ResearcherLimit, () => DoOrThrow(onLimitReached, new LimitMetException( )), () => Researchers.Add(wk));
 
-        public void RemoveResearcher(Citizen wk) => throw new NotImplementedException( );
-        public void RemoveResearcher(int index) => throw new NotImplementedException( );
+        public void RemoveResearcher(Citizen wk) => Perform(Researchers.Contains(wk), () => Researchers.Remove(wk));
+        public void RemoveResearcher(int index) => Perform(Researchers.Count <= index + 1 && index > 0, () => Researchers.RemoveAt(index));
 
 
         public bool IsQualified(Citizen wk) => KnowledgeRepo.TrueForAll((kw) => wk.Skills.Contains(kw.Unlocks));

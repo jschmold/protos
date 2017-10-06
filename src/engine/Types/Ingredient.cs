@@ -38,8 +38,6 @@ namespace Engine.Types {
             Progress = new Bank { Quantity = 0, Maximum = WorkerTotalCost };
         }
 
-        public void Process(uint workers) {
-            Progress.Quantity += WorkerCost * workers;
-        }
+        public void Process(uint workers) => Progress.Quantity += WorkerCost * workers;
     }
 }

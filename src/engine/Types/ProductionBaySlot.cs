@@ -150,9 +150,7 @@ namespace Engine.Types {
         /// </summary>
         /// <param name="rec">The recipe to activate for crafting</param>
         public void ActivateRecipe(Recipe rec) {
-            if (Active != null) {
-                ClearActive( );
-            }
+            Perform(Active != null, ClearActive);
             Active = new Recipe(rec);
         }
 
@@ -196,18 +194,12 @@ namespace Engine.Types {
         /// The main function that is called on every loop to process this slot's functionality.
         /// Increments progress on all WorkPairings.
         /// </summary>
-        public void Think() {
-            ManageWorkers( );
-            ManageProduction( );
-        }
+        public void Think() => Compose(ManageWorkers, ManageProduction);
 
-        public void AddWorker(Citizen wk, Action onLimitMet = null) {
-            if (Workers.Count == WorkerSeats) {
-                DoOrThrow(onLimitMet, new LimitMetException( ));
-                return;
-            }
-            Workers.Add(wk);
-        }
+        public void AddWorker(Citizen wk, Action onLimitMet = null) => 
+            Perform(Workers.Count < WorkerSeats, 
+                () => DoOrThrow(onLimitMet, new LimitMetException()), 
+                () => Workers.Add(wk));
 
         public void RemoveWorker(Citizen wk) {
             for (int i = 0 ; i < Workers.Count ; i++) {

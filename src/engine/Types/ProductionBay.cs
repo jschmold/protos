@@ -98,18 +98,23 @@ namespace Engine.Types {
         /// Add a new station to the bay
         /// </summary>
         /// <param name="onLimitMet">What to do instead of throwing LimitMetException</param>
-        public void AddProductionStation(uint seats, Action onLimitMet = null) {
-            if (ProductionSlotCount == MaxProductionSlots) {
-                DoOrThrow(onLimitMet, new LimitMetException( ));
-            }
-            ProductionSlots.Add(new ProductionBaySlot(EnergyPool, EnergyReserve, Resources, seats));
-        }
+        public void AddProductionStation(uint seats, Action onLimitMet = null) =>
+            Perform(ProductionSlotCount == MaxProductionSlots,
+                () => DoOrThrow(onLimitMet, new LimitMetException( )),
+                () => ProductionSlots.Add(new ProductionBaySlot(EnergyPool, EnergyReserve, Resources, seats)));
+
+        //public void AddProductionStation(uint seats, Action onLimitMet = null) {
+        //    if (ProductionSlotCount == MaxProductionSlots) {
+        //        DoOrThrow(onLimitMet, new LimitMetException( ));
+        //    }
+        //    ProductionSlots.Add(new ProductionBaySlot(EnergyPool, EnergyReserve, Resources, seats));
+        //}
 
         /// <summary>
         /// Destroy the production station at the slot indicated
         /// </summary>
         /// <param name="slot"></param>
-        public void DestroyProductionStation(int slot) => ProductionSlots[slot] = null;
+        public void DestroyProductionStation(int slot) => Perform(slot > 0 && slot <= ProductionSlots.Count, () => ProductionSlots.RemoveAt(slot));
 
         /// <summary>
         /// Craft a recipe at the first available slot, or the one with the least lineup.

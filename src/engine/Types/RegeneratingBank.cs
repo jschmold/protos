@@ -33,13 +33,11 @@ namespace Engine.Types {
         /// </summary>
         /// <param name="amt">The amount to remove from the bank.</param>
         /// <param name="onFailure">The function to call if there is not enough energy in the bank.</param>
-        public void Decay(uint amt, Action onFailure = null) {
-            if ((int)Quantity - (int)amt < 0) {
-                DoOrThrow(onFailure, new NotEnoughEnergyException( ));
-                return;
-            }
-            Quantity -= amt;
-        }
+        public void Decay(uint amt, Action onFailure = null) => Perform(
+            (int)Quantity - (int)amt >= 0, 
+            () => DoOrThrow(onFailure, new NotEnoughEnergyException( )), 
+            () => Quantity -= amt);
+
         /// <summary>
         /// Regenerate the energy bank by the set RegenRate. Will cap out at MaxEnergy.
         /// </summary>

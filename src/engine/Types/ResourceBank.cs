@@ -34,20 +34,12 @@ namespace Engine.Types {
             if (amt == 0) {
                 return;
             }
-            if (res == null) {
-                throw new ArgumentNullException("res");
-            }
-            if (!HasSpaceFor(res.Volume * amt)) {
-                DoOrThrow(onFailure, new NotEnoughCargoSpaceException( ));
-                return;
-            }
-            if (Contains(res)) {
-                this[res].Quantity += amt;
-            } else {
-                Contents.Add(new Quantified<Resource> (res, amt));
-            }
+            ThrowIf(res == null, new ArgumentNullException("res"));
+            Perform(!HasSpaceFor(res.Volume * amt), () => DoOrThrow(onFailure, new NotEnoughCargoSpaceException( )));
+            Perform(Contains(res), () => Contents.Add(new Quantified<Resource>(res, amt)), () => this[res].Quantity += amt);
             Quantity += res.Volume * amt;
         }
+
         /// <summary>
         /// Add a collection of resources
         /// </summary>
@@ -68,16 +60,10 @@ namespace Engine.Types {
             }
 
             Quantified<Resource> slot = this[res];
-            if ((int)slot.Quantity - (int)amt < 0) {
-                DoOrThrow(onFailure, new NotEnoughOfCargoKindException( ));
-                return;
-            }
-
+            Perform((int)slot.Quantity - (int)amt < 0, () => DoOrThrow(onFailure, new NotEnoughOfCargoKindException( )));
             slot.Quantity -= amt;
-            if (slot.Quantity == 0) {
-                Contents.Remove(slot);
-            }
             Quantity -= res.Volume * amt;
+            Perform(slot.Quantity == 0, () => Contents.Remove(slot));
         }
 
         /// <summary>

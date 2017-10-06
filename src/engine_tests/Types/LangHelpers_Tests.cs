@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Engine.Utilities.LangHelpers;
-namespace EngineTests.Types
-{
+namespace EngineTests.Types {
     [TestClass]
     [TestCategory("LangHelpers")]
-    public class LangHelpers_Tests
-    {
+    public class LangHelpers_Tests {
         [TestMethod]
         public void DoOrThrow_DoesAction() {
             bool works = false;
@@ -19,5 +17,44 @@ namespace EngineTests.Types
         public void DoOrThrow_ThrowsException() {
             Assert.ThrowsException<Exception>(() => DoOrThrow(null, new Exception("Yee")));
         }
+        [TestMethod]
+        public void PerformIfBool_PerformsIfTrue() {
+            bool works = true;
+            Perform(works, () => works = false);
+            Assert.IsFalse(works, "Did not modify works, must not have called function");
+        }
+        [TestMethod]
+        public void PerformIfBool_DoesNothingIfFalse() {
+            bool works = false;
+            Perform(works, () => works = true);
+            Assert.IsFalse(works, "Modified works. Should not have.");
+        }
+        [TestMethod]
+        public void PerformIfDelegate_PerformsIfTrue() {
+            bool works = false;
+            Perform(() => true, () => works = true);
+            Assert.IsTrue(works, "Did not modify works, and should have");
+        }
+        [TestMethod]
+        public void PerformIfDelegate_DoesNothingIfFalse() {
+            bool works = true;
+            Perform(() => false, () => works = false);
+            Assert.IsTrue(works, "Modified works and should not have");
+        }
+        private static bool simplePerformTest = true;
+        [TestMethod]
+        public void PerformIf_ExpressionBodyIsSimple() => Perform(true, () => {
+            simplePerformTest = false;
+            Assert.IsFalse(simplePerformTest);
+        });
+        static int composecounter = 1;
+        [TestMethod]
+        public void Compose_RunsAll() => Compose(
+            () => composecounter += 1,
+            () => composecounter *= 2,
+            () => Assert.IsTrue(composecounter == 4),
+            () => composecounter = 1
+            );
+
     }
 }
