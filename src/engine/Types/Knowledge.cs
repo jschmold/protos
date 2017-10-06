@@ -27,5 +27,19 @@ namespace Engine.Types {
         }
         public bool Completed => Progress.IsFull;
 
+        public Knowledge() => Nothing( );
+
+        public Knowledge(List<Knowledge> knReqs, List<Quantified<Resource>> resReqs, (uint total, uint frame) workerCost, uint stationCost, Skill unlocks) {
+            KnowledgeRequirements = new List<Knowledge>(knReqs);
+            ResourceRequirements = new List<Quantified<Resource>>(resReqs);
+            WorkerCost = workerCost.frame;
+            StationCost = stationCost;
+            Progress = new Bank {
+                Quantity = 0,
+                Maximum = workerCost.total
+            };
+        }
+        public Knowledge(Knowledge kn) 
+            : this(kn.KnowledgeRequirements, kn.ResourceRequirements, (kn.Progress.Maximum, kn.WorkerCost), kn.StationCost, kn.Unlocks) => Nothing( );
     }
 }

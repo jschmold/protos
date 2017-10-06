@@ -95,6 +95,10 @@ namespace Engine.Types {
             return false;
         }
 
+        public bool ContainsAll(List<Quantified<Resource>> resources) => 
+            resources.TrueForAll(qr => Contains(qr.Contents) && this[qr.Contents] >= qr.Quantity);
+            
+
         /// <summary>
         /// Use a resource instance to lookup the quantity.
         /// </summary>
@@ -118,5 +122,7 @@ namespace Engine.Types {
         /// <returns>The Quantified Resource</returns>
         /// <exception cref="IndexOutOfRangeException"></exception>
         public Quantified<Resource> this[int key] => Contents[key];
+
+        
     }
 }

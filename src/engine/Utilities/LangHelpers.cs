@@ -5,8 +5,6 @@ using System.Text;
 namespace Engine.Utilities {
     
     public static class LangHelpers {
-        private static object temp;
-
         /// <summary>
         /// Do Action if it is not null, or throw the excepion e
         /// </summary>
@@ -75,9 +73,10 @@ namespace Engine.Utilities {
         /// </summary>
         /// <param name="test"></param>
         /// <param name="e"></param>
-        public static void ThrowIf(bool test, Exception e) => Perform(test, () => {
-            throw e;
-        });
+        public static void ThrowIf(bool test, Exception e) => Perform(test, () => throw e );
         public static void ThrowIf(Func<bool> test, Exception e) => ThrowIf(test( ), e);
+
+        public static void Nothing() {
+        }
     }
 }

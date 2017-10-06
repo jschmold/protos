@@ -54,24 +54,22 @@ namespace Engine.Types {
         /// </summary>
         /// <param name="workers">The collection of workers to add</param>
         /// <param name="onFailure">What to do if it is not possible to add all of the workers</param>
-        public void AddOccupant(IEnumerable<Citizen> workers, Action onFailure = null) {
-            if (Occupants.Count + workers.Count( ) > OccupantLimit) {
-                DoOrThrow(onFailure, new PopulationExceedsMaximumException( ));
-                return;
-            }
-            Occupants.AddRange(workers);
-        }
+        public void AddOccupant(IEnumerable<Citizen> workers, Action onFailure = null) => Perform(Occupants.Count + workers.Count( ) <= OccupantLimit,
+            () => DoOrThrow(onFailure, new PopulationExceedsMaximumException( )),
+            () => Occupants.AddRange(workers));
+        //public void AddOccupant(IEnumerable<Citizen> workers, Action onFailure = null) {
+        //    if (Occupants.Count + workers.Count( ) > OccupantLimit) {
+        //        DoOrThrow(onFailure, new PopulationExceedsMaximumException( ));
+        //        return;
+        //    }
+        //    Occupants.AddRange(workers);
+        //}
 
         /// <summary>
         /// Remove a single occupant from the bay
         /// </summary>
         /// <param name="work">The occupant to remove</param>
-        public void RemoveOccupant(Citizen work) {
-            if (!Occupants.Contains(work)) {
-                return;
-            }
-            Occupants.Remove(work);
-        }
+        public void RemoveOccupant(Citizen work) => Perform(Occupants.Contains(work), () => Occupants.Remove(work));
 
         /// <summary>
         /// Remove a collection of occupants from the bay
