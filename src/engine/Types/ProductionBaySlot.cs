@@ -81,7 +81,7 @@ namespace Engine.Types {
         /// <param name="reserve">The reserve of the ProductionBay</param>
         /// <param name="resources">The ResourceBank of the ProductionBay</param>
         /// <param name="workers">The list of workers to add to the bay</param>
-        public ProductionBaySlot(RegeneratingBank pool, RegeneratingBank reserve, ResourceBank resources, List<Citizen> workers) 
+        public ProductionBaySlot(RegeneratingBank pool, RegeneratingBank reserve, ResourceBank resources, List<Citizen> workers)
             : this(pool, reserve, resources, (uint)workers.Count) => workers.ForEach(wk => Workers.Add(wk));
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace Engine.Types {
         /// <param name="workers">The list of workers to grab from</param>
         /// <remarks>Note: If the list of workers is larger than the seat count, it'll just grab the first 'seats' quantity of workers</remarks>
         public ProductionBaySlot(RegeneratingBank pool, RegeneratingBank reserve, ResourceBank resources, uint seats, List<Citizen> workers)
-            : this(pool, reserve, resources, seats) => workers.ForEach(wk => AddWorker(wk, () => {}));
+            : this(pool, reserve, resources, seats) => workers.ForEach(wk => AddWorker(wk));
 
         /// <summary>
         /// Takes an ingredient from the resources repo and expends it.
@@ -102,12 +102,9 @@ namespace Engine.Types {
         /// <param name="res">The Ingredient with the resource requirement</param>
         /// <param name="onLackingResource">What to do instead of throwing LackingResourceException</param>
         /// <exception cref="LackingResourceException"></exception>
-        public void ExpendIngredient(Ingredient<Resource> res, Action onLackingResource = null) {
-            ThrowIf(res == null, new ArgumentNullException("res"));
-            Resource expend = res.Requirement.Contents;
-            Perform(!Resources.Contains(expend) || res.Requirement.Quantity > Resources[expend].Quantity, () => DoOrThrow(onLackingResource, new LackingResourceException( )));
-            Resources[expend].Quantity -= res.Requirement;
-        }
+        public void ExpendIngredient(Ingredient<Resource> res, Action onLackingResource = null) => Perform(
+            Resources.Contains(res.Requirement.Contents) && res.Requirement.Quantity <= Resources[res.Requirement.Contents].Quantity,
+            (onLackingResource, new LackingResourceException( )), () => Resources[res.Requirement.Contents].Quantity -= res.Requirement);
 
         /// <summary>
         /// Expends energy from either the Pool or the Reserve. 
@@ -115,12 +112,13 @@ namespace Engine.Types {
         /// </summary>
         /// <param name="amt">The amount to expend</param>
         /// <param name="onNotEnoughEnergy">What to do instead of throwing an exception if there's not enough energy.</param>
-        public void ExpendEnergy(uint amt, Action onNotEnoughEnergy = null) {
-            Perform(!Reserve.HasEnoughFor(amt) && !Pool.HasEnoughFor(amt), () => DoOrThrow(onNotEnoughEnergy, new NotEnoughEnergyException( )));
-            int result = (int)(Pool - amt);
-            Pool.Quantity -= Math.Min(Pool.Quantity, amt);
-            Reserve.Quantity += (uint)(result < 0 ? result : 0);
-        }
+        public void ExpendEnergy(uint amt, Action onNotEnoughEnergy = null) => Perform(Reserve.HasEnoughFor(amt) || Pool.HasEnoughFor(amt),
+            (onNotEnoughEnergy, new NotEnoughEnergyException( )), () => {
+                int result = (int)(Pool - amt);
+                Pool.Quantity -= Math.Min(Pool.Quantity, amt);
+                Reserve.Quantity += (uint)(result < 0 ? result : 0);
+            }
+        );
 
         /// <summary>
         /// Clears Active if it is null.
@@ -147,22 +145,26 @@ namespace Engine.Types {
         /// </summary>
         /// <param name="index">The index to retrieve from the lineup</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
-        public void ActivateRecipe(int index) => Compose(
-            () => ThrowIf(Lineup.Count < (index + 1), new ArgumentOutOfRangeException("index")),
-            () => ActivateRecipe(Lineup.ElementAt(index)),
-            () => Lineup.RemoveAt(index));
+        public void ActivateRecipe(int index) => Perform(Lineup.Count >= (index + 1),
+            new IndexOutOfRangeException( ), () => {
+                ActivateRecipe(Lineup.ElementAt(index));
+                Lineup.RemoveAt(index);
+            });
 
         /// <summary>
         /// Creates the new resource in the Resources repo and calls ClearActive.
         /// Throws NotYetCompletedException if Active is not yet done
         /// </summary>
         /// <exception cref="NotYetCompletedException"></exception>
-        public void FinishRecipe(Action onNotYetCompleted = null, Action onActiveIsNull = null) {
-            Perform(Active == null && onActiveIsNull != null, onActiveIsNull);
-            Perform(!Active.Progress.IsFull, () => DoOrThrow(onNotYetCompleted, new NotYetCompletedException( )));
-            Resources.Add(Active.Produces.Contents, Active.Produces.Quantity);
-            ClearActive( );
-        }
+        public void FinishRecipe(Action onNotYetCompleted = null, Action onActiveIsNull = null) => Perform(Active.Progress.IsFull && Active != null,
+            () => {
+                DoOrThrow(!Active.Progress.IsFull, onNotYetCompleted, new NotYetCompletedException( ));
+                Perform(Active == null, onActiveIsNull);
+            },
+            () => {
+                Resources.Add(Active.Produces.Contents, Active.Produces.Quantity);
+                ClearActive( );
+            });
 
         /// <summary>
         /// The main function that is called on every loop to process this slot's functionality.
@@ -170,35 +172,40 @@ namespace Engine.Types {
         /// </summary>
         public void Think() => Compose(ManageWorkers, ManageProduction);
 
-        public void AddWorker(Citizen wk, Action onLimitMet = null) => 
-            Perform(Workers.Count < WorkerSeats, 
-                () => DoOrThrow(onLimitMet, new LimitMetException()), 
+        public void AddWorker(Citizen wk, Action onLimitMet = null) => Perform(Workers.Count < WorkerSeats,
+                (onLimitMet, new LimitMetException( )),
                 () => Workers.Add(wk));
 
-        public void RemoveWorker(Citizen wk) {
-            for (int i = 0 ; i < Workers.Count ; i++) {
-                if (Workers[i] == wk) {
-                    Workers.RemoveAt(i);
-                    return;
-                }
-            }
-        }
+        /// <summary>
+        /// Removes the worker from the production bay slot. Does onWorkerNotFound or throws KeyNotFound if worker is not found.
+        /// </summary>
+        /// <param name="wk">The worker to find</param>
+        /// <param name="onWorkerNotFound">What to do if the worker is not found.</param>
+        public void RemoveWorker(Citizen wk, Action onWorkerNotFound = null) => Workers.Remove(wk);
 
 
         /// <summary>
         /// Gives workers a rest if their energy is not sufficient for the ingredient they're working on.
         /// Workers that have enough energy to work and are not working are put to work.
         /// </summary>
-        public void ManageWorkers() => Workers.ForEach(wk => {
-            if (Active != null && !Active.MeetsRequirements(wk)) {
-                return;
-            }
-            if (!WorkPairings.ContainsKey(wk) && wk.IsRested) {
-                WorkPairings.Add(wk, null);
-            } else if (WorkPairings.ContainsKey(wk) && wk.NeedsRest) {
-                WorkPairings.Remove(wk);
-            }
-        });
+        public void ManageWorkers() => Workers.ForEach(wk => Compose(wk, PrepIfQualifiedAndRested, ReleaseWorkerIfExhausted));
+
+        /// <summary>
+        /// Prepare worker for work if nothing is active, or if they're both qualified and rested enough
+        /// </summary>
+        /// <param name="cit"></param>
+        public void PrepIfQualifiedAndRested(Citizen cit) => Perform(Active?.MeetsRequirements(cit) ?? true, () => PrepWorkerIfRested(cit));
+
+        /// <summary>
+        /// Prepare worker if they're rested enough to continue
+        /// </summary>
+        /// <param name="cit"></param>
+        public void PrepWorkerIfRested(Citizen cit) => Perform(!WorkPairings.ContainsKey(cit) && cit.IsRested, () => WorkPairings.Add(cit, null));
+        /// <summary>
+        /// Release worker from working if in need of rest
+        /// </summary>
+        /// <param name="cit"></param>
+        public void ReleaseWorkerIfExhausted(Citizen cit) => Perform(WorkPairings.ContainsKey(cit) && cit.NeedsRest, () => WorkPairings.Remove(cit));
 
         /// <summary>
         /// Finish anything that is completed, and progress anything being worked on. Queue up the next thing if Active was finished.

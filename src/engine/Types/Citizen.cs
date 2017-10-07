@@ -54,5 +54,8 @@ namespace Engine.Types {
         /// Is the energy level of the citizen above 45%
         /// </summary>
         public bool IsRested => Energy.Maximum * 0.45 < Energy.Quantity;
+
+        public bool HasEnoughEnergy(uint amt) => Energy.HasEnoughFor(amt) && !NeedsRest;
+
     }
 }

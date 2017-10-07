@@ -61,10 +61,18 @@ namespace Engine.Types {
             SupportedResearches = new List<Knowledge>(Supported);
             Resources = new ResourceBank(cargoSize);
             Recovering = new List<Citizen>( );
+            Researchers = new List<Citizen>( );
         }
 
-        public void Think() => Compose(FinalizeResearchIfComplete, ProcessResearchers);
-
+        public void Think() {
+            FinalizeResearchIfComplete( );
+            try {
+                ExpendEnergyFromActive( );
+                ProcessResearchers( );
+            } catch (NotEnoughEnergyException) {
+                return;
+            }
+        }
         /// <summary>
         /// If they need recovering, recover them until they are "rested". 
         /// If they are done recovering, put them to work.
@@ -93,19 +101,13 @@ namespace Engine.Types {
         /// Start the research on a piece of knowledge
         /// </summary>
         /// <param name="know">The knowledge to research</param>
-        public void Research(Knowledge know, Action onActiveNotNull = null) => Perform(Active != null, () => {
-            DoOrThrow(onActiveNotNull, new InvalidOperationException("Active not null"));
-            Active = new Knowledge(know);
-        });
+        public void Research(Knowledge know, Action onActiveNotNull = null) => Perform(Active != null, 
+            (onActiveNotNull, new InvalidOperationException("Active not null")), () => Active = new Knowledge(know));
 
         public void Cancel() => Perform(Active != null, ClearActive);
 
-        public void AddResearcher(Citizen wk, Action onLimitReached = null) => Perform(Researchers.Count >= ResearcherLimit, 
-            // The failure condition
-            () => DoOrThrow(onLimitReached, new LimitMetException( )),
-            // The passing condition
-            () => Researchers.Add(wk)
-        );
+        public void AddResearcher(Citizen wk, Action onLimitReached = null) => Perform(Researchers.Count < ResearcherLimit, 
+            (onLimitReached, new LimitMetException( )), () => Researchers.Add(wk));
 
         public void RemoveResearcher(Citizen wk) => Perform(Researchers.Contains(wk), () => Researchers.Remove(wk));
         public void RemoveResearcher(int index) => Perform(Researchers.Count <= index + 1 && index > 0, () => Researchers.RemoveAt(index));
@@ -116,7 +118,16 @@ namespace Engine.Types {
 
         public void ClearActive() => Active = null;
 
-        public bool HasEnoughEnergy(Citizen wk) => Active != null && wk.Energy.HasEnoughFor(Active.WorkerCost) && !wk.NeedsRest;
+        public void ExpendEnergyFromActive(Action onNotEnoughEnergy = null) => ExpendEnergy(Active?.StationCost ?? 0, onNotEnoughEnergy);
+
+        public void ExpendEnergy(uint amt, Action onNotEnoughEnergy = null) => Perform(BayHasEnoughEnergy(amt) && amt > 0, 
+            () => DoOrThrow(!BayHasEnoughEnergy(amt), onNotEnoughEnergy, new NotEnoughEnergyException( )), () => {
+                int result = (int)(EnergyPool - amt);
+                EnergyPool.Quantity -= Math.Min(EnergyPool.Quantity, amt);
+                EnergyReserve.Quantity += (uint)(result < 0 ? result : 0);
+            });
+
+        public bool BayHasEnoughEnergy(uint amt) => EnergyPool.HasEnoughFor(amt) || EnergyReserve.HasEnoughFor(amt); 
         public bool IsQualified(Citizen wk) => KnowledgeRepo.TrueForAll((kw) => wk.Skills.Contains(kw.Unlocks));
         public bool HasResearcher(Citizen wk) => Researchers.Contains(wk);
         public bool IsResearched(Knowledge knw) => KnowledgeRepo.Contains(knw);

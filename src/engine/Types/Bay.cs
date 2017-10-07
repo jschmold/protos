@@ -41,13 +41,8 @@ namespace Engine.Types {
         /// </summary>
         /// <param name="work">The occupant to add</param>
         /// <param name="onFailure">The optional thing to do if it is not possible to add the occupant</param>
-        public void AddOccupant(Citizen work, Action onFailure = null) {
-            if (Occupants.Count + 1 > OccupantLimit) {
-                DoOrThrow(onFailure, new PopulationExceedsMaximumException( ));
-                return;
-            }
-            Occupants.Add(work);
-        }
+        public void AddOccupant(Citizen work, Action onFailure = null) => Perform(Occupants.Count + 1 <= OccupantLimit,
+            (onFailure, new PopulationExceedsMaximumException( )), () => Occupants.Add(work));
 
         /// <summary>
         /// Add a bunch of workers
@@ -57,13 +52,6 @@ namespace Engine.Types {
         public void AddOccupant(IEnumerable<Citizen> workers, Action onFailure = null) => Perform(Occupants.Count + workers.Count( ) <= OccupantLimit,
             () => DoOrThrow(onFailure, new PopulationExceedsMaximumException( )),
             () => Occupants.AddRange(workers));
-        //public void AddOccupant(IEnumerable<Citizen> workers, Action onFailure = null) {
-        //    if (Occupants.Count + workers.Count( ) > OccupantLimit) {
-        //        DoOrThrow(onFailure, new PopulationExceedsMaximumException( ));
-        //        return;
-        //    }
-        //    Occupants.AddRange(workers);
-        //}
 
         /// <summary>
         /// Remove a single occupant from the bay

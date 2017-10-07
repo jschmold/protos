@@ -27,7 +27,7 @@ namespace Engine.Types {
         }
         public bool Completed => Progress.IsFull;
 
-        public Knowledge() => Nothing( );
+        public Knowledge() => DoNothing( );
 
         public Knowledge(List<Knowledge> knReqs, List<Quantified<Resource>> resReqs, (uint total, uint frame) workerCost, uint stationCost, Skill unlocks) {
             KnowledgeRequirements = new List<Knowledge>(knReqs);
@@ -40,6 +40,6 @@ namespace Engine.Types {
             };
         }
         public Knowledge(Knowledge kn) 
-            : this(kn.KnowledgeRequirements, kn.ResourceRequirements, (kn.Progress.Maximum, kn.WorkerCost), kn.StationCost, kn.Unlocks) => Nothing( );
+            : this(kn.KnowledgeRequirements, kn.ResourceRequirements, (kn.Progress.Maximum, kn.WorkerCost), kn.StationCost, kn.Unlocks) => DoNothing( );
     }
 }

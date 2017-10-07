@@ -99,8 +99,7 @@ namespace Engine.Types {
         /// </summary>
         /// <param name="onLimitMet">What to do instead of throwing LimitMetException</param>
         public void AddProductionStation(uint seats, Action onLimitMet = null) => Perform(ProductionSlotCount == MaxProductionSlots,
-                () => DoOrThrow(onLimitMet, new LimitMetException( )),
-                () => ProductionSlots.Add(new ProductionBaySlot(EnergyPool, EnergyReserve, Resources, seats)));
+                (onLimitMet, new LimitMetException( )), () => ProductionSlots.Add(new ProductionBaySlot(EnergyPool, EnergyReserve, Resources, seats)));
 
         /// <summary>
         /// Destroy the production station at the slot indicated
@@ -122,11 +121,12 @@ namespace Engine.Types {
         /// <param name="slot">The slot to craft at</param>
         /// <exception cref="IndexOutOfRangeException">Thrown when slot is not a valid index</exception>
         /// <exception cref="UnsupportedRecipeException">Thrown when the recipe is not supported by the bay</exception>
-        public void Craft(Recipe rec, int slot, Action onUnsupportedRecipe = null) {
-            ThrowIf(slot < 0, new IndexOutOfRangeException("slot"));
-            Perform(!SupportedRecipes.Contains(rec), () => DoOrThrow(onUnsupportedRecipe, new UnsupportedRecipeException( )));
-            ProductionSlots[slot].ActivateRecipe(rec);
-        }
+        public void Craft(Recipe rec, int slot, Action onUnsupportedRecipe = null) => Perform(slot > 0 && slot < ProductionSlots.Count - 1 && SupportedRecipes.Contains(rec),
+            () => {
+                ThrowIf(slot < 0 || slot >= ProductionSlots.Count, new IndexOutOfRangeException( ));
+                Perform(!SupportedRecipes.Contains(rec), () => DoOrThrow(onUnsupportedRecipe, new UnsupportedRecipeException( )));
+            },
+            () => ProductionSlots[slot].ActivateRecipe(rec));
 
         /// <summary>
         /// Gets the first one that is not being used, or the one with the smallest lineup
@@ -155,7 +155,15 @@ namespace Engine.Types {
         /// <param name="wk">The worker to move</param>
         /// <param name="from">What station the worker is at</param>
         /// <param name="to">What station the worker is to move to</param>
-        public void TransferWorkerBetweenStations(Citizen wk, ProductionBaySlot from, ProductionBaySlot to) {
+        public void TransferWorkerBetweenStations(Citizen wk, ProductionBaySlot from, ProductionBaySlot to, Action onWorkerNotInFrom = null, Action toLimitBreached = null) {
+            if (!from.Workers.Contains(wk)) {
+                DoOrThrow(onWorkerNotInFrom, new KeyNotFoundException("Worker not found in from"));
+                return;
+            }
+            if (to.Workers.Count + 1 > to.WorkerSeats) {
+                DoOrThrow(toLimitBreached, new LimitMetException( ));
+                return;
+            }
             from.RemoveWorker(wk);
             to.AddWorker(wk);
         }
