@@ -98,17 +98,9 @@ namespace Engine.Types {
         /// Add a new station to the bay
         /// </summary>
         /// <param name="onLimitMet">What to do instead of throwing LimitMetException</param>
-        public void AddProductionStation(uint seats, Action onLimitMet = null) =>
-            Perform(ProductionSlotCount == MaxProductionSlots,
+        public void AddProductionStation(uint seats, Action onLimitMet = null) => Perform(ProductionSlotCount == MaxProductionSlots,
                 () => DoOrThrow(onLimitMet, new LimitMetException( )),
                 () => ProductionSlots.Add(new ProductionBaySlot(EnergyPool, EnergyReserve, Resources, seats)));
-
-        //public void AddProductionStation(uint seats, Action onLimitMet = null) {
-        //    if (ProductionSlotCount == MaxProductionSlots) {
-        //        DoOrThrow(onLimitMet, new LimitMetException( ));
-        //    }
-        //    ProductionSlots.Add(new ProductionBaySlot(EnergyPool, EnergyReserve, Resources, seats));
-        //}
 
         /// <summary>
         /// Destroy the production station at the slot indicated
@@ -131,12 +123,8 @@ namespace Engine.Types {
         /// <exception cref="IndexOutOfRangeException">Thrown when slot is not a valid index</exception>
         /// <exception cref="UnsupportedRecipeException">Thrown when the recipe is not supported by the bay</exception>
         public void Craft(Recipe rec, int slot, Action onUnsupportedRecipe = null) {
-            if (slot < 0) {
-                throw new IndexOutOfRangeException("slot");
-            }
-            if (!SupportedRecipes.Contains(rec)) {
-                DoOrThrow(onUnsupportedRecipe, new UnsupportedRecipeException( ));
-            }
+            ThrowIf(slot < 0, new IndexOutOfRangeException("slot"));
+            Perform(!SupportedRecipes.Contains(rec), () => DoOrThrow(onUnsupportedRecipe, new UnsupportedRecipeException( )));
             ProductionSlots[slot].ActivateRecipe(rec);
         }
 
@@ -168,7 +156,7 @@ namespace Engine.Types {
         /// <param name="from">What station the worker is at</param>
         /// <param name="to">What station the worker is to move to</param>
         public void TransferWorkerBetweenStations(Citizen wk, ProductionBaySlot from, ProductionBaySlot to) {
-            from.Workers.Remove(wk);
+            from.RemoveWorker(wk);
             to.AddWorker(wk);
         }
 

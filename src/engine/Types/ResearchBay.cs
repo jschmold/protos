@@ -34,7 +34,7 @@ namespace Engine.Types {
         }
         public uint ResearcherLimit {
             get; set;
-        } = 1;
+        }
         public List<Knowledge> KnowledgeRepo {
             get; private set;
         }
@@ -58,8 +58,9 @@ namespace Engine.Types {
                 Quantity = reserve.start
             };
             ResearcherLimit = researcherLim;
-            SupportedResearches = Supported;
+            SupportedResearches = new List<Knowledge>(Supported);
             Resources = new ResourceBank(cargoSize);
+            Recovering = new List<Citizen>( );
         }
 
         public void Think() => Compose(FinalizeResearchIfComplete, ProcessResearchers);
@@ -69,41 +70,42 @@ namespace Engine.Types {
         /// If they are done recovering, put them to work.
         /// Expend energy and progress the research as needed
         /// </summary>
-        public void ProcessResearchers() {
-            foreach (Citizen wk in Researchers) {
-                if (!IsQualified(wk)) {
-                    continue;
-                }
-                if (wk.NeedsRest && !Recovering.Contains(wk)) {
-                    Recovering.Add(wk);
-                }
-                if (Recovering.Contains(wk) && wk.IsRested) {
-                    Recovering.Remove(wk);
-                }
-                
-            }
-        }
+        public void ProcessResearchers() => Researchers.ForEach(wk => Compose(IsQualified(wk), wk, 
+            _ => FinalizeResearchIfComplete(),
+            DoRecovery, 
+            ConvertResearcherEnergy
+            ));
 
-        public void ExpendResearcherEnergy(Citizen wk) {
+        /// <summary>
+        /// Converts researcher energy into progress on Active
+        /// </summary>
+        /// <param name="wk">The worker to get the energy from</param>
+        public void ConvertResearcherEnergy(Citizen wk) {
             wk.Energy.Quantity -= Active.WorkerCost;
             Active.Progress.Quantity += Active.WorkerCost;
         }
 
+        public void DoRecovery(Citizen wk) => Compose(wk, RemoveFromRecoveryIfRested, AddToRecoveryIfNeedsRest);
+        public void RemoveFromRecoveryIfRested(Citizen wk) => Perform(wk.IsRested, () => Recovering.Remove(wk));
+        public void AddToRecoveryIfNeedsRest(Citizen wk) => Perform(wk.NeedsRest, () => Recovering.Add(wk));
 
         /// <summary>
         /// Start the research on a piece of knowledge
         /// </summary>
         /// <param name="know">The knowledge to research</param>
-        public void Research(Knowledge know, Action onActiveNotNull = null) => Perform(Active != null,
-            () => DoOrThrow(onActiveNotNull, new InvalidOperationException("Active not null")),
-            () => Active = new Knowledge(know));
+        public void Research(Knowledge know, Action onActiveNotNull = null) => Perform(Active != null, () => {
+            DoOrThrow(onActiveNotNull, new InvalidOperationException("Active not null"));
+            Active = new Knowledge(know);
+        });
 
-        public void Cancel() => Perform(Active == null, ClearActive);
+        public void Cancel() => Perform(Active != null, ClearActive);
 
-        public void AddResearcher(Citizen wk, Action onLimitReached = null) =>
-            Perform(Researchers.Count >= ResearcherLimit,
-                () => DoOrThrow(onLimitReached, new LimitMetException( )),
-                () => Researchers.Add(wk));
+        public void AddResearcher(Citizen wk, Action onLimitReached = null) => Perform(Researchers.Count >= ResearcherLimit, 
+            // The failure condition
+            () => DoOrThrow(onLimitReached, new LimitMetException( )),
+            // The passing condition
+            () => Researchers.Add(wk)
+        );
 
         public void RemoveResearcher(Citizen wk) => Perform(Researchers.Contains(wk), () => Researchers.Remove(wk));
         public void RemoveResearcher(int index) => Perform(Researchers.Count <= index + 1 && index > 0, () => Researchers.RemoveAt(index));

@@ -56,5 +56,15 @@ namespace EngineTests.Types {
             () => composecounter = 1
             );
 
+        private int PipeAddOne(int x) => x + 1;
+        private int PipeMultiTwo(int x) => x * 2;
+        private int PipeOp(int num) => Pipe(num, PipeAddOne, PipeMultiTwo);
+
+        [TestMethod]
+        public void Pipe_ModifiesValueEachTime() {
+            int x = 1;
+            x = PipeOp(x);
+            Assert.IsTrue(x == 4, $"Did not perform pipe operation properly. Expected 4, actually {x}");
+        }
     }
 }

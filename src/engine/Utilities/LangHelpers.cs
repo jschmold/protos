@@ -78,5 +78,43 @@ namespace Engine.Utilities {
 
         public static void Nothing() {
         }
+
+        /// <summary>
+        /// Perform a set of operations on an object of T, passing the result to the next function in the <paramref name="pipeline"/>.
+        /// </summary>
+        /// <typeparam name="T">The type to use</typeparam>
+        /// <param name="arg">The item to operate on</param>
+        /// <param name="pipeline">The array of functions to iterate over</param>
+        /// <returns></returns>
+        public static T Pipe<T>(T arg, params Func<T, T>[] pipeline) {
+            foreach (var func in pipeline) {
+                arg = func(arg);
+            }
+            return arg;
+        }
+        /// <summary>
+        /// Perform a set of operations on an object of T
+        /// </summary>
+        /// <typeparam name="T">The type to use</typeparam>
+        /// <param name="arg">The item to operate on</param>
+        /// <param name="pipeline">The array of functions to iterate over</param>
+        public static void Compose<T>(T arg, params Action<T>[] pipeline) {
+            foreach (var func in pipeline) {
+                func(arg);
+            }
+        }
+        /// <summary>
+        /// Perform a set of operations if test is true on an object of T
+        /// </summary>
+        /// <typeparam name="T">The type to use</typeparam>
+        /// <param name="test">Whether or not the pipeline should be executed</param>
+        /// <param name="arg">The item to operate on</param>
+        /// <param name="pipeline">The array of functions to iterate over</param>
+        public static void Compose<T>(bool test, T arg, params Action<T>[] pipeline) => Perform(test, () => {
+            foreach (var func in pipeline) {
+                func(arg);
+            }
+        });
+        public static void Nullify<Nullable>(Nullable arg) => arg = default(Nullable);
     }
 }

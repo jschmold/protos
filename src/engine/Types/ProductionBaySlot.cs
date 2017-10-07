@@ -22,7 +22,7 @@ namespace Engine.Types {
         /// </summary>
         public List<Recipe> Lineup {
             get; set;
-        } = new List<Recipe>( );
+        }
         /// <summary>
         /// The workers dedicated to this BayStation
         /// </summary>
@@ -72,6 +72,7 @@ namespace Engine.Types {
             Workers = new List<Citizen>( );
             WorkPairings = new Dictionary<Citizen, Ingredient<Resource>>( );
             WorkerSeats = seats;
+            Lineup = new List<Recipe>( );
         }
         /// <summary>
         /// Create a new ProductionBaySlot, implying the WorkerSeat limit using the count of the Workers list
@@ -102,18 +103,9 @@ namespace Engine.Types {
         /// <param name="onLackingResource">What to do instead of throwing LackingResourceException</param>
         /// <exception cref="LackingResourceException"></exception>
         public void ExpendIngredient(Ingredient<Resource> res, Action onLackingResource = null) {
-            if (res == null) {
-                throw new ArgumentNullException("res");
-            }
+            ThrowIf(res == null, new ArgumentNullException("res"));
             Resource expend = res.Requirement.Contents;
-            if (!Resources.Contains(expend) || res.Requirement.Quantity > Resources[expend].Quantity) {
-                if (onLackingResource == null) {
-                    throw new LackingResourceException( );
-                } else {
-                    onLackingResource.Invoke( );
-                    return;
-                }
-            }
+            Perform(!Resources.Contains(expend) || res.Requirement.Quantity > Resources[expend].Quantity, () => DoOrThrow(onLackingResource, new LackingResourceException( )));
             Resources[expend].Quantity -= res.Requirement;
         }
 
@@ -124,18 +116,16 @@ namespace Engine.Types {
         /// <param name="amt">The amount to expend</param>
         /// <param name="onNotEnoughEnergy">What to do instead of throwing an exception if there's not enough energy.</param>
         public void ExpendEnergy(uint amt, Action onNotEnoughEnergy = null) {
-            if (!Reserve.HasEnoughFor(amt) && !Pool.HasEnoughFor(amt)) {
-                if (onNotEnoughEnergy == null) {
-                    throw new NotEnoughEnergyException( );
-                } else {
-                    onNotEnoughEnergy.Invoke( );
-                    return;
-                }
-            }
+            Perform(!Reserve.HasEnoughFor(amt) && !Pool.HasEnoughFor(amt), () => DoOrThrow(onNotEnoughEnergy, new NotEnoughEnergyException( )));
             int result = (int)(Pool - amt);
             Pool.Quantity -= Math.Min(Pool.Quantity, amt);
             Reserve.Quantity += (uint)(result < 0 ? result : 0);
         }
+
+        /// <summary>
+        /// Clears Active if it is null.
+        /// </summary>
+        public void ClearActiveIfNotNull() => Perform(Active != null, ClearActive);
 
         /// <summary>
         /// Clears the active recipe and clears WorkPairings
@@ -149,10 +139,7 @@ namespace Engine.Types {
         /// Clears the active recipe, and sets the rec to the active recipe.
         /// </summary>
         /// <param name="rec">The recipe to activate for crafting</param>
-        public void ActivateRecipe(Recipe rec) {
-            Perform(Active != null, ClearActive);
-            Active = new Recipe(rec);
-        }
+        public void ActivateRecipe(Recipe rec) => Compose(ClearActiveIfNotNull, () => Active = new Recipe(rec));
 
         /// <summary>
         /// Clears the active recipe and sets the recipe at Lineup[<paramref name="index"/>] as active.
@@ -160,13 +147,10 @@ namespace Engine.Types {
         /// </summary>
         /// <param name="index">The index to retrieve from the lineup</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
-        public void ActivateRecipe(int index) {
-            if (Lineup.Count < (index + 1)) {
-                throw new IndexOutOfRangeException( );
-            }
-            ActivateRecipe(Lineup[index]);
-            Lineup.RemoveAt(index);
-        }
+        public void ActivateRecipe(int index) => Compose(
+            () => ThrowIf(Lineup.Count < (index + 1), new ArgumentOutOfRangeException("index")),
+            () => ActivateRecipe(Lineup.ElementAt(index)),
+            () => Lineup.RemoveAt(index));
 
         /// <summary>
         /// Creates the new resource in the Resources repo and calls ClearActive.
@@ -174,18 +158,8 @@ namespace Engine.Types {
         /// </summary>
         /// <exception cref="NotYetCompletedException"></exception>
         public void FinishRecipe(Action onNotYetCompleted = null, Action onActiveIsNull = null) {
-            if (Active == null) {
-                onActiveIsNull?.Invoke( );
-                return;
-            }
-            if (!Active.Progress.IsFull) {
-                if (onNotYetCompleted != null) {
-                    onNotYetCompleted.Invoke( );
-                    return;
-                } else {
-                    throw new NotYetCompletedException( );
-                }
-            }
+            Perform(Active == null && onActiveIsNull != null, onActiveIsNull);
+            Perform(!Active.Progress.IsFull, () => DoOrThrow(onNotYetCompleted, new NotYetCompletedException( )));
             Resources.Add(Active.Produces.Contents, Active.Produces.Quantity);
             ClearActive( );
         }
@@ -230,17 +204,11 @@ namespace Engine.Types {
         /// Finish anything that is completed, and progress anything being worked on. Queue up the next thing if Active was finished.
         /// Otherwise, continue working on things.
         /// </summary>
-        public void ManageProduction() {
-            // Is there a reason to do computation?
-            if ((Active == null && Lineup.Count == 0 ) || Workers.Count == 0) {
-                return;
-            }
+        public void ManageProduction() => Perform(Active != null && Workers.Count > 0, () => {
             // Is what we are doing done? If so, finish it.
             if (Active.Progress.IsFull) {
                 FinishRecipe( );
-                if (Lineup.Count > 0) {
-                    ActivateRecipe(0);
-                }
+                Perform(Lineup.Count > 0, () => ActivateRecipe(0));
                 return;
             }
             for (int num = 0 ; num < WorkPairings.Count ; num++) {
@@ -262,7 +230,7 @@ namespace Engine.Types {
                     return;
                 }
             }
-        }
+        });
         /// <summary>
         /// Get the next ingredient that is not being worked on and not completed.
         /// </summary>
