@@ -30,7 +30,7 @@ namespace EngineTests.Types
             100,
             10,
             10);
-        static Recipe MetalRecipe = new Recipe(
+        static Recipe<Resource, Resource> MetalRecipe = new Recipe<Resource, Resource>(
             new List<Ingredient<Resource>> { ScrapIng },
             null,
             new Quantified<Resource>(Metal, 1)
@@ -40,7 +40,7 @@ namespace EngineTests.Types
             Identifier = 0x0000001,
             Name = "MetalWorking"
         };
-        static Recipe MetalRecipe_WithSkillReq = new Recipe(
+        static Recipe<Resource, Resource> MetalRecipe_WithSkillReq = new Recipe<Resource, Resource>(
             MetalRecipe.Ingredients, new List<Skill> {
                 MetalWork
             },
@@ -50,7 +50,7 @@ namespace EngineTests.Types
             ProductionBay bay = new ProductionBay(
                 null,
                 100,
-                new List<Recipe> {
+                new List<Recipe<Resource, Resource>> {
                     MetalRecipe_WithSkillReq
                 },
                 (4, 4),

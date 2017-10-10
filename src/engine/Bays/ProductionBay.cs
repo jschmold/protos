@@ -12,7 +12,7 @@ namespace Engine.Bays {
         /// <summary>
         /// The recipes supported by the production bay
         /// </summary>
-        public List<Recipe> SupportedRecipes {
+        public List<Recipe<Resource, Resource>> SupportedRecipes {
             get; set;
         }
 
@@ -73,7 +73,7 @@ namespace Engine.Bays {
         /// <param name="resv">The (Max, Start) tuple for how big the bay's reserve pool should be</param>
         /// <param name="cargoCapacity">The maximum amount of cargo supported by the bay</param>
         /// <remarks>Note: If your "start" is ever bigger than the max, the max will be the start</remarks>
-        public ProductionBay(Location loc, uint occupantLimit, List<Recipe> recs, (uint max, uint start) prodStations, (uint max, uint start) pool, (uint max, uint start) resv, uint cargoCapacity) : base(loc, occupantLimit) {
+        public ProductionBay(Location loc, uint occupantLimit, List<Recipe<Resource, Resource>> recs, (uint max, uint start) prodStations, (uint max, uint start) pool, (uint max, uint start) resv, uint cargoCapacity) : base(loc, occupantLimit) {
             MaxProductionSlots = prodStations.max;
             EnergyPool = new RegeneratingBank {
                 Maximum = pool.max,
@@ -89,7 +89,7 @@ namespace Engine.Bays {
             for (int i = 0 ; i < Math.Min(prodStations.start, prodStations.max) ; i++) {
                 ProductionSlots.Add(new ProductionBaySlot(EnergyPool, EnergyReserve, Resources, 0));
             }
-            SupportedRecipes = new List<Recipe>(recs);
+            SupportedRecipes = new List<Recipe<Resource, Resource>>(recs);
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace Engine.Bays {
         /// </summary>
         /// <param name="rec">The recipe to craft</param>
         /// <exception cref="UnsupportedException"></exception>
-        public void Craft(Recipe rec) => Craft(rec, FirstAvailableStation( ));
+        public void Craft(Recipe<Resource, Resource> rec) => Craft(rec, FirstAvailableStation( ));
 
         /// <summary>
         /// Crafts a recipe at the slot indicated.
@@ -119,7 +119,7 @@ namespace Engine.Bays {
         /// <param name="slot">The slot to craft at</param>
         /// <exception cref="IndexOutOfRangeException">Thrown when slot is not a valid index</exception>
         /// <exception cref="UnsupportedException">Thrown when the recipe is not supported by the bay</exception>
-        public void Craft(Recipe rec, int slot, Action onUnsupportedRecipe = null) => Perform(slot > 0 && slot < ProductionSlots.Count - 1 && SupportedRecipes.Contains(rec),
+        public void Craft(Recipe<Resource, Resource> rec, int slot, Action onUnsupportedRecipe = null) => Perform(slot > 0 && slot < ProductionSlots.Count - 1 && SupportedRecipes.Contains(rec),
             () => {
                 ThrowIf(slot < 0 || slot >= ProductionSlots.Count, new IndexOutOfRangeException( ));
                 DoOrThrow(!SupportedRecipes.Contains(rec), onUnsupportedRecipe, new UnsupportedException( ));

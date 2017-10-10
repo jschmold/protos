@@ -7,11 +7,12 @@ namespace Engine.Types {
     /// <summary>
     /// A recipe for creating an Amount of T, and the Resource R needed in the ingredients list
     /// </summary>
-    public class Recipe {
+    public class Recipe<I, P> {
         /// <summary>
         /// List of ingredients identifiers as the id, and the quantity as the value
         /// </summary>
-        public List<Ingredient<Resource>> Ingredients {
+        /// I
+        public List<Ingredient<I>> Ingredients {
             get; set;
         }
 
@@ -44,7 +45,8 @@ namespace Engine.Types {
         /// <summary>
         /// What is produced by this recipe, and how much
         /// </summary>
-        public Quantified<Resource> Produces {
+        /// P
+        public Quantified<P> Produces {
             get; set;
         }
 
@@ -54,9 +56,9 @@ namespace Engine.Types {
         /// <param name="ings">The Ingredient collection (really more of a blueprint)</param>
         /// <param name="resReqs">The research requirements</param>
         /// <param name="prods">What is produced by the recipe, and how much</param>
-        public Recipe(List<Ingredient<Resource>> ings, List<Skill> resReqs, Quantified<Resource> prods) {
-            Ingredients = new List<Ingredient<Resource>>( );
-            ings.ForEach((Ingredient<Resource> ing) => Ingredients.Add(new Ingredient<Resource>(ing)));
+        public Recipe(List<Ingredient<I>> ings, List<Skill> resReqs, Quantified<P> prods) {
+            Ingredients = new List<Ingredient<I>>( );
+            ings.ForEach((Ingredient<I> ing) => Ingredients.Add(new Ingredient<I>(ing)));
             ResearchRequirements = resReqs;
             Produces = prods;
         }
@@ -68,10 +70,10 @@ namespace Engine.Types {
         /// <param name="resReqs">The research requirements</param>
         /// <param name="produces">What is produced</param>
         /// <param name="quantity">How much is produced</param>
-        public Recipe(List<Ingredient<Resource>> ings, List<Skill> resReqs, Resource produces, uint quantity)
-            : this(ings, resReqs, new Quantified<Resource> (produces, quantity )) { }
+        public Recipe(List<Ingredient<I>> ings, List<Skill> resReqs, P produces, uint quantity)
+            : this(ings, resReqs, new Quantified<P> (produces, quantity )) { }
 
-        public Recipe(Recipe rec)
+        public Recipe(Recipe<I, P> rec)
             : this(rec.Ingredients, rec.ResearchRequirements, rec.Produces.Contents, rec.Produces.Quantity) { }
 
         /// <summary>

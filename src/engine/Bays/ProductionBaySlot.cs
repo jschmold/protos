@@ -13,14 +13,14 @@ namespace Engine.Bays {
         /// <summary>
         /// The recipe currently being worked on
         /// </summary>
-        public Recipe Active {
+        public Recipe<Resource, Resource> Active {
             get; set;
         }
 
         /// <summary>
         /// The lineup of recipes to work on
         /// </summary>
-        public List<Recipe> Lineup {
+        public List<Recipe<Resource, Resource>> Lineup {
             get; set;
         }
         /// <summary>
@@ -72,7 +72,7 @@ namespace Engine.Bays {
             Workers = new List<Citizen>( );
             WorkPairings = new Dictionary<Citizen, Ingredient<Resource>>( );
             WorkerSeats = seats;
-            Lineup = new List<Recipe>( );
+            Lineup = new List<Recipe<Resource, Resource>>( );
         }
         /// <summary>
         /// Create a new ProductionBaySlot, implying the WorkerSeat limit using the count of the Workers list
@@ -137,7 +137,7 @@ namespace Engine.Bays {
         /// Clears the active recipe, and sets the rec to the active recipe.
         /// </summary>
         /// <param name="rec">The recipe to activate for crafting</param>
-        public void ActivateRecipe(Recipe rec) => Compose(ClearActiveIfNotNull, () => Active = new Recipe(rec));
+        public void ActivateRecipe(Recipe<Resource, Resource> rec) => Compose(ClearActiveIfNotNull, () => Active = new Recipe<Resource, Resource>(rec));
 
         /// <summary>
         /// Clears the active recipe and sets the recipe at Lineup[<paramref name="index"/>] as active.

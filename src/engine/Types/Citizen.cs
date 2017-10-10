@@ -55,6 +55,11 @@ namespace Engine.Types {
         /// </summary>
         public bool IsRested => Energy.Maximum * 0.45 < Energy.Quantity;
 
+        /// <summary>
+        /// Does the citizen have enough energy for amt
+        /// </summary>
+        /// <param name="amt"></param>
+        /// <returns></returns>
         public bool HasEnoughEnergy(uint amt) => Energy.HasEnoughFor(amt) && !NeedsRest;
 
     }

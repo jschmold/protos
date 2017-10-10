@@ -34,7 +34,7 @@ namespace EngineTests.Types {
             10,
             10);
 
-        static Recipe MetalRecipe = new Recipe(
+        static Recipe<Resource, Resource> MetalRecipe = new Recipe<Resource, Resource>(
             new List<Ingredient<Resource>> { ScrapIng },
             null,
             new Quantified<Resource>(Metal, 1)
@@ -44,7 +44,7 @@ namespace EngineTests.Types {
             Identifier = 0x0000001,
             Name = "MetalWorking"
         };
-        static Recipe MetalRecipe_WithSkillReq = new Recipe(
+        static Recipe<Resource, Resource> MetalRecipe_WithSkillReq = new Recipe<Resource, Resource>(
             MetalRecipe.Ingredients, new List<Skill> {
                 MetalWork
             },
@@ -261,7 +261,7 @@ namespace EngineTests.Types {
                 },
                 null,
                 0) {
-                Active = new Recipe(MetalRecipe)
+                Active = new Recipe<Resource, Resource>(MetalRecipe)
             };
             var field = typeof(ProductionBaySlot)
                 .GetField("WorkPairings", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -288,8 +288,8 @@ namespace EngineTests.Types {
                 },
                 null,
                 0) {
-                Lineup = new List<Recipe> {
-                    new Recipe(MetalRecipe)
+                Lineup = new List<Recipe<Resource, Resource>> {
+                    new Recipe<Resource, Resource>(MetalRecipe)
                 }
             };
             slot.ActivateRecipe(0);
@@ -311,7 +311,7 @@ namespace EngineTests.Types {
                 },
                 new ResourceBank(100),
                 0) {
-                Active = new Recipe(MetalRecipe)
+                Active = new Recipe<Resource, Resource>(MetalRecipe)
             };
             Assert.ThrowsException<NotYetCompletedException>(() => slot.FinishRecipe( ));
         }
@@ -328,7 +328,7 @@ namespace EngineTests.Types {
                 },
                 new ResourceBank(100),
                 0) {
-                Active = new Recipe(MetalRecipe)
+                Active = new Recipe<Resource, Resource>(MetalRecipe)
             };
             slot.Active.Ingredients.ForEach(ing => ing.Progress.Quantity = ing.Progress.Maximum);
             slot.FinishRecipe(
@@ -351,7 +351,7 @@ namespace EngineTests.Types {
                 },
                 new ResourceBank(100),
                 0) {
-                Active = new Recipe(MetalRecipe)
+                Active = new Recipe<Resource, Resource>(MetalRecipe)
             };
             slot.Active.Ingredients.ForEach(ing => ing.Progress.Quantity = ing.Progress.Maximum);
             slot.FinishRecipe( );
@@ -370,7 +370,7 @@ namespace EngineTests.Types {
                 },
                 new ResourceBank(100),
                 0) {
-                Active = new Recipe(MetalRecipe)
+                Active = new Recipe<Resource, Resource>(MetalRecipe)
             };
             slot.Active.Ingredients.ForEach(ing => ing.Progress.Quantity = ing.Progress.Maximum);
             slot.FinishRecipe( );
@@ -392,7 +392,7 @@ namespace EngineTests.Types {
                     new Quantified<Resource>(Metal, 1)
                 }),
                 0) {
-                Active = new Recipe(MetalRecipe)
+                Active = new Recipe<Resource, Resource>(MetalRecipe)
             };
             slot.Active.Ingredients.ForEach(ing => ing.Progress.Quantity = ing.Progress.Maximum);
             slot.FinishRecipe( );
