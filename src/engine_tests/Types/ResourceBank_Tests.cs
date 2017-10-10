@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Timers;
 using Engine.Types;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -19,7 +21,11 @@ namespace Engine_Tests.Types {
         [TestMethod]
         public void ResourceBank_AddWorks() {
             ResourceBank cargo = new ResourceBank(20);
+            var stopwatch = new Stopwatch( );
+            stopwatch.Start( );
             cargo.Add(TestResource);
+            stopwatch.Stop( );
+            Assert.IsTrue(stopwatch.ElapsedMilliseconds < 1.01, "Operation took way too long");
             bool found = false;
             foreach (Resource res in cargo.Contents) {
                 if (res.Identifier == TestResource.Identifier) {

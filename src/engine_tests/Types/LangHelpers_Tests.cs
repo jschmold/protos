@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Engine.Utilities.LangHelpers;
+using static Engine.LangHelpers;
 namespace EngineTests.Types {
     [TestClass]
     [TestCategory("LangHelpers")]

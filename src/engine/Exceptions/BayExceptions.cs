@@ -5,6 +5,6 @@ using System.Text;
 namespace Engine.Exceptions {
     public class PopulationExceedsMaximumException : Exception {
     }
-    public class UnsupportedRecipeException : Exception {
+    public class UnsupportedException : Exception {
     }
 }

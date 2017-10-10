@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Engine.Types;
 using Engine.Exceptions;
+using Engine.Bays;
 
 namespace EngineTests.Types
 {
@@ -58,7 +59,7 @@ namespace EngineTests.Types
                 1000
                 );
             bay.Resources.Add(Scrap, 1000);
-            Assert.ThrowsException<UnsupportedRecipeException>(() => bay.Craft(MetalRecipe));
+            Assert.ThrowsException<UnsupportedException>(() => bay.Craft(MetalRecipe));
         }
     }
 }

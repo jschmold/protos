@@ -8,6 +8,8 @@ using Engine.Exceptions;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
+using Engine.Bays;
+
 
 namespace EngineTests.Types {
     [TestClass]

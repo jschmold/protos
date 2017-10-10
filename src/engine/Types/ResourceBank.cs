@@ -4,7 +4,7 @@ using System.Text;
 using Engine.Exceptions;
 using System.Linq;
 using static System.Linq.Enumerable;
-using static Engine.Utilities.LangHelpers;
+using static Engine.LangHelpers;
 
 namespace Engine.Types {
     public class ResourceBank : Bank {
@@ -123,6 +123,24 @@ namespace Engine.Types {
         /// <exception cref="IndexOutOfRangeException"></exception>
         public Quantified<Resource> this[int key] => Contents[key];
 
+        public static ResourceBank operator -(ResourceBank bank, Quantified<Resource> res) {
+            var q = new ResourceBank(bank.Maximum, bank.Contents);
+            Perform(bank.Contains(res.Contents), () => bank.Remove(res.Contents, res.Quantity));
+            return bank;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="bank"></param>
+        /// <param name="res"></param>
+        /// <returns></returns>
+        public static ResourceBank operator+(ResourceBank bank, Quantified<Resource> res) {
+            var q = new ResourceBank(bank.Maximum, bank.Contents) {
+                Quantity = bank.Quantity
+            };
+            q.Add(res.Contents, res.Quantity);
+            return q;
+        }
         
     }
 }

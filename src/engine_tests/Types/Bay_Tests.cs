@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Engine.Types;
 using Engine.Exceptions;
+using Engine.Bays;
 
 namespace EngineTests.Types {
     [TestClass]
@@ -38,18 +39,23 @@ namespace EngineTests.Types {
         public void AddOccupant_CollectionWorks() {
             Bay bay = new Bay(null, 10);
             List<Citizen> work = new List<Citizen>( );
-            for (int i = 0 ; i < 9 ; i++)
+            for (int i = 0 ; i < 9 ; i++) {
                 work.Add(new Citizen { Name = $"Worker_{i}" });
+            }
+
             bay.AddOccupant(work);
-            for (int i = 0 ; i < 9 ; i++)
+            for (int i = 0 ; i < 9 ; i++) {
                 Assert.IsTrue(bay.Occupants[i].Name == $"Worker_{i}", $"Missing worker {i}");
+            }
         }
 
         [TestMethod]
         public void AddOccupant_RunsFailureInsteadOfException() {
             Bay bay = new Bay(null, 10);
-            for (int i = 0 ; i < 10 ; i++)
+            for (int i = 0 ; i < 10 ; i++) {
                 bay.AddOccupant(new Citizen { Name = $"Worker_{i}" });
+            }
+
             bool works = false;
             bay.AddOccupant(new Citizen { }, () => works = true);
             Assert.IsTrue(works);

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using System.Linq;
 using Engine.Exceptions;
-using static Engine.Utilities.LangHelpers;
+using Engine.Types;
+using static Engine.LangHelpers;
 
-namespace Engine.Types {
+namespace Engine.Bays {
     /// <summary>
     /// A bay that produces a resource from a recipe of resources.
     /// </summary>
@@ -111,7 +109,7 @@ namespace Engine.Types {
         /// Craft a recipe at the first available slot, or the one with the least lineup.
         /// </summary>
         /// <param name="rec">The recipe to craft</param>
-        /// <exception cref="UnsupportedRecipeException"></exception>
+        /// <exception cref="UnsupportedException"></exception>
         public void Craft(Recipe rec) => Craft(rec, FirstAvailableStation( ));
 
         /// <summary>
@@ -120,11 +118,11 @@ namespace Engine.Types {
         /// <param name="rec">The recipe to craft</param>
         /// <param name="slot">The slot to craft at</param>
         /// <exception cref="IndexOutOfRangeException">Thrown when slot is not a valid index</exception>
-        /// <exception cref="UnsupportedRecipeException">Thrown when the recipe is not supported by the bay</exception>
+        /// <exception cref="UnsupportedException">Thrown when the recipe is not supported by the bay</exception>
         public void Craft(Recipe rec, int slot, Action onUnsupportedRecipe = null) => Perform(slot > 0 && slot < ProductionSlots.Count - 1 && SupportedRecipes.Contains(rec),
             () => {
                 ThrowIf(slot < 0 || slot >= ProductionSlots.Count, new IndexOutOfRangeException( ));
-                Perform(!SupportedRecipes.Contains(rec), () => DoOrThrow(onUnsupportedRecipe, new UnsupportedRecipeException( )));
+                DoOrThrow(!SupportedRecipes.Contains(rec), onUnsupportedRecipe, new UnsupportedException( ));
             },
             () => ProductionSlots[slot].ActivateRecipe(rec));
 

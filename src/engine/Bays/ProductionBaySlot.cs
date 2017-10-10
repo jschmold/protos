@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using Engine.Exceptions;
-using static Engine.Utilities.LangHelpers;
-namespace Engine.Types {
+using Engine.Types;
+using static Engine.LangHelpers;
 
+namespace Engine.Bays {
     /// <summary>
     /// Needs to pull from cargo location
     /// </summary>

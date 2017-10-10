@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using Engine.Exceptions;
-using static Engine.Utilities.LangHelpers;
+using Engine.Types;
+using static Engine.LangHelpers;
 
-namespace Engine.Types {
+namespace Engine.Bays {
     public class Bay {
         /// <summary>
         /// Where is the bay?

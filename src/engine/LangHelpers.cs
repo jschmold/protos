@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Engine.Utilities {
+namespace Engine {
 
     public static class LangHelpers {
         /// <summary>

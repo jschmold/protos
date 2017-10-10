@@ -97,6 +97,7 @@ Specification
 		1.4.1.49 : Superconductors
 		1.4.1.50 : Explosives
 		1.4.1.51 : Sensors
+		1.4.1.52 : 
 	1.4.2 Bays
 		1.4.2.1  : 
 	1.4.3 Something else 

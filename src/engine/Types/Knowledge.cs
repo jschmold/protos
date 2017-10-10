@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using static Engine.Utilities.LangHelpers;
+using static Engine.LangHelpers;
 
 namespace Engine.Types {
     public class Knowledge {
-        public Bank Progress {
+        public int Identifier {
             get; set;
         }
         public List<Knowledge> KnowledgeRequirements {
             get; set;
         }
         public List<Quantified<Resource>> ResourceRequirements {
+            get; set;
+        }
+        public uint TotalWorkerCost {
             get; set;
         }
         // Per frame
@@ -25,21 +28,17 @@ namespace Engine.Types {
         public Skill Unlocks {
             get; set;
         }
-        public bool Completed => Progress.IsFull;
 
         public Knowledge() => DoNothing( );
 
         public Knowledge(List<Knowledge> knReqs, List<Quantified<Resource>> resReqs, (uint total, uint frame) workerCost, uint stationCost, Skill unlocks) {
-            KnowledgeRequirements = new List<Knowledge>(knReqs);
-            ResourceRequirements = new List<Quantified<Resource>>(resReqs);
+            Perform(knReqs != null && knReqs.Count > 0, () => KnowledgeRequirements = new List<Knowledge>(knReqs));
+            Perform(resReqs != null && resReqs.Count > 0, () => ResourceRequirements = new List<Quantified<Resource>>(resReqs));
             WorkerCost = workerCost.frame;
             StationCost = stationCost;
-            Progress = new Bank {
-                Quantity = 0,
-                Maximum = workerCost.total
-            };
+            Unlocks = unlocks;
         }
-        public Knowledge(Knowledge kn) 
-            : this(kn.KnowledgeRequirements, kn.ResourceRequirements, (kn.Progress.Maximum, kn.WorkerCost), kn.StationCost, kn.Unlocks) => DoNothing( );
+        public Knowledge(Knowledge kn)
+            : this(kn.KnowledgeRequirements, kn.ResourceRequirements, (kn.TotalWorkerCost, kn.WorkerCost), kn.StationCost, kn.Unlocks) => DoNothing( );
     }
 }
