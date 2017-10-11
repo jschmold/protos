@@ -67,7 +67,7 @@ namespace Engine.Constructables {
         /// The think cycle
         /// </summary>
         // Todo: Figure out what to do if there's not enough energy
-        public void Think() => Compose(
+        public override void Think() => Compose(
             FinalizeResearchIfComplete,
             () => ExpendEnergyFromActive(DoNothing),
             ProcessResearchers);

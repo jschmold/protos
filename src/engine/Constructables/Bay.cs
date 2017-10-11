@@ -4,9 +4,10 @@ using System.Linq;
 using Engine.Exceptions;
 using Engine.Types;
 using static Engine.LangHelpers;
+using Engine;
 
 namespace Engine.Constructables {
-    public class Bay {
+    public abstract class Bay : IEngineObject {
         /// <summary>
         /// Where is the bay?
         /// </summary>
@@ -25,6 +26,9 @@ namespace Engine.Constructables {
         public uint OccupantLimit {
             get; private set;
         }
+
+        public abstract void Think();
+
         /// <summary>
         /// Create a new bay.
         /// </summary>

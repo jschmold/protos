@@ -166,5 +166,7 @@ namespace Engine.Constructables {
             to.AddWorker(wk);
         }
 
+        public override void Think() => ProductionSlots.ForEach(bay => bay.Think( ));
+
     }
 }

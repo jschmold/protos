@@ -6,14 +6,19 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Engine.Types;
 using Engine.Exceptions;
 using Engine.Constructables;
+using static Engine.LangHelpers;
 
 namespace EngineTests.Types {
     [TestClass]
     [TestCategory("Bay")]
+    class TestBay : Bay {
+        public override void Think() => throw new NotImplementedException( );
+        public TestBay(Location loc, uint occLim) : base(loc, occLim) => DoNothing( );
+    }
     public class Bay_Tests {
         [TestMethod]
         public void AddOccupant_Works() {
-            Bay bay = new Bay(null, 20);
+            Bay bay = new TestBay(null, 20);
             bay.AddOccupant(new Citizen {
                 Name = "TestWorker"
             });
@@ -23,7 +28,7 @@ namespace EngineTests.Types {
 
         [TestMethod]
         public void AddOccupant_RespectsLimit() {
-            Bay bay = new Bay(null, 2);
+            Bay bay = new TestBay(null, 2);
             bay.AddOccupant(new Citizen {
                 Name = "TestWorker1"
             });
@@ -37,7 +42,7 @@ namespace EngineTests.Types {
 
         [TestMethod]
         public void AddOccupant_CollectionWorks() {
-            Bay bay = new Bay(null, 10);
+            Bay bay = new TestBay(null, 10);
             List<Citizen> work = new List<Citizen>( );
             for (int i = 0 ; i < 9 ; i++) {
                 work.Add(new Citizen { Name = $"Worker_{i}" });
@@ -51,7 +56,7 @@ namespace EngineTests.Types {
 
         [TestMethod]
         public void AddOccupant_RunsFailureInsteadOfException() {
-            Bay bay = new Bay(null, 10);
+            Bay bay = new TestBay(null, 10);
             for (int i = 0 ; i < 10 ; i++) {
                 bay.AddOccupant(new Citizen { Name = $"Worker_{i}" });
             }
@@ -63,7 +68,7 @@ namespace EngineTests.Types {
 
         [TestMethod]
         public void RemoveOccupant_Works() {
-            Bay bay = new Bay(null, 10);
+            Bay bay = new TestBay(null, 10);
             Citizen work = new Citizen { Name = "TestWorker" };
             bay.AddOccupant(work);
             bay.RemoveOccupant(work);

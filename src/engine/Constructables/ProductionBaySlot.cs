@@ -4,12 +4,13 @@ using System.Linq;
 using Engine.Exceptions;
 using Engine.Types;
 using static Engine.LangHelpers;
+using Engine;
 
 namespace Engine.Constructables {
     /// <summary>
     /// Needs to pull from cargo location
     /// </summary>
-    public class ProductionBaySlot {
+    public class ProductionBaySlot : IEngineObject {
         /// <summary>
         /// The recipe currently being worked on
         /// </summary>

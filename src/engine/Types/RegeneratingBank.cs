@@ -16,7 +16,7 @@ namespace Engine.Types {
         public uint DecayRate { get; set; } = 0;
         /// <summary>
         /// The default regen rate of the bank
-        /// </summary
+        /// </summary>
         public uint RegenRate { get; set; } = 0;
 
         /// <summary>
@@ -26,7 +26,6 @@ namespace Engine.Types {
         /// <param name="onFailure">The function to call if there is not enough energy in the bank.</param>
         public void Decay(Action onFailure = null) => Decay(DecayRate, onFailure);
 
-
         /// <summary>
         /// Decay the energy bank by an amount. 
         /// Calls onFailure, or throws NotEnoughEnergyException if there is not enough energy in the bank.
@@ -34,7 +33,7 @@ namespace Engine.Types {
         /// <param name="amt">The amount to remove from the bank.</param>
         /// <param name="onFailure">The function to call if there is not enough energy in the bank.</param>
         public void Decay(uint amt, Action onFailure = null) => Perform((int)Quantity - (int)amt >= 0, 
-            () => DoOrThrow(onFailure, new NotEnoughEnergyException( )), 
+            (onFailure, new NotEnoughEnergyException( )), 
             () => Quantity -= amt);
 
         /// <summary>
