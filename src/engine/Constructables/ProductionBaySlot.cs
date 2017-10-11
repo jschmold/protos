@@ -27,7 +27,7 @@ namespace Engine.Constructables {
         /// <summary>
         /// The workers dedicated to this BayStation
         /// </summary>
-        public List<Citizen> Workers {
+        public CappedList<Citizen> Workers {
             get; private set;
         }
 
@@ -59,20 +59,13 @@ namespace Engine.Constructables {
             get; set;
         }
 
-        /// <summary>
-        /// The maximum amount of workers that can tend the station
-        /// </summary>
-        public uint WorkerSeats {
-            get; set;
-        }
 
         public ProductionBaySlot(RegeneratingBank pool, RegeneratingBank reserve, ResourceBank resources, uint seats) {
             Pool = pool;
             Reserve = reserve;
             Resources = resources;
-            Workers = new List<Citizen>( );
+            Workers = new CappedList<Citizen>(seats);
             WorkPairings = new Dictionary<Citizen, Ingredient<Resource>>( );
-            WorkerSeats = seats;
             Lineup = new List<Recipe<Resource, Resource>>( );
         }
         /// <summary>
@@ -173,7 +166,7 @@ namespace Engine.Constructables {
         /// </summary>
         public void Think() => Compose(ManageWorkers, ManageProduction);
 
-        public void AddWorker(Citizen wk, Action onLimitMet = null) => Perform(Workers.Count < WorkerSeats,
+        public void AddWorker(Citizen wk, Action onLimitMet = null) => Perform(Workers.Count < Workers.Limit,
                 (onLimitMet, new LimitMetException( )),
                 () => Workers.Add(wk));
 

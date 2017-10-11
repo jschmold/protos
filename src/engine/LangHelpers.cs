@@ -157,5 +157,17 @@ namespace Engine {
             }
         });
         public static void Nullify<Nullable>(Nullable arg) => arg = default(Nullable);
+
+        public static void Repeat(int amt, Action act) => Perform(amt != 0, () => {;
+            for (int i = 0 ; i < amt ; i++) {
+                act.Invoke();
+            }
+        });
+        public static void Repeat(int amt, Action<int> act) => Perform(amt != 0, () => Repeat(amt, 0, act));
+        public static void Repeat(int amt, int startIndex, Action<int> act) {
+            for (int i = 0 ; i < amt ; i++) {
+                act.Invoke(startIndex + i);
+            }
+        }
     }
 }

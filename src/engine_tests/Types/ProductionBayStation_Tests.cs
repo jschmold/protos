@@ -560,9 +560,7 @@ namespace EngineTests.Types {
             var worker = new Citizen { };
             typeof(ProductionBaySlot)
                 .GetProperty("Workers")
-                .SetValue(slot, new List<Citizen> {
-                    worker
-                });
+                .SetValue(slot, new CappedList<Citizen>(new List<Citizen> { worker }, 100));
             Assert.IsTrue(slot.Workers.Count == 1, "Hey dumbass, learn to use reflections better");
 
             slot.RemoveWorker(worker);

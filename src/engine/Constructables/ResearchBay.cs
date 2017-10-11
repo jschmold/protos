@@ -27,11 +27,8 @@ namespace Engine.Constructables {
         public RegeneratingBank EnergyReserve {
             get; private set;
         }
-        public List<Citizen> Researchers {
+        public CappedList<Citizen> Researchers {
             get; private set;
-        }
-        public uint ResearcherLimit {
-            get; set;
         }
         public List<Knowledge> KnowledgeRepo {
             get; private set;
@@ -55,11 +52,10 @@ namespace Engine.Constructables {
                 Maximum = reserve.limit,
                 Quantity = reserve.start
             };
-            ResearcherLimit = researcherLim;
             SupportedResearches = new List<Knowledge>(Supported);
             Resources = new ResourceBank(cargoSize);
             Recovering = new List<Citizen>( );
-            Researchers = new List<Citizen>( );
+            Researchers = new CappedList<Citizen>(researcherLim);
             KnowledgeRepo = new List<Knowledge>();  
         }
 
@@ -144,7 +140,7 @@ namespace Engine.Constructables {
         /// <param name="wk">The worker to put to work</param>
         /// <param name="onLimitReached">What to do instead of throwing LimitMetException</param>
         /// <exception cref="LimitMetException"></exception>
-        public void AddResearcher(Citizen wk, Action onLimitReached = null) => Perform(Researchers.Count < ResearcherLimit,
+        public void AddResearcher(Citizen wk, Action onLimitReached = null) => Perform(Researchers.Count < Researchers.Limit,
             (onLimitReached, new LimitMetException( )),
             () => Researchers.Add(wk));
 

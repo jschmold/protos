@@ -17,13 +17,7 @@ namespace Engine.Constructables {
         /// <summary>
         /// The occupants in the bay
         /// </summary>
-        public List<Citizen> Occupants {
-            get; private set;
-        }
-        /// <summary>
-        /// The maximum amount of occupants allowed in the bay
-        /// </summary>
-        public uint OccupantLimit {
+        public CappedList<Citizen> Occupants {
             get; private set;
         }
 
@@ -36,8 +30,7 @@ namespace Engine.Constructables {
         /// <param name="occLimit">The maximum occupant limit for the bay</param>
         public Bay(Location loc, uint occLimit) {
             Location = loc;
-            OccupantLimit = occLimit;
-            Occupants = new List<Citizen>( );
+            Occupants = new CappedList<Citizen>(occLimit);
         }
 
         /// <summary>
@@ -45,7 +38,7 @@ namespace Engine.Constructables {
         /// </summary>
         /// <param name="work">The occupant to add</param>
         /// <param name="onFailure">The optional thing to do if it is not possible to add the occupant</param>
-        public void AddOccupant(Citizen work, Action onFailure = null) => Perform(Occupants.Count + 1 <= OccupantLimit,
+        public void AddOccupant(Citizen work, Action onFailure = null) => Perform(Occupants.CanHold(1),
             (onFailure, new PopulationExceedsMaximumException( )), () => Occupants.Add(work));
 
         /// <summary>
@@ -53,7 +46,7 @@ namespace Engine.Constructables {
         /// </summary>
         /// <param name="workers">The collection of workers to add</param>
         /// <param name="onFailure">What to do if it is not possible to add all of the workers</param>
-        public void AddOccupant(IEnumerable<Citizen> workers, Action onFailure = null) => Perform(Occupants.Count + workers.Count( ) <= OccupantLimit,
+        public void AddOccupantRange(IEnumerable<Citizen> workers, Action onFailure = null) => Perform(Occupants.CanHold(Occupants.Count + workers.Count( )),
             () => DoOrThrow(onFailure, new PopulationExceedsMaximumException( )),
             () => Occupants.AddRange(workers));
 

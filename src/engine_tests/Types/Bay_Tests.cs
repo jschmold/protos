@@ -9,12 +9,12 @@ using Engine.Constructables;
 using static Engine.LangHelpers;
 
 namespace EngineTests.Types {
-    [TestClass]
-    [TestCategory("Bay")]
     class TestBay : Bay {
         public override void Think() => throw new NotImplementedException( );
         public TestBay(Location loc, uint occLim) : base(loc, occLim) => DoNothing( );
     }
+    [TestCategory("Bay")]
+    [TestClass]
     public class Bay_Tests {
         [TestMethod]
         public void AddOccupant_Works() {
@@ -44,23 +44,15 @@ namespace EngineTests.Types {
         public void AddOccupant_CollectionWorks() {
             Bay bay = new TestBay(null, 10);
             List<Citizen> work = new List<Citizen>( );
-            for (int i = 0 ; i < 9 ; i++) {
-                work.Add(new Citizen { Name = $"Worker_{i}" });
-            }
-
-            bay.AddOccupant(work);
-            for (int i = 0 ; i < 9 ; i++) {
-                Assert.IsTrue(bay.Occupants[i].Name == $"Worker_{i}", $"Missing worker {i}");
-            }
+            Repeat(8, i => work.Add(new Citizen { Name = $"Worker_{i}" }));
+            bay.AddOccupantRange(work);
+            Repeat(8, i => Assert.IsTrue(bay.Occupants[i].Name == $"Worker_{i}", $"Missing worker {i}"));
         }
 
         [TestMethod]
         public void AddOccupant_RunsFailureInsteadOfException() {
             Bay bay = new TestBay(null, 10);
-            for (int i = 0 ; i < 10 ; i++) {
-                bay.AddOccupant(new Citizen { Name = $"Worker_{i}" });
-            }
-
+            Repeat(10, i => bay.AddOccupant(new Citizen { Name = $"Worker_{i}" }));
             bool works = false;
             bay.AddOccupant(new Citizen { }, () => works = true);
             Assert.IsTrue(works);

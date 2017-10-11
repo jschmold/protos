@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Engine.Exceptions;
 using Engine.Types;
 using static Engine.LangHelpers;
+using static System.Math;
 
 namespace Engine.Constructables {
     /// <summary>
@@ -47,20 +48,14 @@ namespace Engine.Constructables {
         /// <summary>
         /// A bank containing recipes, where the max is the maximum amount of slots  
         /// </summary>
-        private List<ProductionBaySlot> ProductionSlots {
+        private CappedList<ProductionBaySlot> Stations {
             get; set;
         }
 
         /// <summary>
         /// The maximum amount of ongoing recipes that are processed
         /// </summary>
-        public int ProductionSlotCount => ProductionSlots.Count;
-        /// <summary>
-        /// The maximum amount of production slots permitted
-        /// </summary>
-        private uint MaxProductionSlots {
-            get; set;
-        }
+        public int ProductionSlotCount => Stations.Count;
 
         /// <summary>
         /// Create a new production bay
@@ -74,7 +69,7 @@ namespace Engine.Constructables {
         /// <param name="cargoCapacity">The maximum amount of cargo supported by the bay</param>
         /// <remarks>Note: If your "start" is ever bigger than the max, the max will be the start</remarks>
         public ProductionBay(Location loc, uint occupantLimit, List<Recipe<Resource, Resource>> recs, (uint max, uint start) prodStations, (uint max, uint start) pool, (uint max, uint start) resv, uint cargoCapacity) : base(loc, occupantLimit) {
-            MaxProductionSlots = prodStations.max;
+            Stations = new CappedList<ProductionBaySlot>(Min(prodStations.start, prodStations.max));
             EnergyPool = new RegeneratingBank {
                 Maximum = pool.max,
                 Quantity = pool.start
@@ -87,7 +82,7 @@ namespace Engine.Constructables {
 
             // Create the slots
             for (int i = 0 ; i < Math.Min(prodStations.start, prodStations.max) ; i++) {
-                ProductionSlots.Add(new ProductionBaySlot(EnergyPool, EnergyReserve, Resources, 0));
+                Stations.Add(new ProductionBaySlot(EnergyPool, EnergyReserve, Resources, 0));
             }
             SupportedRecipes = new List<Recipe<Resource, Resource>>(recs);
         }
@@ -96,14 +91,14 @@ namespace Engine.Constructables {
         /// Add a new station to the bay
         /// </summary>
         /// <param name="onLimitMet">What to do instead of throwing LimitMetException</param>
-        public void AddProductionStation(uint seats, Action onLimitMet = null) => Perform(ProductionSlotCount == MaxProductionSlots,
-                (onLimitMet, new LimitMetException( )), () => ProductionSlots.Add(new ProductionBaySlot(EnergyPool, EnergyReserve, Resources, seats)));
+        public void AddProductionStation(uint seats, Action onLimitMet = null) => Perform(ProductionSlotCount == Stations.Limit,
+                (onLimitMet, new LimitMetException( )), () => Stations.Add(new ProductionBaySlot(EnergyPool, EnergyReserve, Resources, seats)));
 
         /// <summary>
         /// Destroy the production station at the slot indicated
         /// </summary>
         /// <param name="slot"></param>
-        public void DestroyProductionStation(int slot) => Perform(slot > 0 && slot <= ProductionSlots.Count, () => ProductionSlots.RemoveAt(slot));
+        public void DestroyProductionStation(int slot) => Perform(slot > 0 && slot <= Stations.Count, () => Stations.RemoveAt(slot));
 
         /// <summary>
         /// Craft a recipe at the first available slot, or the one with the least lineup.
@@ -119,12 +114,12 @@ namespace Engine.Constructables {
         /// <param name="slot">The slot to craft at</param>
         /// <exception cref="IndexOutOfRangeException">Thrown when slot is not a valid index</exception>
         /// <exception cref="UnsupportedException">Thrown when the recipe is not supported by the bay</exception>
-        public void Craft(Recipe<Resource, Resource> rec, int slot, Action onUnsupportedRecipe = null) => Perform(slot > 0 && slot < ProductionSlots.Count - 1 && SupportedRecipes.Contains(rec),
+        public void Craft(Recipe<Resource, Resource> rec, int slot, Action onUnsupportedRecipe = null) => Perform(slot > 0 && slot < Stations.Count - 1 && SupportedRecipes.Contains(rec),
             () => {
-                ThrowIf(slot < 0 || slot >= ProductionSlots.Count, new IndexOutOfRangeException( ));
+                ThrowIf(slot < 0 || slot >= Stations.Count, new IndexOutOfRangeException( ));
                 DoOrThrow(!SupportedRecipes.Contains(rec), onUnsupportedRecipe, new UnsupportedException( ));
             },
-            () => ProductionSlots[slot].ActivateRecipe(rec));
+            () => Stations[slot].ActivateRecipe(rec));
 
         /// <summary>
         /// Gets the first one that is not being used, or the one with the smallest lineup
@@ -133,8 +128,8 @@ namespace Engine.Constructables {
         public int FirstAvailableStation() {
             int lineup = int.MaxValue;
             int index = -1;
-            for (int i = 0 ; i < ProductionSlots.Count ; i++) {
-                var slot = ProductionSlots[i];
+            for (int i = 0 ; i < Stations.Count ; i++) {
+                var slot = Stations[i];
                 if (slot.Active == null || slot.Lineup.Count == 0) {
                     index = i;
                     break;
@@ -158,15 +153,11 @@ namespace Engine.Constructables {
                 DoOrThrow(onWorkerNotInFrom, new KeyNotFoundException("Worker not found in from"));
                 return;
             }
-            if (to.Workers.Count + 1 > to.WorkerSeats) {
-                DoOrThrow(toLimitBreached, new LimitMetException( ));
-                return;
-            }
             from.RemoveWorker(wk);
-            to.AddWorker(wk);
+            to.AddWorker(wk, toLimitBreached);
         }
 
-        public override void Think() => ProductionSlots.ForEach(bay => bay.Think( ));
+        public override void Think() => Stations.ForEach(bay => bay.Think( ));
 
     }
 }
