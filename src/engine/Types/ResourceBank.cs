@@ -35,7 +35,7 @@ namespace Engine.Types {
                 return;
             }
             ThrowIf(res == null, new ArgumentNullException("res"));
-            Perform(!HasSpaceFor(res.Volume * amt), () => DoOrThrow(onFailure, new NotEnoughCargoSpaceException( )));
+            Perform(!HasSpaceFor(res.Volume * amt), () => DoOrThrow(onFailure, new VolumeExceededException( )));
             Perform(Contains(res), () => Contents.Add(new Quantified<Resource>(res, amt)), () => this[res].Quantity += amt);
             Quantity += res.Volume * amt;
         }

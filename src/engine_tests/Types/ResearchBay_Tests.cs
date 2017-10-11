@@ -20,7 +20,6 @@ namespace EngineTests.Types {
             Mass = 1
         };
         static Knowledge Science = new Knowledge {
-
             WorkerCost = 5,
             KnowledgeRequirements = null,
             ResourceRequirements = null,
@@ -319,7 +318,7 @@ namespace EngineTests.Types {
             bay.FinalizeResearch( );
             foreach (var wk in QualWorkers) {
                 Assert.IsTrue(wk.Skills.Contains(Physics.Unlocks));
-            };
+            };  
             foreach (var wk in UnqualWorkers) {
                 Assert.IsFalse(wk.Skills.Contains(Physics.Unlocks));
             }
