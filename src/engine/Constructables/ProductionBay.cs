@@ -4,6 +4,8 @@ using Engine.Exceptions;
 using Engine.Types;
 using static Engine.LangHelpers;
 using static System.Math;
+using Engine;
+using Engine.Interfaces;
 
 namespace Engine.Constructables {
     /// <summary>
@@ -27,14 +29,14 @@ namespace Engine.Constructables {
         /// <summary>
         /// The reserve of energy when the pool runs out.
         /// </summary>
-        public RegeneratingBank EnergyReserve {
+        public RegeneratingBank Reserve {
             get; private set;
         }
 
         /// <summary>
         /// The active energy pool to be used during crafting
         /// </summary>
-        public RegeneratingBank EnergyPool {
+        public RegeneratingBank Pool {
             get; private set;
         }
 
@@ -70,11 +72,11 @@ namespace Engine.Constructables {
         /// <remarks>Note: If your "start" is ever bigger than the max, the max will be the start</remarks>
         public ProductionBay(Location loc, uint occupantLimit, List<Recipe<Resource, Resource>> recs, (uint max, uint start) prodStations, (uint max, uint start) pool, (uint max, uint start) resv, uint cargoCapacity) : base(loc, occupantLimit) {
             Stations = new CappedList<ProductionBaySlot>(Min(prodStations.start, prodStations.max));
-            EnergyPool = new RegeneratingBank {
+            Pool = new RegeneratingBank {
                 Maximum = pool.max,
                 Quantity = pool.start
             };
-            EnergyReserve = new RegeneratingBank {
+            Reserve = new RegeneratingBank {
                 Maximum = resv.max,
                 Quantity = resv.start
             };
@@ -82,7 +84,7 @@ namespace Engine.Constructables {
 
             // Create the slots
             for (int i = 0 ; i < Math.Min(prodStations.start, prodStations.max) ; i++) {
-                Stations.Add(new ProductionBaySlot(EnergyPool, EnergyReserve, Resources, 0));
+                Stations.Add(new ProductionBaySlot(Pool, Reserve, Resources, 0));
             }
             SupportedRecipes = new List<Recipe<Resource, Resource>>(recs);
         }
@@ -92,7 +94,7 @@ namespace Engine.Constructables {
         /// </summary>
         /// <param name="onLimitMet">What to do instead of throwing LimitMetException</param>
         public void AddProductionStation(uint seats, Action onLimitMet = null) => Perform(ProductionSlotCount == Stations.Limit,
-                (onLimitMet, new LimitMetException( )), () => Stations.Add(new ProductionBaySlot(EnergyPool, EnergyReserve, Resources, seats)));
+                (onLimitMet, new LimitMetException( )), () => Stations.Add(new ProductionBaySlot(Pool, Reserve, Resources, seats)));
 
         /// <summary>
         /// Destroy the production station at the slot indicated
@@ -158,6 +160,9 @@ namespace Engine.Constructables {
         }
 
         public override void Think() => Stations.ForEach(bay => bay.Think( ));
+        public override void DrawEnergy(uint amt, RegeneratingBank source, Action onNotEnoughEnergy = null) {
+            uint draw = Smallest(source.Quantity, EnergyMaxDraw, Reserve.Maximum - Reserve.Quantity);
+        }
 
     }
 }

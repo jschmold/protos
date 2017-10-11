@@ -5,6 +5,7 @@ using Engine.Exceptions;
 using Engine.Types;
 using static Engine.LangHelpers;
 using Engine;
+using Engine.Interfaces;
 
 namespace Engine.Constructables {
     /// <summary>

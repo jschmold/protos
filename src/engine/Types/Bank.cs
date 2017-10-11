@@ -36,6 +36,8 @@ namespace Engine.Types {
         public static uint operator *(Bank bank, int num) => bank.Quantity * (uint)num;
         public static int operator /(Bank bank, int num) => (int)bank.Quantity / num;
         public static int operator /(int num, Bank bank) => num / (int)bank.Quantity;
+        public static Bank operator <(Bank a, Bank b) => a.Quantity < b.Quantity ? a : b;
+        public static Bank operator >(Bank a, Bank b) => a.Quantity > b.Quantity ? a : b;
 
         public static implicit operator int(Bank bank) => (int)bank.Quantity;
         public static implicit operator uint(Bank bank) => bank.Quantity;

@@ -5,7 +5,7 @@ using static System.Math;
 using static Engine.LangHelpers;
 
 
-namespace Engine {
+namespace Engine.Interfaces {
     public interface IEngineObject  {
         void Think();
     }

@@ -5,9 +5,10 @@ using Engine.Exceptions;
 using Engine.Types;
 using static Engine.LangHelpers;
 using Engine;
+using Engine.Interfaces;
 
 namespace Engine.Constructables {
-    public abstract class Bay : IEngineObject {
+    public abstract class Bay : IEngineObject, IPowerable {
         /// <summary>
         /// Where is the bay?
         /// </summary>
@@ -20,6 +21,18 @@ namespace Engine.Constructables {
         public CappedList<Citizen> Occupants {
             get; private set;
         }
+
+        public List<RegeneratingBank> EnergySources {
+            get;set;
+        }
+
+        public bool EnergySwitch {
+            get;set;
+        }
+        public uint EnergyMaxDraw {
+            get;set;
+        }
+        public abstract void DrawEnergy(uint amt, RegeneratingBank source, Action onNotEnoughEnergy = null);
 
         public abstract void Think();
 
