@@ -4,7 +4,7 @@ using Engine.Exceptions;
 using Engine.Types;
 using static Engine.LangHelpers;
 
-namespace Engine.Bays {
+namespace Engine.Constructables {
     /// <summary>
     /// A bay that produces a resource from a recipe of resources.
     /// </summary>

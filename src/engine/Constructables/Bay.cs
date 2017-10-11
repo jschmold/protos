@@ -5,7 +5,7 @@ using Engine.Exceptions;
 using Engine.Types;
 using static Engine.LangHelpers;
 
-namespace Engine.Bays {
+namespace Engine.Constructables {
     public class Bay {
         /// <summary>
         /// Where is the bay?

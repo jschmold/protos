@@ -5,7 +5,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Engine.Types;
 using Engine.Exceptions;
-using Engine.Bays;
+using Engine.Constructables;
 
 namespace EngineTests.Types {
     [TestClass]

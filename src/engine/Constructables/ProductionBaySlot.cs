@@ -5,7 +5,7 @@ using Engine.Exceptions;
 using Engine.Types;
 using static Engine.LangHelpers;
 
-namespace Engine.Bays {
+namespace Engine.Constructables {
     /// <summary>
     /// Needs to pull from cargo location
     /// </summary>
