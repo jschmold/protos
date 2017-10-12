@@ -6,6 +6,10 @@ using static Engine.LangHelpers;
 using Engine.Exceptions;
 
 namespace Engine.Types {
+    /// <summary>
+    /// Full encapsulation for a List<typeparamref name="T"/>, but errors when adding is attempted past a certain limit.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class CappedList<T> {
         private List<T> Contents {
             get; set;

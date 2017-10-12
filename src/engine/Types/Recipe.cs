@@ -7,6 +7,8 @@ namespace Engine.Types {
     /// <summary>
     /// A recipe for creating an Amount of T, and the Resource R needed in the ingredients list
     /// </summary>
+    /// <typeparam name="I">The type for the ingredients</typeparam>
+    /// <typeparam name="P">The type to be produced</typeparam>
     public class Recipe<I, P> {
         /// <summary>
         /// List of ingredients identifiers as the id, and the quantity as the value

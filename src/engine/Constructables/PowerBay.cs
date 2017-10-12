@@ -7,6 +7,9 @@ using static System.Math;
 using Engine.Interfaces;
 
 namespace Engine.Constructables {
+    /// <summary>
+    /// A powerbay. Use the Cells property for modifying capability.
+    /// </summary>
     public class PowerBay : Bay, IPowerSource {
         public PowerCellCluster Cells {
             get; set; 

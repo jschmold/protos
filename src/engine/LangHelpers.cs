@@ -18,7 +18,12 @@ namespace Engine {
                 act.Invoke( );
             }
         }
-
+        /// <summary>
+        /// Conditional DoOrThrow. If test is true, run DoOrThrow.
+        /// </summary>
+        /// <param name="test"></param>
+        /// <param name="act"></param>
+        /// <param name="e"></param>
         public static void DoOrThrow(bool test, Action act, Exception e) => Perform(test, () => DoOrThrow(act, e));
 
         public static bool ContainsAll(this List<Object> obj, List<Object> all) {
@@ -106,6 +111,11 @@ namespace Engine {
             }
         }
 
+        /// <summary>
+        /// Conditional run of compose. If test is true, run compose.
+        /// </summary>
+        /// <param name="test"></param>
+        /// <param name="funcs"></param>
         public static void Compose(bool test, params Action[] funcs) => Perform(test, () => {
             for (int i = 0 ; i < funcs.Length ; i++) {
                 funcs[i].Invoke( );
@@ -158,14 +168,34 @@ namespace Engine {
                 func(arg);
             }
         });
-        public static void Nullify<Nullable>(Nullable arg) => arg = default;
+        /// <summary>
+        /// Set an object to its default value.
+        /// </summary>
+        /// <param name="arg">The object to nullify</param>
+        public static void Nullify(object arg) => arg = default;
 
-        public static void Repeat(int amt, Action act) => Perform(amt != 0, () => {;
+        /// <summary>
+        /// Repeat something amt times.
+        /// </summary>
+        /// <param name="amt"></param>
+        /// <param name="act"></param>
+        public static void Repeat(int amt, Action act) => Perform(amt != 0, () => {
             for (int i = 0 ; i < amt ; i++) {
                 act.Invoke();
             }
         });
+        /// <summary>
+        /// Repeat something amt times, passing in the iteration's index.
+        /// </summary>
+        /// <param name="amt"></param>
+        /// <param name="act"></param>
         public static void Repeat(int amt, Action<int> act) => Perform(amt != 0, () => Repeat(amt, 0, act));
+        /// <summary>
+        /// Repeat something amt times, starting at index startIndex, passing in the iterations index.
+        /// </summary>
+        /// <param name="amt"></param>
+        /// <param name="startIndex"></param>
+        /// <param name="act"></param>
         public static void Repeat(int amt, int startIndex, Action<int> act) {
             for (int i = 0 ; i < amt ; i++) {
                 act.Invoke(startIndex + i);
@@ -216,7 +246,7 @@ namespace Engine {
             Repeat(nums.Length - 2, 1, ind => smallest = Math.Max(nums[ind], smallest));
             return smallest;
         }
-        public static T NullFn<T>() => default;
+        public static T Nothing<T>() => default;
         
     }
 }

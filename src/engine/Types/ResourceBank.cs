@@ -15,6 +15,10 @@ namespace Engine.Types {
             get; private set;
         }
 
+        /// <summary>
+        /// Create a new ResourceBank.
+        /// </summary>
+        /// <param name="max">The maximum amount of volume permitted in the ResourceBank</param>
         public ResourceBank(uint max) {
             Contents = new List<Quantified<Resource>>( );
             Maximum = max;
@@ -30,15 +34,12 @@ namespace Engine.Types {
         /// </summary>
         /// <param name="res">The resource to add</param>
         /// <param name="onFailure">The function to call when adding fails</param>
-        public void Add(Resource res, uint amt = 1, Action onFailure = null) {
-            if (amt == 0) {
-                return;
-            }
+        public void Add(Resource res, uint amt = 1, Action onFailure = null) => Perform(amt != 0, () => {
             ThrowIf(res == null, new ArgumentNullException("res"));
             Perform(!HasSpaceFor(res.Volume * amt), () => DoOrThrow(onFailure, new VolumeExceededException( )));
             Perform(Contains(res), () => Contents.Add(new Quantified<Resource>(res, amt)), () => this[res].Quantity += amt);
             Quantity += res.Volume * amt;
-        }
+        });
 
         /// <summary>
         /// Add a collection of resources
@@ -53,18 +54,13 @@ namespace Engine.Types {
         /// <param name="res">The resource in question to remove</param>
         /// <param name="amt">The amount of the resource to move</param>
         /// <param name="onFailure">The action to call when there is an attempt to remove more than is available.</param>
-        public void Remove(Resource res, uint amt = 1, Action onFailure = null) {
-            // There's nothing to remove.
-            if (!Contains(res)) {
-                return;
-            }
-
+        public void Remove(Resource res, uint amt = 1, Action onFailure = null) => Perform(Contains(res), () => {
             Quantified<Resource> slot = this[res];
             Perform((int)slot.Quantity - (int)amt < 0, () => DoOrThrow(onFailure, new NotEnoughOfCargoKindException( )));
             slot.Quantity -= amt;
             Quantity -= res.Volume * amt;
             Perform(slot.Quantity == 0, () => Contents.Remove(slot));
-        }
+        });
 
         /// <summary>
         /// Has space for vol volume in the cargo bank.
@@ -124,9 +120,11 @@ namespace Engine.Types {
         public Quantified<Resource> this[int key] => Contents[key];
 
         public static ResourceBank operator -(ResourceBank bank, Quantified<Resource> res) {
-            var q = new ResourceBank(bank.Maximum, bank.Contents);
-            Perform(bank.Contains(res.Contents), () => bank.Remove(res.Contents, res.Quantity));
-            return bank;
+            var q = new ResourceBank(bank.Maximum, bank.Contents) {
+                Quantity = bank.Quantity
+            };
+            Perform(q.Contains(res.Contents), () => q.Remove(res.Contents, res.Quantity));
+            return q;
         }
         /// <summary>
         /// 
