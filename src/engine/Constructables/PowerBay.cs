@@ -4,22 +4,31 @@ using System.Collections.Generic;
 using Engine.Types;
 using static Engine.LangHelpers;
 using static System.Math;
+using Engine.Interfaces;
 
 namespace Engine.Constructables {
-    public class PowerBay : Bay {
-        public CappedList<Bank> ReserveCells {
-            get; private set;
-        }
-        public CappedList<Bank> PoolCells {
-            get; private set;
+    public class PowerBay : Bay, IPowerSource {
+        public PowerCellCluster Cells {
+            get; set; 
         }
 
-        
-        public PowerBay(Location location, uint occupantLimit) : base(location, occupantLimit) => throw new NotImplementedException();
+        public uint PowerCapacity => ((IPowerSource)Cells).PowerCapacity;
+        public uint PowerAvailable => ((IPowerSource)Cells).PowerAvailable;
+        public bool IsFull => ((IPowerSource)Cells).IsFull;
+        public bool IsEmpty => ((IPowerSource)Cells).IsEmpty;
+        public void DoRegen() => Cells.Regen( );
+        public void DoDecay() => Cells.Decay( );
+
+        public PowerBay(Location location, uint occupantLimit, uint cellLimit) 
+            : base(location, occupantLimit) => Cells = new PowerCellCluster(cellLimit);
+
         /// <summary>
         /// On every cycle, the energy draw and gain are calculated
         /// </summary>
-        public override void Think() => throw new NotImplementedException( );
-        public override void DrawEnergy(uint amt, RegeneratingBank source, Action onNotEnoughEnergy = null) => throw new NotImplementedException( );
+        public override void Think() => Compose(DoRegen, DoDecay);
+
+        public void ExpendEnergy(uint amt) => ((IPowerSource)Cells).ExpendEnergy(amt);
+        public void Regen() => ((IPowerSource)Cells).Regen( );
+        public void Decay() => ((IPowerSource)Cells).Decay( );
     }
 }

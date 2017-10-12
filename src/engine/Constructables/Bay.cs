@@ -8,7 +8,7 @@ using Engine;
 using Engine.Interfaces;
 
 namespace Engine.Constructables {
-    public abstract class Bay : IEngineObject, IPowerable {
+    public abstract class Bay : IEngineObject {
         /// <summary>
         /// Where is the bay?
         /// </summary>
@@ -21,18 +21,18 @@ namespace Engine.Constructables {
         public CappedList<Citizen> Occupants {
             get; private set;
         }
-
-        public List<RegeneratingBank> EnergySources {
-            get;set;
-        }
-
+        /// <summary>
+        /// Whether or not the bay is permitted to draw energy from one of the energy sources.
+        /// </summary>
         public bool EnergySwitch {
-            get;set;
+            get; set;
         }
+        /// <summary>
+        /// The maximum amount the bay is permitted to pull from the sources at any given time.
+        /// </summary>
         public uint EnergyMaxDraw {
-            get;set;
+            get; set;
         }
-        public abstract void DrawEnergy(uint amt, RegeneratingBank source, Action onNotEnoughEnergy = null);
 
         public abstract void Think();
 
@@ -60,8 +60,7 @@ namespace Engine.Constructables {
         /// <param name="workers">The collection of workers to add</param>
         /// <param name="onFailure">What to do if it is not possible to add all of the workers</param>
         public void AddOccupantRange(IEnumerable<Citizen> workers, Action onFailure = null) => Perform(Occupants.CanHold(Occupants.Count + workers.Count( )),
-            () => DoOrThrow(onFailure, new PopulationExceedsMaximumException( )),
-            () => Occupants.AddRange(workers));
+            (onFailure, new PopulationExceedsMaximumException( )), () => Occupants.AddRange(workers));
 
         /// <summary>
         /// Remove a single occupant from the bay

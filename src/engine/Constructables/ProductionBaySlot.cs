@@ -240,7 +240,7 @@ namespace Engine.Constructables {
         private Ingredient<Resource> NextAvailableIngredient() {
             if (Active == null) {
                 return null;
-            }
+            } 
             int finishedOrWorkingOn = 0;
             foreach (var ingr in Active.Ingredients) {
                 if (WorkPairings.ContainsValue(ingr)) {
@@ -252,7 +252,7 @@ namespace Engine.Constructables {
                 }
                 return ingr;
             }
-            return null;
+            return default;
         }
 
     }

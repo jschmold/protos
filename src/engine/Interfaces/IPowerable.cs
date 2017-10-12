@@ -12,9 +12,10 @@ namespace Engine.Interfaces {
         uint EnergyMaxDraw {
             get; set;
         }
-        List<RegeneratingBank> EnergySources {
+        List<IPowerSource> EnergySources {
             get; set;
         }
-        void DrawEnergy(uint amt, RegeneratingBank energySource, Action onNotEnoughEnergy = null);
+        uint DrawEnergy(uint amt, IPowerSource energySource, Action onNotEnoughEnergy = null);
+        uint DrawEnergy(uint amt, Action onNotEnoughEnergy = null);
     }
 }

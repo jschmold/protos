@@ -95,6 +95,7 @@ namespace Engine {
         /// <param name="test"></param>
         /// <param name="success"></param>
         public static void Perform(bool test, Action success) => Perform(test, () => { }, success);
+
         /// <summary>
         /// Call each function in order. 
         /// </summary>
@@ -157,7 +158,7 @@ namespace Engine {
                 func(arg);
             }
         });
-        public static void Nullify<Nullable>(Nullable arg) => arg = default(Nullable);
+        public static void Nullify<Nullable>(Nullable arg) => arg = default;
 
         public static void Repeat(int amt, Action act) => Perform(amt != 0, () => {;
             for (int i = 0 ; i < amt ; i++) {
@@ -215,5 +216,7 @@ namespace Engine {
             Repeat(nums.Length - 2, 1, ind => smallest = Math.Max(nums[ind], smallest));
             return smallest;
         }
+        public static T NullFn<T>() => default;
+        
     }
 }

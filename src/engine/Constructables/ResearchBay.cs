@@ -240,7 +240,5 @@ namespace Engine.Constructables {
         /// <param name="kw">The piece of knowledge to check</param>
         /// <returns></returns>
         public bool CanResearch(Knowledge kw) => SupportedResearches.Contains(kw);
-
-        public override void DrawEnergy(uint amt, RegeneratingBank source, Action onNotEnoughEnergy = null) => throw new NotImplementedException( );
     }
 }

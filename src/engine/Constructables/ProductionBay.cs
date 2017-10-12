@@ -160,9 +160,5 @@ namespace Engine.Constructables {
         }
 
         public override void Think() => Stations.ForEach(bay => bay.Think( ));
-        public override void DrawEnergy(uint amt, RegeneratingBank source, Action onNotEnoughEnergy = null) {
-            uint draw = Smallest(source.Quantity, EnergyMaxDraw, Reserve.Maximum - Reserve.Quantity);
-        }
-
     }
 }
