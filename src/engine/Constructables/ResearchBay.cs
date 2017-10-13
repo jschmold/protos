@@ -3,29 +3,13 @@ using System.Collections.Generic;
 using Engine.Exceptions;
 using Engine.Types;
 using static Engine.LangHelpers;
+using Engine.Helpers;
+using Engine.Interfaces;
 
 namespace Engine.Constructables {
-    /*
-     *  What do I want this to do?
-     *  
-     *  Research 1 thing at a time
-     *  Contain a limited amount of research
-     *  Only research things that are supported
-     *  Contain a research repository of knowledge
-     *  Indicate whether or not something is researched
-     *  Consume resources on research
-     *  Consume energy on research from both station and workers
-     *  Let workers rest if nothing is active
-     */
-    public class ResearchBay : Bay {
+    public class ResearchBay : Bay, IPowerable {
         public QuantifiedBank<Knowledge> Active {
             get; private set; 
-        }
-        public RegeneratingBank EnergyPool {
-            get; private set;
-        }
-        public RegeneratingBank EnergyReserve {
-            get; private set;
         }
         public CappedList<Citizen> Researchers {
             get; private set;
@@ -42,21 +26,19 @@ namespace Engine.Constructables {
         private List<Citizen> Recovering {
             get; set;
         }
+        public List<IPowerSource> EnergySources {
+            get;
+            set;
+        }
 
-        public ResearchBay(Location loc, uint occLimit, (uint limit, uint start) pool, (uint limit, uint start) reserve, uint researcherLim, List<Knowledge> Supported, uint cargoSize) : base(loc, occLimit) {
-            EnergyPool = new RegeneratingBank {
-                Maximum = pool.limit,
-                Quantity = pool.start
-            };
-            EnergyReserve = new RegeneratingBank {
-                Maximum = reserve.limit,
-                Quantity = reserve.start
-            };
+        public ResearchBay(Location loc, uint occLimit, uint researcherLim, List<Knowledge> Supported, uint cargoSize, List<IPowerSource> energySources, uint maxEnergyDraw) : base(loc, occLimit) {
             SupportedResearches = new List<Knowledge>(Supported);
             Resources = new ResourceBank(cargoSize);
             Recovering = new List<Citizen>( );
             Researchers = new CappedList<Citizen>(researcherLim);
-            KnowledgeRepo = new List<Knowledge>();  
+            KnowledgeRepo = new List<Knowledge>();
+            EnergySources = energySources;
+            EnergyMaxDraw = maxEnergyDraw;
         }
 
         /// <summary>
@@ -141,8 +123,7 @@ namespace Engine.Constructables {
         /// <param name="onLimitReached">What to do instead of throwing LimitMetException</param>
         /// <exception cref="LimitMetException"></exception>
         public void AddResearcher(Citizen wk, Action onLimitReached = null) => Perform(Researchers.Count < Researchers.Limit,
-            (onLimitReached, new LimitMetException( )),
-            () => Researchers.Add(wk));
+            (onLimitReached, new LimitMetException( )), () => Researchers.Add(wk));
 
         /// <summary>
         /// Remove a researcher
@@ -155,8 +136,7 @@ namespace Engine.Constructables {
         /// </summary>
         /// <param name="index"></param>
         public void RemoveResearcher(int index) => Perform(Researchers.Count <= index + 1 && index > 0, 
-            new IndexOutOfRangeException(), 
-            () => Researchers.RemoveAt(index));
+            new IndexOutOfRangeException(), () => Researchers.RemoveAt(index));
 
         /// <summary>
         /// Finalize the active research if it has been completed
@@ -182,26 +162,7 @@ namespace Engine.Constructables {
         /// </summary>
         /// <param name="onNotEnoughEnergy">What to do if there's not enough energy</param>
         /// <exception cref="NotEnoughEnergyException"></exception>
-        public void ExpendEnergyFromActive(Action onNotEnoughEnergy = null) => ExpendEnergy(Active?.Currency.StationCost ?? 0, onNotEnoughEnergy);
-
-        /// <summary>
-        /// Expend an amount of energy from the bay, starting with the Pool, then the Reserve
-        /// </summary>
-        /// <param name="amt">The amount to expend</param>
-        /// <param name="onNotEnoughEnergy">What to do if there's not enough energy in either energy source</param>
-        public void ExpendEnergy(uint amt, Action onNotEnoughEnergy = null) => Perform(BayHasEnoughEnergy(amt),
-            (onNotEnoughEnergy, new NotEnoughEnergyException( )), () => {
-                int result = (int)(EnergyPool - amt);
-                EnergyPool.Quantity -= Math.Min(EnergyPool.Quantity, amt);
-                EnergyReserve.Quantity += (uint)(result < 0 ? result : 0);
-            });
-
-        /// <summary>
-        /// Whether or not either the energy pool or the energy reserve has enough energy for amt
-        /// </summary>
-        /// <param name="amt">The amount to check for</param>
-        /// <returns></returns>
-        public bool BayHasEnoughEnergy(uint amt) => EnergyPool.HasEnoughFor(amt) || EnergyReserve.HasEnoughFor(amt) || EnergyReserve.Quantity + EnergyReserve.Quantity >= amt;
+        public void ExpendEnergyFromActive(Action onNotEnoughEnergy = null) => DrawEnergy(Active?.Currency.StationCost ?? 0, onNotEnoughEnergy);
 
         /// <summary>
         /// Whether or not a worker is able to perform the research
@@ -240,5 +201,8 @@ namespace Engine.Constructables {
         /// <param name="kw">The piece of knowledge to check</param>
         /// <returns></returns>
         public bool CanResearch(Knowledge kw) => SupportedResearches.Contains(kw);
+        public uint DrawEnergy(uint amt, IPowerSource energySource, Action onNotEnoughEnergy = null) => IPowerableUtils.Draw(amt, energySource, onNotEnoughEnergy);
+
+        public uint DrawEnergy(uint amt, Action onNotEnoughEnergy = null) => IPowerableUtils.DrawFromManySources(amt, EnergySources);
     }
 }

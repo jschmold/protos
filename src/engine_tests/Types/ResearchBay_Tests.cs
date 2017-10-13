@@ -9,6 +9,9 @@ using System.Reflection;
 using static Engine.LangHelpers;
 using System.Timers;
 using Engine.Constructables;
+using Engine.Helpers;
+using Engine.Interfaces;
+
 namespace EngineTests.Types {
     [TestClass]
     [TestCategory("ResearchBay")]
@@ -70,19 +73,24 @@ namespace EngineTests.Types {
                 Name = "Physics"
             }
         };
-        public ResearchBay GetBay => new ResearchBay(null, 100, (1000, 1000), (1000, 1000), 10, new List<Knowledge> { Science, Math }, 100);
-        private ResearchBay ScienceBay => new ResearchBay(null, 4, (10, 10), (10, 10), 5, new List<Knowledge> {
+        private List<IPowerSource> PowerGrid(uint size) {
+            PowerCellCluster cluster = new PowerCellCluster(1);
+            cluster.Add(size, size, 0, 0);
+            return new List<IPowerSource> { cluster };
+        }
+        public ResearchBay GetBay => new ResearchBay(null, 100, 10, new List<Knowledge> { Science, Math }, 100, PowerGrid(100), 1000);
+        private ResearchBay ScienceBay => new ResearchBay(null, 4, 5, new List<Knowledge> {
                 Science
-            }, 100);
-        private ResearchBay MathBay => new ResearchBay(null, 4, (10, 10), (10, 10), 5, new List<Knowledge> {
+            }, 100, PowerGrid(1000), 1000);
+        private ResearchBay MathBay => new ResearchBay(null, 4, 5, new List<Knowledge> {
                 Math
-            }, 100);
-        private ResearchBay PhysicsBay => new ResearchBay(null, 4, (10, 10), (10, 10), 5, new List<Knowledge> {
+            }, 100, PowerGrid(1000), 1000);
+        private ResearchBay PhysicsBay => new ResearchBay(null, 4, 5, new List<Knowledge> {
                 Physics
-            }, 100);
-        private ResearchBay AdvPhysicsBay => new ResearchBay(null, 4, (10, 10), (10, 10), 5, new List<Knowledge> {
+            }, 100, PowerGrid(1000), 1000);
+        private ResearchBay AdvPhysicsBay => new ResearchBay(null, 4, 5, new List<Knowledge> {
             Physics, AdvancedPhysics
-        }, 100);
+        }, 100, PowerGrid(1000), 1000);
         private Citizen MathWorker => new Citizen {
             Energy = new Bank {
                 Maximum = 100,
@@ -126,18 +134,18 @@ namespace EngineTests.Types {
 
         [TestMethod]
         public void AddResearcher_AddsResearcher() {
-            ResearchBay bay = new ResearchBay(null, 0, (0, 0), (0, 0), 3, new List<Knowledge> {
+            ResearchBay bay = new ResearchBay(null, 0, 3, new List<Knowledge> {
                 Science
-            }, 0);
+            }, 0, PowerGrid(1000), 1000);
             bay.AddResearcher(new Citizen( ));
             Assert.IsTrue(bay.Researchers.Count == 1, $"Expected 1, actual {bay.Researchers.Count}");
         }
 
         [TestMethod]
         public void AddResearcher_ListensToLimit() {
-            ResearchBay bay = new ResearchBay(null, 0, (0, 0), (0, 0), 3, new List<Knowledge> {
+            ResearchBay bay = new ResearchBay(null, 0, 3, new List<Knowledge> {
                 Science
-            }, 0);
+            }, 0, PowerGrid(1000), 1000);
             for (int i = 0 ; i < 3 ; i++) {
                 bay.AddResearcher(new Citizen( ));
             }
@@ -146,9 +154,9 @@ namespace EngineTests.Types {
 
         [TestMethod]
         public void ConvertReseacherEnergy_AddsToActive() {
-            ResearchBay bay = new ResearchBay(null, 0, (0, 0), (0, 0), 3, new List<Knowledge> {
+            ResearchBay bay = new ResearchBay(null, 0, 3, new List<Knowledge> {
                 Science
-            }, 0);
+            }, 0, PowerGrid(1000), 1000);
             var cit = new Citizen {
                 Energy = new Bank {
                     Maximum = 1000,
@@ -166,9 +174,9 @@ namespace EngineTests.Types {
 
         [TestMethod]
         public void ConvertResearchEnergy_RemovesFromResearcher() {
-            ResearchBay bay = new ResearchBay(null, 0, (0, 0), (0, 0), 3, new List<Knowledge> {
+            ResearchBay bay = new ResearchBay(null, 0, 3, new List<Knowledge> {
                 Science
-            }, 0);
+            }, 0, PowerGrid(1000), 1000);
             var cit = new Citizen {
                 Energy = new Bank {
                     Maximum = 1000,
@@ -187,9 +195,9 @@ namespace EngineTests.Types {
 
         [TestMethod]
         public void Research_ThrowsIfActiveNotNull() {
-            ResearchBay bay = new ResearchBay(null, 0, (0, 0), (0, 0), 3, new List<Knowledge> {
+            ResearchBay bay = new ResearchBay(null, 0, 3, new List<Knowledge> {
                 Science
-            }, 0);
+            }, 0, PowerGrid(1000), 1000);
 
             Active.SetValue(bay, ScienceProg, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null);
             Assert.ThrowsException<InvalidOperationException>(() => bay.Research(Science));
@@ -197,18 +205,18 @@ namespace EngineTests.Types {
 
         [TestMethod]
         public void Research_SetsActive() {
-            ResearchBay bay = new ResearchBay(null, 0, (0, 0), (0, 0), 3, new List<Knowledge> {
+            ResearchBay bay = new ResearchBay(null, 0, 3, new List<Knowledge> {
                 Science
-            }, 0);
+            }, 0, PowerGrid(1000), 1000);
             bay.Research(Science);
             Assert.IsNotNull(bay.Active, "Expected active to be set.");
         }
 
         [TestMethod]
         public void Research_RefusesUnsupported() {
-            ResearchBay bay = new ResearchBay(null, 0, (0, 0), (0, 0), 3, new List<Knowledge> {
+            ResearchBay bay = new ResearchBay(null, 0, 3, new List<Knowledge> {
                 Science
-            }, 0);
+            }, 0, PowerGrid(1000), 1000);
 
             Assert.ThrowsException<UnsupportedException>(() => bay.Research(Math), "Expected researching to fail");
         }
@@ -233,37 +241,16 @@ namespace EngineTests.Types {
 
         [TestMethod]
         public void Cancel_ClearsActive() {
-            ResearchBay bay = new ResearchBay(null, 0, (0, 0), (0, 0), 3, new List<Knowledge> {
+            ResearchBay bay = new ResearchBay(null, 0, 3, new List<Knowledge> {
                 Science
-            }, 0);
+            }, 0, PowerGrid(1000), 1000);
             var activeProperty = typeof(ResearchBay).GetProperty("Active");
 
             activeProperty.SetValue(bay, ScienceProg, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null);
             bay.Cancel( );
             Assert.IsNull(bay.Active);
         }
-
-        [TestMethod]
-        public void ExpendEnergy_DoesPoolFirst() {
-            ResearchBay bay = ScienceBay;
-            bay.ExpendEnergy(5);
-            Assert.IsTrue(bay.EnergyPool.Quantity == 5, $"Expected energy to be 5, actual {bay.EnergyPool.Quantity}");
-        }
-
-        [TestMethod]
-        public void ExpendEnergy_RollsOverToReserve() {
-            var bay = ScienceBay;
-            bay.ExpendEnergy(12);
-            Assert.IsTrue(bay.EnergyPool.Quantity == 0, $"Expected full depletion of energy pool, actual {bay.EnergyPool.Quantity}");
-            Assert.IsTrue(bay.EnergyReserve.Quantity == 8, $"Expected reserve to be 8, actual {bay.EnergyReserve.Quantity}");
-        }
-
-        [TestMethod]
-        public void ExpendEnergy_ErrorsOnNoEnergy() {
-            var bay = new ResearchBay(null, 0, (0, 0), (0, 0), 0, new List<Knowledge>( ), 0);
-            Assert.ThrowsException<NotEnoughEnergyException>(() => bay.ExpendEnergy(1), "Should have thrown error. No energy to expend.");
-        }
-
+        
         [TestMethod]
         public void IsQualified_FalseOnUnqualified() {
             var bay = PhysicsBay;
@@ -283,7 +270,8 @@ namespace EngineTests.Types {
             var bay = PhysicsBay;
             Active.SetValue(bay, PhysicsProg, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null);
             bay.ExpendEnergyFromActive( );
-            Assert.IsTrue(bay.EnergyPool.Quantity == 9, $"Expected energy to drop to 9, actually {bay.EnergyPool.Quantity}");
+            var avail = IPowerableUtils.PowerAvailable(bay.EnergySources);
+            Assert.IsTrue(avail == 999, $"Expected energy to drop to 999, actually {avail}");
         }
 
         [TestMethod]
@@ -358,9 +346,9 @@ namespace EngineTests.Types {
 
         [TestMethod]
         public void Think_ProducesResults() {
-            var bay = new ResearchBay(null, 4, (100000, 100000), (1000, 1000), 5, new List<Knowledge> {
+            var bay = new ResearchBay(null, 4, 5, new List<Knowledge> {
                 Physics
-            }, 100);
+            }, 100, PowerGrid(10000000), 1000000);
             bay.AddResearcher(PhysicsWorker);
             bay.AddResearcher(PhysicsWorker);
             bay.AddResearcher(PhysicsWorker);
@@ -369,14 +357,8 @@ namespace EngineTests.Types {
             bay.Research(Physics);
 
             Func<bool> AllResearchersHaveEnergy = () => bay.Researchers.TrueForAll(wk => wk.Energy.Quantity > 0);
-            Timer tm = new Timer( ) {
-                Interval = 1000 * 30
-            };
-            bool Timeout = false;
-            tm.Elapsed += (object sender, ElapsedEventArgs e) => Timeout = true;
-            tm.Start( );
             while (!bay.IsResearched(Physics)) {
-                if (bay.EnergyPool.Quantity == 0 && bay.EnergyReserve.Quantity == 0) {
+                if (IPowerableUtils.PowerAvailable(bay.EnergySources) == 0) {
                     Assert.Fail("Test is faulty. Not enough energy in station to complete.");
                     return;
                 }
@@ -384,10 +366,7 @@ namespace EngineTests.Types {
                     Assert.Fail("Test is faulty. Not enough energy in workers to complete.");
                     return;
                 }
-                if (Timeout) {
-                    Assert.Fail("This took way too long.");
-                    return;
-                }
+                
                 bay.Think( );
             }
             bay.Researchers.ForEach(wk => Assert.IsTrue(wk.Skills.Contains(Physics.Unlocks), "Did not give the physics skill to the researchers"));

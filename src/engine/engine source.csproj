@@ -6,8 +6,6 @@
     <AssemblyName>engine</AssemblyName>
     <Configurations>Debug;Release;Win_Release_x64</Configurations>
     <Platforms>AnyCPU;x64</Platforms>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <ItemGroup>

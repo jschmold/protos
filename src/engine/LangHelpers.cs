@@ -4,7 +4,6 @@ using System.Linq.Expressions;
 using System.Text;
 
 namespace Engine {
-
     public static class LangHelpers {
         /// <summary>
         /// Do Action if it is not null, or throw the excepion e
@@ -140,9 +139,7 @@ namespace Engine {
         /// <param name="pipeline">The array of functions to iterate over</param>
         /// <returns></returns>
         public static T Pipe<T>(T arg, params Func<T, T>[] pipeline) {
-            foreach (var func in pipeline) {
-                arg = func(arg);
-            }
+            Repeat(pipeline.Length, i => arg = pipeline[i](arg));
             return arg;
         }
         /// <summary>
@@ -151,11 +148,8 @@ namespace Engine {
         /// <typeparam name="T">The type to use</typeparam>
         /// <param name="arg">The item to operate on</param>
         /// <param name="pipeline">The array of functions to iterate over</param>
-        public static void Compose<T>(T arg, params Action<T>[] pipeline) {
-            foreach (var func in pipeline) {
-                func(arg);
-            }
-        }
+        public static void Compose<T>(T arg, params Action<T>[] pipeline) => Repeat(pipeline.Length, i => pipeline[i](arg));
+
         /// <summary>
         /// Perform a set of operations if test is true on an object of T
         /// </summary>
@@ -163,11 +157,7 @@ namespace Engine {
         /// <param name="test">Whether or not the pipeline should be executed</param>
         /// <param name="arg">The item to operate on</param>
         /// <param name="pipeline">The array of functions to iterate over</param>
-        public static void Compose<T>(bool test, T arg, params Action<T>[] pipeline) => Perform(test, () => {
-            foreach (var func in pipeline) {
-                func(arg);
-            }
-        });
+        public static void Compose<T>(bool test, T arg, params Action<T>[] pipeline) => Perform(test, () => Compose(arg, pipeline));
         /// <summary>
         /// Set an object to its default value.
         /// </summary>
@@ -207,7 +197,7 @@ namespace Engine {
                 return nums[0];
             }
             uint smallest = nums[0];
-            Repeat(nums.Length - 2, 1, ind => smallest = Math.Min(nums[ind], smallest));
+            Repeat(nums.Length - 1, 1, ind => smallest = Math.Min(nums[ind], smallest));
             return smallest;
         }
         public static int Smallest(params int[] nums) {
@@ -216,7 +206,7 @@ namespace Engine {
                 return nums[0];
             }
             int smallest = nums[0];
-            Repeat(nums.Length - 2, 1, ind => smallest = Math.Min(nums[ind], smallest));
+            Repeat(nums.Length - 1, 1, ind => smallest = Math.Min(nums[ind], smallest));
             return smallest;
         }
         public static byte Smallest(params byte[] nums) {
@@ -225,7 +215,7 @@ namespace Engine {
                 return nums[0];
             }
             byte smallest = nums[0];
-            Repeat(nums.Length - 2, 1, ind => smallest = Math.Max(nums[ind], smallest));
+            Repeat(nums.Length - 1, 1, ind => smallest = Math.Max(nums[ind], smallest));
             return smallest;
         }
         public static double Smallest(params double[] nums) {
@@ -234,7 +224,7 @@ namespace Engine {
                 return nums[0];
             }
             double smallest = nums[0];
-            Repeat(nums.Length - 2, 1, ind => smallest = Math.Max(nums[ind], smallest));
+            Repeat(nums.Length - 1, 1, ind => smallest = Math.Max(nums[ind], smallest));
             return smallest;
         }
         public static float Smallest(params float[] nums) {
@@ -243,9 +233,14 @@ namespace Engine {
                 return nums[0];
             }
             float smallest = nums[0];
-            Repeat(nums.Length - 2, 1, ind => smallest = Math.Max(nums[ind], smallest));
+            Repeat(nums.Length - 1, 1, ind => smallest = Math.Max(nums[ind], smallest));
             return smallest;
         }
+        /// <summary>
+        /// Return the default value for type T
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public static T Nothing<T>() => default;
         
     }

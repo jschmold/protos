@@ -131,11 +131,6 @@ namespace Engine.Types {
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public (uint capacity, uint available) this[int key] {
-            get {
-                var cell = Cells[key];
-                return (cell.Maximum, cell.Quantity);
-            }
-        }   
+        public (uint capacity, uint available) this[int key] => (Cells[key].Maximum, Cells[key].Quantity);   
     }
 }
