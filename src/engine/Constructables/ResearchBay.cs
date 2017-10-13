@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Engine.Exceptions;
 using Engine.Types;
-using static Engine.LangHelpers;
+using static Engine.Helpers.Lang;
 using Engine.Helpers;
 using Engine.Interfaces;
 
@@ -201,7 +201,7 @@ namespace Engine.Constructables {
         /// <param name="kw">The piece of knowledge to check</param>
         /// <returns></returns>
         public bool CanResearch(Knowledge kw) => SupportedResearches.Contains(kw);
-        public uint DrawEnergy(uint amt, IPowerSource energySource, Action onNotEnoughEnergy = null) => IPowerableUtils.Draw(amt, energySource, onNotEnoughEnergy);
+        public uint DrawEnergy(uint amt, IPowerSource energySource, Action onNotEnoughEnergy = null) => IPowerableUtils.Draw(amt, energySource, EnergySwitch, onNotEnoughEnergy);
 
         public uint DrawEnergy(uint amt, Action onNotEnoughEnergy = null) => IPowerableUtils.DrawFromManySources(amt, EnergySources);
     }

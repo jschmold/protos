@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Engine.LangHelpers;
+using static Engine.Helpers.Lang;
 using Engine.Interfaces;
 using Engine.Exceptions;
 using Engine.Types;

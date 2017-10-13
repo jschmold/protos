@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using static Engine.LangHelpers;
+using static Engine.Helpers.Lang;
 using static System.Math;
 using Engine.Exceptions;
 using Engine.Interfaces;

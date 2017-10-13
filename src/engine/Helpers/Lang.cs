@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace Engine {
-    public static class LangHelpers {
+namespace Engine.Helpers {
+    public static class Lang {
         /// <summary>
         /// Do Action if it is not null, or throw the excepion e
         /// </summary>

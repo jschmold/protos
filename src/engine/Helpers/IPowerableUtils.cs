@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Engine.Interfaces;
-using static Engine.LangHelpers;
+using static Engine.Helpers.Lang;
 using Engine.Exceptions;
 using static System.Math;
 namespace Engine.Helpers
@@ -10,7 +10,7 @@ namespace Engine.Helpers
     public static class IPowerableUtils
     {
         public static IPowerSource FirstWithEnough(uint amt, List<IPowerSource> sources) => sources.Find(src => src.PowerAvailable >= amt);
-        public static uint DrawFromManySources(uint amt, List<IPowerSource> sources, Action onNotEnoughEnergy = null) {
+        public static uint DrawFromManySources(uint amt, List<IPowerSource> sources, bool energySwitch = true, Action onNotEnoughEnergy = null) {
             uint amtDrawn = 0;
             int iter = 0;
             while (amtDrawn < amt && iter < sources.Count) {
@@ -22,7 +22,7 @@ namespace Engine.Helpers
             DoOrThrow(amtDrawn < amt, onNotEnoughEnergy, new NotEnoughEnergyException( ));
             return amtDrawn;
         }
-        public static uint Draw(uint amt, IPowerSource src, Action onNotEnoughEnergy = null) {
+        public static uint Draw(uint amt, IPowerSource src, bool energySwitch = true, Action onNotEnoughEnergy = null) {
             try {
                 src.ExpendEnergy(amt);
             } catch(NotEnoughEnergyException) {

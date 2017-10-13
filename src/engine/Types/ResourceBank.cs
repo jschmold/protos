@@ -4,7 +4,7 @@ using System.Text;
 using Engine.Exceptions;
 using System.Linq;
 using static System.Linq.Enumerable;
-using static Engine.LangHelpers;
+using static Engine.Helpers.Lang;
 
 namespace Engine.Types {
     public class ResourceBank : Bank {

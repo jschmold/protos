@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Engine.Exceptions;
 using Engine.Types;
-using static Engine.LangHelpers;
+using static Engine.Helpers.Lang;
 using Engine;
 using Engine.Interfaces;
 

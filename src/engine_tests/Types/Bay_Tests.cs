@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Engine.Types;
 using Engine.Exceptions;
 using Engine.Constructables;
-using static Engine.LangHelpers;
+using static Engine.Helpers.Lang;
 
 namespace EngineTests.Types {
     class TestBay : Bay {

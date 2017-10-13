@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Engine.Exceptions;
 using static System.Math;
-using static Engine.LangHelpers;
+using static Engine.Helpers.Lang;
 
 namespace Engine.Types {
     /// <summary>

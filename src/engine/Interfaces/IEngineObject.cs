@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using static System.Math;
-using static Engine.LangHelpers;
+using static Engine.Helpers.Lang;
 
 
 namespace Engine.Interfaces {
