@@ -10,12 +10,6 @@ using Engine.Interfaces;
 namespace Engine.Constructables {
     public abstract class Bay : IEngineObject {
         /// <summary>
-        /// Where is the bay?
-        /// </summary>
-        public Location Location {
-            get; private set;
-        }
-        /// <summary>
         /// The occupants in the bay
         /// </summary>
         public CappedList<Citizen> Occupants {
@@ -41,10 +35,7 @@ namespace Engine.Constructables {
         /// </summary>
         /// <param name="loc">Where the bay is located</param>
         /// <param name="occLimit">The maximum occupant limit for the bay</param>
-        public Bay(Location loc, uint occLimit) {
-            Location = loc;
-            Occupants = new CappedList<Citizen>(occLimit);
-        }
+        public Bay(uint occLimit) => Occupants = new CappedList<Citizen>(occLimit);
 
         /// <summary>
         /// Add a single occupant to the bay

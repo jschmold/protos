@@ -75,15 +75,14 @@ namespace Engine.Constructables {
         /// <param name="resv">The (Max, Start) tuple for how big the bay's reserve pool should be</param>
         /// <param name="cargoCapacity">The maximum amount of cargo supported by the bay</param>
         /// <remarks>Note: If your "start" is ever bigger than the max, the max will be the start</remarks>
-        public ProductionBay(Location loc, 
-                uint occupantLimit, 
+        public ProductionBay(uint occupantLimit, 
                 List<Recipe<Resource, Resource>> recs, 
                 (uint max, uint start) prodStations, 
                 (uint max, uint start) pool, 
                 (uint max, uint start) resv, 
                 uint cargoCapacity,
                 List<IPowerSource> energyGrid,
-                uint maxEnergyDraw) : base(loc, occupantLimit) {
+                uint maxEnergyDraw) : base(occupantLimit) {
             Stations = new CappedList<ProductionBaySlot>(Min(prodStations.start, prodStations.max));
             Pool = new RegeneratingBank {
                 Maximum = pool.max,

@@ -14,9 +14,9 @@ namespace EngineTests.Types
     [TestCategory("PowerBay")]
     public class PowerBay_Tests
     {
-        private PowerBay EmptyBay => new PowerBay(null, 100, 10);
+        private PowerBay EmptyBay => new PowerBay(100, 10);
         private PowerBay GetBay(int cells) {
-            var bay = new PowerBay(null, 100, (uint)cells);
+            var bay = new PowerBay(100, (uint)cells);
             Repeat(cells, () =>  bay.Cells.Add(1000, 1000, 0, 10));
             return bay;   
         }
@@ -46,7 +46,7 @@ namespace EngineTests.Types
 
         [TestMethod]
         public void Think_DecaysProperly() {
-            var bay = new PowerBay(null, 100, 10);
+            var bay = new PowerBay(100, 10);
             Repeat(10, () => bay.Cells.Add(100, 100, 10, 0));
             bay.Think( );
             Repeat(10, i => Assert.IsTrue(bay.Cells[i].available == 90, $"Expected cell at index {i} to be 90, actually {bay.Cells[i].available}"));

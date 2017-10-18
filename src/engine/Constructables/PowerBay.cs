@@ -22,8 +22,8 @@ namespace Engine.Constructables {
         public void DoRegen() => Cells.Regen( );
         public void DoDecay() => Cells.Decay( );
 
-        public PowerBay(Location location, uint occupantLimit, uint cellLimit) 
-            : base(location, occupantLimit) => Cells = new PowerCellCluster(cellLimit);
+        public PowerBay(uint occupantLimit, uint cellLimit) 
+            : base(occupantLimit) => Cells = new PowerCellCluster(cellLimit);
 
         /// <summary>
         /// On every cycle, the energy draw and gain are calculated

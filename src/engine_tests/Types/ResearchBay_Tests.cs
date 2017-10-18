@@ -78,17 +78,17 @@ namespace EngineTests.Types {
             cluster.Add(size, size, 0, 0);
             return new List<IPowerSource> { cluster };
         }
-        public ResearchBay GetBay => new ResearchBay(null, 100, 10, new List<Knowledge> { Science, Math }, 100, PowerGrid(100), 1000);
-        private ResearchBay ScienceBay => new ResearchBay(null, 4, 5, new List<Knowledge> {
+        public ResearchBay GetBay => new ResearchBay(100, 10, new List<Knowledge> { Science, Math }, 100, PowerGrid(100), 1000);
+        private ResearchBay ScienceBay => new ResearchBay(4, 5, new List<Knowledge> {
                 Science
             }, 100, PowerGrid(1000), 1000);
-        private ResearchBay MathBay => new ResearchBay(null, 4, 5, new List<Knowledge> {
+        private ResearchBay MathBay => new ResearchBay(4, 5, new List<Knowledge> {
                 Math
             }, 100, PowerGrid(1000), 1000);
-        private ResearchBay PhysicsBay => new ResearchBay(null, 4, 5, new List<Knowledge> {
+        private ResearchBay PhysicsBay => new ResearchBay(4, 5, new List<Knowledge> {
                 Physics
             }, 100, PowerGrid(1000), 1000);
-        private ResearchBay AdvPhysicsBay => new ResearchBay(null, 4, 5, new List<Knowledge> {
+        private ResearchBay AdvPhysicsBay => new ResearchBay(4, 5, new List<Knowledge> {
             Physics, AdvancedPhysics
         }, 100, PowerGrid(1000), 1000);
         private Citizen MathWorker => new Citizen {
@@ -134,7 +134,7 @@ namespace EngineTests.Types {
 
         [TestMethod]
         public void AddResearcher_AddsResearcher() {
-            ResearchBay bay = new ResearchBay(null, 0, 3, new List<Knowledge> {
+            ResearchBay bay = new ResearchBay(0, 3, new List<Knowledge> {
                 Science
             }, 0, PowerGrid(1000), 1000);
             bay.AddResearcher(new Citizen( ));
@@ -143,7 +143,7 @@ namespace EngineTests.Types {
 
         [TestMethod]
         public void AddResearcher_ListensToLimit() {
-            ResearchBay bay = new ResearchBay(null, 0, 3, new List<Knowledge> {
+            ResearchBay bay = new ResearchBay(0, 3, new List<Knowledge> {
                 Science
             }, 0, PowerGrid(1000), 1000);
             for (int i = 0 ; i < 3 ; i++) {
@@ -154,7 +154,7 @@ namespace EngineTests.Types {
 
         [TestMethod]
         public void ConvertReseacherEnergy_AddsToActive() {
-            ResearchBay bay = new ResearchBay(null, 0, 3, new List<Knowledge> {
+            ResearchBay bay = new ResearchBay(0, 3, new List<Knowledge> {
                 Science
             }, 0, PowerGrid(1000), 1000);
             var cit = new Citizen {
@@ -174,7 +174,7 @@ namespace EngineTests.Types {
 
         [TestMethod]
         public void ConvertResearchEnergy_RemovesFromResearcher() {
-            ResearchBay bay = new ResearchBay(null, 0, 3, new List<Knowledge> {
+            ResearchBay bay = new ResearchBay(0, 3, new List<Knowledge> {
                 Science
             }, 0, PowerGrid(1000), 1000);
             var cit = new Citizen {
@@ -195,7 +195,7 @@ namespace EngineTests.Types {
 
         [TestMethod]
         public void Research_ThrowsIfActiveNotNull() {
-            ResearchBay bay = new ResearchBay(null, 0, 3, new List<Knowledge> {
+            ResearchBay bay = new ResearchBay(0, 3, new List<Knowledge> {
                 Science
             }, 0, PowerGrid(1000), 1000);
 
@@ -205,7 +205,7 @@ namespace EngineTests.Types {
 
         [TestMethod]
         public void Research_SetsActive() {
-            ResearchBay bay = new ResearchBay(null, 0, 3, new List<Knowledge> {
+            ResearchBay bay = new ResearchBay(0, 3, new List<Knowledge> {
                 Science
             }, 0, PowerGrid(1000), 1000);
             bay.Research(Science);
@@ -214,7 +214,7 @@ namespace EngineTests.Types {
 
         [TestMethod]
         public void Research_RefusesUnsupported() {
-            ResearchBay bay = new ResearchBay(null, 0, 3, new List<Knowledge> {
+            ResearchBay bay = new ResearchBay(0, 3, new List<Knowledge> {
                 Science
             }, 0, PowerGrid(1000), 1000);
 
@@ -241,7 +241,7 @@ namespace EngineTests.Types {
 
         [TestMethod]
         public void Cancel_ClearsActive() {
-            ResearchBay bay = new ResearchBay(null, 0, 3, new List<Knowledge> {
+            ResearchBay bay = new ResearchBay(0, 3, new List<Knowledge> {
                 Science
             }, 0, PowerGrid(1000), 1000);
             var activeProperty = typeof(ResearchBay).GetProperty("Active");
@@ -346,7 +346,7 @@ namespace EngineTests.Types {
 
         [TestMethod]
         public void Think_ProducesResults() {
-            var bay = new ResearchBay(null, 4, 5, new List<Knowledge> {
+            var bay = new ResearchBay(4, 5, new List<Knowledge> {
                 Physics
             }, 100, PowerGrid(10000000), 1000000);
             bay.AddResearcher(PhysicsWorker);

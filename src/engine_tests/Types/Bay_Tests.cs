@@ -11,14 +11,14 @@ using static Engine.Helpers.Lang;
 namespace EngineTests.Types {
     class TestBay : Bay {
         public override void Think() => throw new NotImplementedException( );
-        public TestBay(Location loc, uint occLim) : base(loc, occLim) => DoNothing( );
+        public TestBay(uint occLim) : base(occLim) => DoNothing( );
     }
     [TestCategory("Bay")]
     [TestClass]
     public class Bay_Tests {
         [TestMethod]
         public void AddOccupant_Works() {
-            Bay bay = new TestBay(null, 20);
+            Bay bay = new TestBay(20);
             bay.AddOccupant(new Citizen {
                 Name = "TestWorker"
             });
@@ -28,7 +28,7 @@ namespace EngineTests.Types {
 
         [TestMethod]
         public void AddOccupant_RespectsLimit() {
-            Bay bay = new TestBay(null, 2);
+            Bay bay = new TestBay(2);
             bay.AddOccupant(new Citizen {
                 Name = "TestWorker1"
             });
@@ -42,7 +42,7 @@ namespace EngineTests.Types {
 
         [TestMethod]
         public void AddOccupant_CollectionWorks() {
-            Bay bay = new TestBay(null, 10);
+            Bay bay = new TestBay(10);
             List<Citizen> work = new List<Citizen>( );
             Repeat(8, i => work.Add(new Citizen { Name = $"Worker_{i}" }));
             bay.AddOccupantRange(work);
@@ -51,7 +51,7 @@ namespace EngineTests.Types {
 
         [TestMethod]
         public void AddOccupant_RunsFailureInsteadOfException() {
-            Bay bay = new TestBay(null, 10);
+            Bay bay = new TestBay(10);
             Repeat(10, i => bay.AddOccupant(new Citizen { Name = $"Worker_{i}" }));
             bool works = false;
             bay.AddOccupant(new Citizen { }, () => works = true);
@@ -60,7 +60,7 @@ namespace EngineTests.Types {
 
         [TestMethod]
         public void RemoveOccupant_Works() {
-            Bay bay = new TestBay(null, 10);
+            Bay bay = new TestBay(10);
             Citizen work = new Citizen { Name = "TestWorker" };
             bay.AddOccupant(work);
             bay.RemoveOccupant(work);

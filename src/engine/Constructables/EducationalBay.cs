@@ -11,7 +11,7 @@ using Engine.Types;
 namespace Engine.Constructables
 {
     public class EducationalBay : Bay, IPowerable {
-        public EducationalBay(Location loc, uint occLimit) : base(loc, occLimit) {
+        public EducationalBay(uint occLimit) : base(occLimit) {
         }
 
         public List<IPowerSource> EnergySources {

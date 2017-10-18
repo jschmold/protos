@@ -31,7 +31,7 @@ namespace Engine.Constructables {
             set;
         }
 
-        public ResearchBay(Location loc, uint occLimit, uint researcherLim, List<Knowledge> Supported, uint cargoSize, List<IPowerSource> energySources, uint maxEnergyDraw) : base(loc, occLimit) {
+        public ResearchBay(uint occLimit, uint researcherLim, List<Knowledge> Supported, uint cargoSize, List<IPowerSource> energySources, uint maxEnergyDraw) : base(occLimit) {
             SupportedResearches = new List<Knowledge>(Supported);
             Resources = new ResourceBank(cargoSize);
             Recovering = new List<Citizen>( );
