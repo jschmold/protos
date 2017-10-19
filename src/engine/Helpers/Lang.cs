@@ -242,6 +242,12 @@ namespace Engine.Helpers {
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static T Nothing<T>() => default;
+
+        public static void ForEach<T>(IEnumerable<T> col, Action<T> func) {
+            foreach (T obj in col) {
+                func(obj);
+            }
+        }
         
     }
 }

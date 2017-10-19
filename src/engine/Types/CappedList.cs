@@ -4,13 +4,14 @@ using System.Text;
 using System.Linq;
 using static Engine.Helpers.Lang;
 using Engine.Exceptions;
+using System.Collections;
 
 namespace Engine.Types {
     /// <summary>
     /// Full encapsulation for a List<typeparamref name="T"/>, but errors when adding is attempted past a certain limit.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class CappedList<T> {
+    public class CappedList<T> : IEnumerable<T> {
         private List<T> Contents {
             get; set;
         } = new List<T>( );
@@ -74,5 +75,7 @@ namespace Engine.Types {
         public T[] ToArray() => Contents.ToArray( );
         public void TrimExcess() => Contents.TrimExcess( );
         public bool TrueForAll(Predicate<T> match) => Contents.TrueForAll(match);
+        IEnumerator<T> IEnumerable<T>.GetEnumerator() => ((IEnumerable<T>)Contents).GetEnumerator( );
+        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<T>)Contents).GetEnumerator( );
     }
 }

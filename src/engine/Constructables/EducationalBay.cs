@@ -10,8 +10,9 @@ using Engine.Types;
 
 namespace Engine.Constructables
 {
+    // Todo: This was never finished
     public class EducationalBay : Bay, IPowerable {
-        public EducationalBay(uint occLimit) : base(occLimit) {
+        public EducationalBay(uint occLim) : base(occLim) {
         }
 
         public List<IPowerSource> EnergySources {

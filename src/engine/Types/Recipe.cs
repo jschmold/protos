@@ -34,12 +34,7 @@ namespace Engine.Types {
                     Maximum = 0,
                     Quantity = 0
                 };
-                // The order of the below DOES MATTER.
-                // The maximum must FIRST be altered because it is used to check if adding to the quantity is valid.
-                Ingredients.ForEach(ing => {
-                    prog.Maximum += ing.Progress.Maximum;
-                    prog.Quantity += ing.Progress.Quantity;
-                });
+                Ingredients.ForEach(ing => prog.Absorb(ing.Progress));
                 return prog;
             }
         }
@@ -58,10 +53,10 @@ namespace Engine.Types {
         /// <param name="ings">The Ingredient collection (really more of a blueprint)</param>
         /// <param name="resReqs">The research requirements</param>
         /// <param name="prods">What is produced by the recipe, and how much</param>
-        public Recipe(List<Ingredient<I>> ings, List<Skill> resReqs, Quantified<P> prods) {
-            Ingredients = new List<Ingredient<I>>( );
-            ings.ForEach((Ingredient<I> ing) => Ingredients.Add(new Ingredient<I>(ing)));
-            ResearchRequirements = resReqs;
+        public Recipe(IEnumerable<Ingredient<I>> ings, IEnumerable<Skill> resReqs, Quantified<P> prods) {
+            Ingredients = new List<Ingredient<I>>();
+            ForEach(ings, ing => Ingredients.Add(new Ingredient<I>(ing)));
+            Perform(resReqs != null, () => ResearchRequirements = new List<Skill>(resReqs));
             Produces = prods;
         }
 
@@ -72,8 +67,8 @@ namespace Engine.Types {
         /// <param name="resReqs">The research requirements</param>
         /// <param name="produces">What is produced</param>
         /// <param name="quantity">How much is produced</param>
-        public Recipe(List<Ingredient<I>> ings, List<Skill> resReqs, P produces, uint quantity)
-            : this(ings, resReqs, new Quantified<P> (produces, quantity )) { }
+        public Recipe(IEnumerable<Ingredient<I>> ings, IEnumerable<Skill> resReqs, P produces, uint quantity)
+            : this(ings, resReqs, new Quantified<P> (produces, quantity)) { }
 
         public Recipe(Recipe<I, P> rec)
             : this(rec.Ingredients, rec.ResearchRequirements, rec.Produces.Contents, rec.Produces.Quantity) { }

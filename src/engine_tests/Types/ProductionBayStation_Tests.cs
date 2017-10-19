@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using Engine.Constructables;
-
+using static Engine.Helpers.Lang;
 
 namespace EngineTests.Types {
     [TestClass]
@@ -315,6 +315,7 @@ namespace EngineTests.Types {
             };
             Assert.ThrowsException<NotYetCompletedException>(() => slot.FinishRecipe( ));
         }
+        
         [TestMethod]
         public void FinishRecipe_CreatesNewResourceOnComplete() {
             ProductionBaySlot slot = new ProductionBaySlot(
@@ -357,6 +358,7 @@ namespace EngineTests.Types {
             slot.FinishRecipe( );
             Assert.IsTrue(slot.Resources[0].Quantity == 1, $"Produced too many. Expected 1, actual {slot.Resources[0].Quantity}");
         }
+        
         [TestMethod]
         public void FinishRecipe_CallsClearActiveWhenComplete() {
             ProductionBaySlot slot = new ProductionBaySlot(
@@ -377,6 +379,7 @@ namespace EngineTests.Types {
             Assert.IsTrue(slot.Active == null, "Active is not null, must not have cleared");
         }
 
+        
         [TestMethod]
         public void FinishRecipe_AddsCorrectAmountOnComplete() {
             ProductionBaySlot slot = new ProductionBaySlot(
@@ -486,13 +489,12 @@ namespace EngineTests.Types {
 
             slot.ActivateRecipe(MetalRecipe_WithSkillReq);
             while (!slot.Resources.Contains(Metal)) {
-                slot.Think( );
+                slot.Think( );   
             }
-            for (int i = 0 ; i < 4 ; i++) {
-                Assert.IsTrue(slot.Workers[i].Energy.IsFull, $"Took energy from worker {i}");
-            }
-            Assert.IsFalse(slot.Workers[4].Energy.IsFull, "Worker 5 has full energy and should not.");
-            
+            Repeat(4, i => Assert.IsTrue(slot.Workers[i].Energy.IsFull, $"Took energy from worker {i}"));
+            string thing = "";
+            ForEach(slot.Workers, work => thing += work.Name + ": " + work.Energy.Quantity);
+            Assert.IsFalse(slot.Workers[slot.Workers.Count - 1].Energy.IsFull, "Worker 5 has full energy and should not.\n" + thing);
         }
         #endregion
 
@@ -536,9 +538,7 @@ namespace EngineTests.Types {
         public void AddWorker_ListensToLimit() {
             var slot = GetWorkingStationNoWorkers( );
             bool works = false;
-            for (int i = 0 ; i < 6 ; i++) {
-                slot.AddWorker(new Citizen( ), () => works = true);
-            }
+            Repeat(5, () => slot.AddWorker(new Citizen( ), () => works = true));
             Assert.IsTrue(works, "Did not call the exception action");
             Assert.IsTrue(slot.Workers.Count == 4, $"Expected only 4 workers, actual {slot.Workers.Count}");
         }

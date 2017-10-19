@@ -63,11 +63,7 @@ namespace Engine.Constructables {
         /// Remove a collection of occupants from the bay
         /// </summary>
         /// <param name="workers">The collection to remove</param>
-        public void RemoveOccupant(IEnumerable<Citizen> workers) {
-            foreach (Citizen work in workers) {
-                RemoveOccupant(work);
-            }
-        }
+        public void RemoveOccupant(IEnumerable<Citizen> workers) => ForEach(workers, RemoveOccupant);
 
     }
 }

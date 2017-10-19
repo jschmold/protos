@@ -31,6 +31,20 @@ namespace Engine.Types {
 
         public static int operator +(Bank bank, int num) => (int)bank.Quantity + num;
         public static int operator -(Bank bank, int num) => (int)bank.Quantity - num;
+        /// <summary>
+        /// Adds the quantity of b to a
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns>A bank with the quantity of a + b, and a maximum of a.Maximum</returns>
+        public static Bank operator +(Bank a, Bank b) => new Bank { Maximum = a, Quantity = a + b };
+        /// <summary>
+        /// Subtracts the quantity of b from a
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns>A bank with the quantity of a - b, and a maximum of a.Maximum</returns>
+        public static Bank operator -(Bank a, Bank b) => new Bank { Maximum = a, Quantity = a - b };
         public static uint operator +(Bank bank, uint num) => bank.Quantity + num;
         public static uint operator -(Bank bank, uint num) => bank.Quantity - num;
         public static uint operator *(Bank bank, int num) => bank.Quantity * (uint)num;
@@ -42,5 +56,10 @@ namespace Engine.Types {
         public static implicit operator int(Bank bank) => (int)bank.Quantity;
         public static implicit operator uint(Bank bank) => bank.Quantity;
         public static implicit operator string(Bank bank) => bank.Quantity.ToString( );
+
+        public void Absorb(Bank other) {
+            Maximum += other.Maximum;
+            Quantity += other.Quantity;
+        }
     }
 }
