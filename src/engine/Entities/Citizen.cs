@@ -5,12 +5,35 @@ using Engine.Helpers;
 using static LangRoids;
 using Engine.Exceptions;
 using Engine.Types;
+using Engine.Interfaces;
 
 namespace Engine.Entities {
-    public class Citizen {
-        public Dictionary<EquippableCategory, EquipSlot> Outfit {
+    public class Citizen : IEntity {
+        public Dictionary<EquippableCategory, List<EquipSlot>> Outfit {
             get; private set;
         }
+
+        public Citizen() {
+            Skills = new List<Skill>( );
+            Outfit = new Dictionary<EquippableCategory, List<EquipSlot>>( );
+        }
+        public Citizen(string name,
+            (uint max, uint start) health,
+            (uint max, uint start) energy,
+            Location pos,
+            CitizenCategory category,
+            IEnumerable<(int count, EquippableCategory category)> bodyParts) : this() {
+            Health = new Bank { Maximum = health.max, Quantity = health.start };
+            Energy = new Bank { Maximum = energy.max, Quantity = energy.start };
+            Position = pos;
+            Category = category;
+            ForEach(bodyParts, tup => {
+                Outfit.Add(tup.category, new List<EquipSlot>( ));
+                Repeat(tup.count, () => Outfit[tup.category].Add(new EquipSlot { Category = tup.category }));
+            });
+            
+        }
+
         /// <summary>
         /// Either the charge or the mental energy of the worker.
         /// </summary>
@@ -69,47 +92,61 @@ namespace Engine.Entities {
         /// <returns></returns>
         public bool HasEnoughEnergy(uint amt) => Energy.HasEnoughFor(amt) && !NeedsRest;
 
+        public void Equip(Equippable eq, EquipSlot slot, Action onSlotOccupied = null, Action onInvalidEquippable = null) => Perform(
+            (SupportedEquippable(eq), onInvalidEquippable, new InappropriateEquippableException( )),
+            (slot.Equipped != null, onSlotOccupied, new EquipSlotOccupiedException( )), 
+            () => slot.Equipped = eq);
 
+        public void Equip(Equippable eq, EquippableCategory cat, Action onNoSlotsAvailable = null, Action onInvalidEquippable = null) => Perform(
+            (GetEquippableContainingSlot(eq) == null, DoNothing),
+            (eq.Category.Filter(obj => obj == cat) != null, new InappropriateEquippableException()),
+            (SupportedEquippable(eq), onInvalidEquippable, new InappropriateEquippableException()),
+            () => {
+                var slot = AvailableEquipslot(cat);
+                if (slot != null) {
+                    slot.Equipped = eq;
+                    return;
+                }
+                DoOrThrow(onNoSlotsAvailable, new NoAvailableSlotsException( ));
+            });
         /// <summary>
-        /// Unequip whatever is at the category specified
+        /// Unequip everything in the category provided
         /// </summary>
         /// <param name="category"></param>
-        public void Unequip(EquippableCategory category) => Perform(Outfit.ContainsKey(category), () => Outfit[category].Equipped = null);
+        public void Unequip(EquippableCategory category) => Perform(SupportsCategory(category), () => Outfit[category].ForEach(slot => slot.Equipped = null));
         /// <summary>
         /// Unequip a specific equippable
         /// </summary>
         /// <param name="eq"></param>
-        public void Unequip(Equippable eq) {
-            foreach ((EquippableCategory cat, EquipSlot slot) in Outfit) {
-                if (slot.Equipped == eq) {
-                    slot.Equipped = null;
-                    return;
-                }
-            }
-        }
+        public void Unequip(Equippable eq) => Perform(SupportedEquippable(eq), () => {
+            var slot = GetEquippableContainingSlot(eq);
+            Perform(slot != null, () => slot.Equipped = null);
+        });
 
         /// <summary>
         /// Does the EquipSlot matching the category have anything equipped?
         /// </summary>
-        /// <param name="category"></param>
+        /// <param name="slot"></param>
         /// <returns></returns>
-        public bool HasEquipped(EquippableCategory category) => Outfit[category].Equipped == null;
+        public bool HasEquipped(EquipSlot slot) => slot.Equipped == null;
 
         /// <summary>
         /// Is a specific equippable equipped?
         /// </summary>
         /// <param name="eq"></param>
         /// <returns></returns>
-        public bool IsEquipped(Equippable eq) {
-            foreach ((EquippableCategory cat, EquipSlot slot) in Outfit) {
-                if (slot.Equipped == eq) {
-                    return true;
+        public bool IsEquipped(Equippable eq) => SupportedEquippable(eq) ? GetEquippableContainingSlot(eq) != null : false;
+
+        public EquipSlot GetEquippableContainingSlot(Equippable eq) {
+            foreach (var cat in eq.Category.Filter(cat => SupportsCategory(cat))) {
+                foreach (var Slot in Outfit[cat]) {
+                    if (Slot.Equipped == eq) {
+                        return Slot;
+                    }
                 }
             }
-            return false;
+            return null;
         }
-
-
         /// <summary>
         /// Is a specific category supported by the citizen
         /// </summary>
@@ -130,5 +167,21 @@ namespace Engine.Entities {
             }
             return false;
         }
+
+        private EquipSlot AvailableEquipslot(EquippableCategory cat, Action onUnsupportedCategory = null) {
+            if (!SupportsCategory(cat)) {
+                DoOrThrow(onUnsupportedCategory, new InappropriateEquippableException( ));
+                return null;
+            }
+            for (int i = 0 ; i < Outfit[cat].Count ; i++) {
+                var slot = Outfit[cat][i];
+                if (slot.Equipped == null) {
+                    return slot;
+                }
+            }
+            return null;
+        }
+
+        public void Think() => DoNothing( );
     }
 }

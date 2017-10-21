@@ -42,7 +42,6 @@ namespace Engine_Tests.Types {
             Assert.IsTrue(bank == 9, "Does not respect default regeneration value");
         }
 
-
         [TestMethod]
         public void RegenRespectsCapacity() {
             RegeneratingBank bank = new RegeneratingBank {

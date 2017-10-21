@@ -12,6 +12,7 @@ using Engine.Entities;
 namespace EngineTests.Types
 {
     [TestClass]
+    [TestCategory("Citizen")]
     public class Citizen_Tests
     {
         static EquippableCategory Head = new EquippableCategory { Name = "Head", Description = "The head of a human" };
@@ -32,21 +33,31 @@ namespace EngineTests.Types
             Name = "Generic Shirt"
         };
 
-        public Citizen Human => new Citizen {
-            Category = CitizenCategory.Human,
-            Energy = new Bank {
-                Maximum = 1000,
-                Quantity = 1000
-            },
-            Health = new Bank {
-                Maximum = 100,
-                Quantity = 100
-            }
-        };
+        public Citizen Human => new Citizen(
+            "Humnannan", 
+            (1000, 1000), 
+            (1000, 1000), 
+            default, 
+            CitizenCategory.Human, 
+            new (int, EquippableCategory)[] { (1, Head), (1, Torso), (2, Legs), (2, Feet), (1, LHand), (1, RHand) });
 
         [TestMethod]
+        [TestCategory("Citizen_Equip")]
         public void Equip_Equips() {
             var cit = Human;
+            cit.Equip(Gun, RHand);
+            Assert.IsTrue(cit.Outfit[RHand].Find(slot => slot.Equipped == Gun) != null);
+        }
+
+        [TestMethod]
+        [TestCategory("Citizen_Equip")]
+        public void Unequip_Equippable_unequips() {
+            var cit = Human;
+            cit.Equip(Gun, RHand);
+            // This must be true to continue
+            Assert.IsTrue(cit.Outfit[RHand].Find(slot => slot.Equipped == Gun) != null, "Equip is not properly implemented");
+            cit.Unequip(Gun);
+            Assert.IsTrue(cit.Outfit[RHand].Find(slot => slot.Equipped == Gun) == null, "Unequip did not remove the gun from the citizen");
         }
     }
 }

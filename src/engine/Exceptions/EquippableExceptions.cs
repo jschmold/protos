@@ -18,5 +18,30 @@ namespace Engine.Exceptions
         protected InappropriateEquippableException(SerializationInfo info, StreamingContext context) : base(info, context) {
         }
     }
-    
+    public class EquipSlotOccupiedException : Exception {
+        public EquipSlotOccupiedException() {
+        }
+
+        public EquipSlotOccupiedException(string message) : base(message) {
+        }
+
+        public EquipSlotOccupiedException(string message, Exception innerException) : base(message, innerException) {
+        }
+
+        protected EquipSlotOccupiedException(SerializationInfo info, StreamingContext context) : base(info, context) {
+        }
+    }
+    public class NoAvailableSlotsException : Exception {
+        public NoAvailableSlotsException() {
+        }
+
+        public NoAvailableSlotsException(string message) : base(message) {
+        }
+
+        public NoAvailableSlotsException(string message, Exception innerException) : base(message, innerException) {
+        }
+
+        protected NoAvailableSlotsException(SerializationInfo info, StreamingContext context) : base(info, context) {
+        }
+    }
 }
