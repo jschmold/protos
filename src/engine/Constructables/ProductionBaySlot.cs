@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using Engine.Exceptions;
 using Engine.Types;
-using static Engine.Helpers.Lang;
+using static LangRoids;
 using Engine;
 using Engine.Interfaces;
+using Engine.Entities;
 
 namespace Engine.Constructables {
     /// <summary>
     /// Needs to pull from cargo location
     /// </summary>
-    public class ProductionBaySlot : IEngineObject {
+    public class ProductionBaySlot : IThinkable {
         /// <summary>
         /// The recipe currently being worked on
         /// </summary>
@@ -151,12 +152,9 @@ namespace Engine.Constructables {
         /// Throws NotYetCompletedException if Active is not yet done
         /// </summary>
         /// <exception cref="NotYetCompletedException"></exception>
-        public void FinishRecipe(Action onNotYetCompleted = null, Action onActiveIsNull = null) => Perform(Active.Progress.IsFull && Active != null,
-            () => {
-                DoOrThrow(!Active.Progress.IsFull, onNotYetCompleted, new NotYetCompletedException( ));
-                Perform(Active == null, onActiveIsNull);
-            },
-            () => {
+        public void FinishRecipe(Action onNotYetCompleted = null, Action onActiveIsNull = null) => Perform(
+            (Active.Progress.IsFull, onNotYetCompleted, new NotYetCompletedException( )),
+            (Active != null, onActiveIsNull), () => {
                 Resources.Add(Active.Produces.Contents, Active.Produces.Quantity);
                 ClearActive( );
             });
@@ -240,7 +238,7 @@ namespace Engine.Constructables {
         private Ingredient<Resource> NextAvailableIngredient() {
             if (Active == null) {
                 return null;
-            } 
+            }
             int finishedOrWorkingOn = 0;
             foreach (var ingr in Active.Ingredients) {
                 if (WorkPairings.ContainsValue(ingr)) {

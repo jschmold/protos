@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Engine.Types;
 using Engine.Exceptions;
 using System.Reflection;
-using static Engine.Helpers.Lang;
+using Engine.Entities;
 using System.Timers;
 using Engine.Constructables;
 using Engine.Helpers;

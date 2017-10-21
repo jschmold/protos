@@ -5,8 +5,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Engine.Types;
 using Engine.Exceptions;
 using Engine.Constructables;
-using static Engine.Helpers.Lang;
+using static LangRoids;
 using Engine.Interfaces;
+using Engine.Entities;
 
 namespace EngineTests.Types
 {

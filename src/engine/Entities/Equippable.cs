@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Engine.Types;
 
-namespace Engine.Types {
-    public class Resource {
+namespace Engine.Entities {
+    public class Equippable {
         public string Name {
             get; set;
         }
-        public uint Volume {
+        public string Description {
+            get; set;
+        }
+        public EquippableCategory[] Category {
             get; set;
         }
         public uint Mass {
-            get; set;
-        }
-        public uint Identifier {
             get; set;
         }
     }

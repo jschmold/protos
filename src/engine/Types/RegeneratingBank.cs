@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Engine.Exceptions;
 using static System.Math;
-using static Engine.Helpers.Lang;
+using static LangRoids;
 
 namespace Engine.Types {
     /// <summary>
@@ -33,8 +33,7 @@ namespace Engine.Types {
         /// <param name="amt">The amount to remove from the bank.</param>
         /// <param name="onFailure">The function to call if there is not enough energy in the bank.</param>
         public void Decay(uint amt, Action onFailure = null) => Perform((int)Quantity - (int)amt >= 0, 
-            (onFailure, new NotEnoughEnergyException( )), 
-            () => Quantity -= amt);
+            (onFailure, new NotEnoughEnergyException( )), () => Quantity -= amt);
 
         /// <summary>
         /// Regenerate the energy bank by the set RegenRate. Will cap out at MaxEnergy.

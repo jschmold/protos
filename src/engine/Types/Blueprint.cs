@@ -5,7 +5,8 @@ using Engine.Constructables;
 using Engine.Interfaces;
 using Engine.Exceptions;
 using static System.MathF;
-using static Engine.Helpers.Lang;
+using Engine.Entities;
+
 
 namespace Engine.Types {
     /**

@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using Engine.Exceptions;
 using Engine.Types;
-using static Engine.Helpers.Lang;
+using static LangRoids;
 using Engine.Helpers;
+using Engine.Entities;
 using Engine.Interfaces;
 
 namespace Engine.Constructables {

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Engine.Exceptions;
 using Engine.Types;
-using static Engine.Helpers.Lang;
+using static LangRoids;
 using Engine;
 using Engine.Interfaces;
+using Engine.Entities;
 
 namespace Engine.Constructables {
-    public abstract class Bay : IEngineObject {
+    public abstract class Bay : IThinkable {
         /// <summary>
         /// The occupants in the bay
         /// </summary>

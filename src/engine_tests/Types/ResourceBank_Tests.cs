@@ -6,6 +6,7 @@ using System.Text;
 using System.Timers;
 using Engine.Types;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Engine.Entities;
 
 namespace Engine_Tests.Types {
     [TestClass]

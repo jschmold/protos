@@ -9,7 +9,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using Engine.Constructables;
-using static Engine.Helpers.Lang;
+using Engine.Entities;
+using static LangRoids;
 
 namespace EngineTests.Types {
     [TestClass]

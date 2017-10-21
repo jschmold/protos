@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Engine.Types;
-using static Engine.Helpers.Lang;
+
 
 namespace Engine.Interfaces {
     public interface IPowerable {

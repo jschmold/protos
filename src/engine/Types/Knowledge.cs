@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using static Engine.Helpers.Lang;
+using static LangRoids;
+using Engine.Entities;
 
 namespace Engine.Types {
     public class Knowledge {

@@ -6,7 +6,7 @@ namespace Engine.Types {
     /// <summary>
     /// The type representing the Location of something.
     /// </summary>
-    public class Location {
+    public struct Location {
         public int Spire {
             get; set;
         }

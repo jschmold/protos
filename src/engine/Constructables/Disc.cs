@@ -3,12 +3,12 @@ using System.Text;
 using System.Linq;
 using System.Collections.Generic;
 using static System.Math;
-using static Engine.Helpers.Lang;
+using static LangRoids;
 using Engine.Interfaces;
 using Engine;
 using Engine.Exceptions;
 using Engine.Types;
-
+using Engine.Entities;
 /*
  * Construction: 
  *      Consumption of resources using recipe
@@ -16,7 +16,7 @@ using Engine.Types;
  *      Expending worker energy towards progress of bay
  */
 namespace Engine.Constructables {
-    public class Disc : IEngineObject {
+    public class Disc : IThinkable {
         private (Bound3d Bound, Type Kind, Bay Obj)[] Spaces {
             get; set;
         } 

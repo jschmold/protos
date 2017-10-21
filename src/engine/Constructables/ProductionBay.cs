@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using Engine.Exceptions;
 using Engine.Types;
-using static Engine.Helpers.Lang;
+using static LangRoids;
 using static System.Math;
+using Engine.Entities;
 using Engine;
 using Engine.Interfaces;
 
@@ -131,11 +132,9 @@ namespace Engine.Constructables {
         /// <param name="slot">The slot to craft at</param>
         /// <exception cref="IndexOutOfRangeException">Thrown when slot is not a valid index</exception>
         /// <exception cref="UnsupportedException">Thrown when the recipe is not supported by the bay</exception>
-        public void Craft(Recipe<Resource, Resource> rec, int slot, Action onUnsupportedRecipe = null) => Perform(slot > 0 && slot < Stations.Count - 1 && SupportedRecipes.Contains(rec),
-            () => {
-                ThrowIf(slot < 0 || slot >= Stations.Count, new IndexOutOfRangeException( ));
-                DoOrThrow(!SupportedRecipes.Contains(rec), onUnsupportedRecipe, new UnsupportedException( ));
-            },
+        public void Craft(Recipe<Resource, Resource> rec, int slot, Action onUnsupportedRecipe = null) => Perform(
+            (slot >= 0 && slot < Stations.Count, new IndexOutOfRangeException( )),
+            (SupportedRecipes.Contains(rec), onUnsupportedRecipe, new UnsupportedException( )),
             () => Stations[slot].ActivateRecipe(rec));
 
         /// <summary>
@@ -145,17 +144,17 @@ namespace Engine.Constructables {
         public int FirstAvailableStation() {
             int lineup = int.MaxValue;
             int index = -1;
-            for (int i = 0 ; i < Stations.Count ; i++) {
+            Repeat(Stations.Count, i => {
                 var slot = Stations[i];
                 if (slot.Active == null || slot.Lineup.Count == 0) {
                     index = i;
-                    break;
+                    return;
                 }
                 if (lineup > slot.Lineup.Count) {
                     index = i;
                     lineup = slot.Lineup.Count;
                 }
-            }
+            });
             return index;
         }
 

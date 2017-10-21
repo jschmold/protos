@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Engine.Interfaces;
-using static Engine.Helpers.Lang;
+using static LangRoids;
 using Engine.Exceptions;
 using static System.Math;
 namespace Engine.Helpers

@@ -11,4 +11,9 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="langroids">
+      <HintPath>..\..\..\Storage\Programming\LangRoids\langroids\bin\Release\netstandard2.0\langroids.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>
