@@ -7,6 +7,7 @@
     <Configurations>Debug;Release;Win_Release_x64</Configurations>
     <Platforms>AnyCPU;x64</Platforms>
     <LangVersion>7.1</LangVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />

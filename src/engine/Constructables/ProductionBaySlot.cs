@@ -61,7 +61,13 @@ namespace Engine.Constructables {
             get; set;
         }
 
-
+        /// <summary>
+        /// Create a bare minimum ProductionBaySlot.
+        /// </summary>
+        /// <param name="pool">The energy pool of the ProductionBay</param>
+        /// <param name="reserve">The energy reserve of the production bay</param>
+        /// <param name="resources">The resource bin of the production bay</param>
+        /// <param name="seats">How many workers are able to work at this station</param>
         public ProductionBaySlot(RegeneratingBank pool, RegeneratingBank reserve, ResourceBank resources, uint seats) {
             Pool = pool;
             Reserve = reserve;
@@ -85,7 +91,7 @@ namespace Engine.Constructables {
         /// </summary>
         /// <param name="pool">The pool of the ProductionBay</param>
         /// <param name="reserve">The reserve of the ProductionBay</param>
-        /// <param name="resources"The ResourceBank of the ProductionBay></param>
+        /// <param name="resources">The ResourceBank of the ProductionBay></param>
         /// <param name="seats">The maximum amount of workers in the station</param>
         /// <param name="workers">The list of workers to grab from</param>
         /// <remarks>Note: If the list of workers is larger than the seat count, it'll just grab the first 'seats' quantity of workers</remarks>
