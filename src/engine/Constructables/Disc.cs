@@ -16,6 +16,9 @@ using Engine.Entities;
  *      Expending worker energy towards progress of bay
  */
 namespace Engine.Constructables {
+    /// <summary>
+    /// A disc containing bays in the colony.
+    /// </summary>
     public class Disc : IThinkable {
         private (Bound3d Bound, Type Kind, Bay Obj)[] Spaces {
             get; set;

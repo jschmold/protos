@@ -8,11 +8,18 @@ using Engine.Types;
 using Engine.Interfaces;
 
 namespace Engine.Entities {
+    /// <summary>
+    /// An alive being among the colony. Human/AI
+    /// </summary>
     public class Citizen : IEntity {
+        /// <summary>
+        /// The outfit of the citizen
+        /// </summary>
         public Dictionary<EquippableCategory, EquipSlot> Outfit {
             get; private set;
         }
 
+        // Todo: Fix this, this will not allow acess to the outfit easily.
         public Citizen() {
             Skills = new List<Skill>( );
             Outfit = new Dictionary<EquippableCategory, EquipSlot>( );
@@ -21,9 +28,12 @@ namespace Engine.Entities {
         /// <summary>
         /// Create a fully detailed citizen
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="max"></param>
-        /// <param name="start"></param>
+        /// <param name="name"><see cref="Name"/></param>
+        /// <param name="health"><see cref="Health"/></param>
+        /// <param name="energy"><see cref="Energy"/></param>
+        /// <param name="pos"><see cref="Position"/></param>
+        /// <param name="category"><see cref="CitizenCategory"/></param>
+        /// <param name="bodyParts"><see cref="Outfit"/></param>
         public Citizen(string name,
             (uint max, uint start) health,
             (uint max, uint start) energy,
@@ -104,23 +114,29 @@ namespace Engine.Entities {
         /// <returns></returns>
         public bool HasEnoughEnergy(uint amt) => Energy.HasEnoughFor(amt) && !NeedsRest;
 
+        /// <summary>
+        /// Equip an equippable at a specific slot
+        /// </summary>
+        /// <param name="eq">The equippable to equip</param>
+        /// <param name="slot">The slot to equip at</param>
+        /// <param name="onSlotOccupied"></param>
+        /// <param name="onInvalidEquippable"></param>
         public void Equip(Equippable eq, EquipSlot slot, Action onSlotOccupied = null, Action onInvalidEquippable = null) => Perform(
             (SupportedEquippable(eq), onInvalidEquippable, new InappropriateEquippableException( )),
             (slot.Equipped == null, onSlotOccupied, new EquipSlotOccupiedException( )), 
             () => slot.Equipped = eq);
 
-        public void Equip(Equippable eq, EquippableCategory cat, Action onNoSlotsAvailable = null, Action onInvalidEquippable = null) => Perform(
+        /// <summary>
+        /// Equip an equippable at a category, instead of a slot
+        /// </summary>
+        /// <param name="eq"></param>
+        /// <param name="cat"></param>
+        /// <param name="onSlotOccupied"></param>
+        /// <param name="onInvalidEquippable"></param>
+        public void Equip(Equippable eq, EquippableCategory cat, Action onSlotOccupied = null, Action onInvalidEquippable = null) => Perform(
             (GetEquippableContainingSlot(eq) == null, DoNothing),
             (eq.Category.Filter(obj => obj == cat) != null, new InappropriateEquippableException()),
-            (SupportedEquippable(eq), onInvalidEquippable, new InappropriateEquippableException()),
-            () => {
-                var slot = AvailableEquipslot(cat);
-                if (slot != null) {
-                    slot.Equipped = eq;
-                    return;
-                }
-                DoOrThrow(onNoSlotsAvailable, new NoAvailableSlotsException( ));
-            });
+            () => Equip(eq, this[cat], onSlotOccupied, onInvalidEquippable));
         /// <summary>
         /// Unequip everything in the category provided
         /// </summary>
@@ -149,6 +165,11 @@ namespace Engine.Entities {
         /// <returns></returns>
         public bool IsEquipped(Equippable eq) => SupportedEquippable(eq) ? GetEquippableContainingSlot(eq) != null : false;
 
+        /// <summary>
+        /// Get the slot an equippable is contained in
+        /// </summary>
+        /// <param name="eq">The equippable to find</param>
+        /// <returns>Null if not found, or an equip slot containing eq</returns>
         public EquipSlot GetEquippableContainingSlot(Equippable eq) {
             foreach (var cat in eq.Category.Filter(cat => SupportsCategory(cat))) {
                 var Slot = Outfit[cat];
@@ -182,6 +203,7 @@ namespace Engine.Entities {
             return slot.Equipped == null ? slot : null;
         }
 
+        // todo: Figure out what do
         public void Think() => DoNothing( ); 
     }
 }

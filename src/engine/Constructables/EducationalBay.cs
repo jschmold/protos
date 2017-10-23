@@ -19,6 +19,14 @@ namespace Engine.Constructables
             get;
             set;
         }
+        public bool EnergySwitch {
+            get;
+            set;
+        }
+        public uint EnergyMaxDraw {
+            get;
+            set;
+        }
 
         public uint DrawEnergy(uint amt, IPowerSource energySource, Action onNotEnoughEnergy = null) => throw new NotImplementedException( );
         public uint DrawEnergy(uint amt, Action onNotEnoughEnergy = null) => throw new NotImplementedException( );

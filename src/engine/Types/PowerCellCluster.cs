@@ -8,7 +8,7 @@ using Engine.Interfaces;
 
 namespace Engine.Types {
     /// <summary>
-    /// A cluster of cells that are used for PowerBays, or anything else that may need them. Regenerates and decays automatically on Think.
+    /// A cluster of cells that are used for PowerProducingBays, or anything else that may need them. Regenerates and decays automatically on Think.
     /// </summary>
     public class PowerCellCluster : IPowerSource {
         private CappedList<RegeneratingBank> Cells;

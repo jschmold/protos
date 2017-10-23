@@ -7,9 +7,26 @@ using Engine.Exceptions;
 using static System.Math;
 namespace Engine.Helpers
 {
+    /// <summary>
+    /// Utils for anything that is able to receive power
+    /// </summary>
     public static class IPowerableUtils
     {
+        /// <summary>
+        /// Get the first source in a list of sources that has enough power for amt
+        /// </summary>
+        /// <param name="amt"></param>
+        /// <param name="sources"></param>
+        /// <returns></returns>
         public static IPowerSource FirstWithEnough(uint amt, List<IPowerSource> sources) => sources.Find(src => src.PowerAvailable >= amt);
+        /// <summary>
+        /// Draw an amount of energy from many sources
+        /// </summary>
+        /// <param name="amt"></param>
+        /// <param name="sources"></param>
+        /// <param name="energySwitch"></param>
+        /// <param name="onNotEnoughEnergy"></param>
+        /// <returns></returns>
         public static uint DrawFromManySources(uint amt, List<IPowerSource> sources, bool energySwitch = true, Action onNotEnoughEnergy = null) {
             uint amtDrawn = 0;
             int iter = 0;
@@ -22,6 +39,14 @@ namespace Engine.Helpers
             DoOrThrow(amtDrawn < amt, onNotEnoughEnergy, new NotEnoughEnergyException( ));
             return amtDrawn;
         }
+        /// <summary>
+        /// Draw energy from a source
+        /// </summary>
+        /// <param name="amt">Amount to draw</param>
+        /// <param name="src">The source to draw from</param>
+        /// <param name="energySwitch">The energy switch</param>
+        /// <param name="onNotEnoughEnergy">What to do when there's not enough energy</param>
+        /// <returns>The amount drawn</returns>
         public static uint Draw(uint amt, IPowerSource src, bool energySwitch = true, Action onNotEnoughEnergy = null) {
             try {
                 src.ExpendEnergy(amt);
@@ -30,14 +55,24 @@ namespace Engine.Helpers
             }
             return amt;
         }
-        public static uint PowerAvailable(List<IPowerSource> sources) {
+        /// <summary>
+        /// The total power of all power sources in a collection of sources
+        /// </summary>
+        /// <param name="sources"></param>
+        /// <returns></returns>
+        public static uint PowerAvailable(IEnumerable<IPowerSource> sources) {
             uint amt = 0;
-            sources.ForEach(src => amt += src.PowerAvailable);
+            ForEach(sources, src => amt += src.PowerAvailable);
             return amt;
         }
-        public static uint PowerCapacity(List<IPowerSource> sources) {
+        /// <summary>
+        /// The total capacity of all power sources in a collection of sources
+        /// </summary>
+        /// <param name="sources"></param>
+        /// <returns></returns>
+        public static uint PowerCapacity(IEnumerable<IPowerSource> sources) {
             uint amt = 0;
-            sources.ForEach(src => amt += src.PowerCapacity);
+            ForEach(sources, src => amt += src.PowerCapacity);
             return amt;
         }
     }

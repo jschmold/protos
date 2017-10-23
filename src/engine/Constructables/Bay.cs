@@ -9,6 +9,9 @@ using Engine.Interfaces;
 using Engine.Entities;
 
 namespace Engine.Constructables {
+    /// <summary>
+    /// A purpose-driven section of the colony
+    /// </summary>
     public abstract class Bay : IThinkable {
         /// <summary>
         /// The occupants in the bay
@@ -16,25 +19,15 @@ namespace Engine.Constructables {
         public CappedList<Citizen> Occupants {
             get; private set;
         }
-        /// <summary>
-        /// Whether or not the bay is permitted to draw energy from one of the energy sources.
-        /// </summary>
-        public bool EnergySwitch {
-            get; set;
-        }
-        /// <summary>
-        /// The maximum amount the bay is permitted to pull from the sources at any given time.
-        /// </summary>
-        public uint EnergyMaxDraw {
-            get; set;
-        }
 
+        /// <summary>
+        /// A function that needs to be called every frame.
+        /// </summary>
         public abstract void Think();
 
         /// <summary>
         /// Create a new bay.
         /// </summary>
-        /// <param name="loc">Where the bay is located</param>
         /// <param name="occLimit">The maximum occupant limit for the bay</param>
         public Bay(uint occLimit) => Occupants = new CappedList<Citizen>(occLimit);
 

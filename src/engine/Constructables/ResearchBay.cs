@@ -8,31 +8,58 @@ using Engine.Entities;
 using Engine.Interfaces;
 
 namespace Engine.Constructables {
-    public class ResearchBay : Bay, IPowerable {
+    /// <summary>
+    /// A research bay in which new knowledge is unlocked.
+    /// </summary>
+    public class ResearchBay : PoweredBay {
+        /// <summary>
+        /// The current piece of knowledge being researched, and the progress made
+        /// </summary>
         public QuantifiedBank<Knowledge> Active {
             get; private set; 
         }
+        /// <summary>
+        /// The researchers that are performing research in this bay
+        /// </summary>
         public CappedList<Citizen> Researchers {
             get; private set;
         }
+        /// <summary>
+        /// The unlocked pieces of knowledge in the bay
+        /// </summary>
         public List<Knowledge> KnowledgeRepo {
             get; private set;
         }
+        /// <summary>
+        /// The researches that are supported by this bay
+        /// </summary>
         public List<Knowledge> SupportedResearches {
             get; private set;
         }
+        /// <summary>
+        /// The resource bin to draw from when researching
+        /// </summary>
         public ResourceBank Resources {
             get; private set;
         }
+        /// <summary>
+        /// The list of citizens that are too tired to work
+        /// </summary>
         private List<Citizen> Recovering {
             get; set;
         }
-        public List<IPowerSource> EnergySources {
-            get;
-            set;
-        }
 
-        public ResearchBay(uint occLimit, uint researcherLim, List<Knowledge> Supported, uint cargoSize, List<IPowerSource> energySources, uint maxEnergyDraw) : base(occLimit) {
+        /// <summary>
+        /// Create a new ResearchBay
+        /// </summary>
+        /// <param name="occLimit">The maximum amount of people allowed in the bay</param>
+        /// <param name="researcherLim">The maximum amount of researchers that are allowed to perform research in this bay</param>
+        /// <param name="Supported"><see cref="SupportedResearches"/></param>
+        /// <param name="cargoSize"><see cref="Bank.Maximum"/></param>
+        /// <param name="energySources">The grid of energy to draw on</param>
+        /// <param name="maxEnergyDraw"><see cref="PoweredBay.EnergyMaxDraw"/></param>
+        public ResearchBay(uint occLimit, uint researcherLim, List<Knowledge> Supported, uint cargoSize, List<IPowerSource> energySources, uint maxEnergyDraw) 
+            : base(occLimit, energySources, maxEnergyDraw) {
             SupportedResearches = new List<Knowledge>(Supported);
             Resources = new ResourceBank(cargoSize);
             Recovering = new List<Citizen>( );
@@ -92,6 +119,9 @@ namespace Engine.Constructables {
         /// Start the research on a piece of knowledge
         /// </summary>
         /// <param name="know">The knowledge to research</param>
+        /// <param name="onActiveIsNotNull">What to do if there is something currently being worked on</param>
+        /// <param name="onInsufficientResources">What to do if there aren't enough resources to starty</param>
+        /// <param name="onUnsupportedResearch">What to do if the research is not supported by the bay</param>
         /// <exception cref="InvalidOperationException"></exception>
         public void Research(Knowledge know, Action onActiveIsNotNull = null, Action onUnsupportedResearch = null, Action onInsufficientResources = null) => Perform(
             Active == null && CanResearch(know),
@@ -202,8 +232,6 @@ namespace Engine.Constructables {
         /// <param name="kw">The piece of knowledge to check</param>
         /// <returns></returns>
         public bool CanResearch(Knowledge kw) => SupportedResearches.Contains(kw);
-        public uint DrawEnergy(uint amt, IPowerSource energySource, Action onNotEnoughEnergy = null) => IPowerableUtils.Draw(amt, energySource, EnergySwitch, onNotEnoughEnergy);
 
-        public uint DrawEnergy(uint amt, Action onNotEnoughEnergy = null) => IPowerableUtils.DrawFromManySources(amt, EnergySources);
     }
 }

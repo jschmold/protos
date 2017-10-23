@@ -12,22 +12,40 @@ namespace Engine.Types {
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class CappedList<T> : IEnumerable<T> {
+        /// <summary>
+        /// The contents of the list
+        /// </summary>
         private List<T> Contents {
             get; set;
         } = new List<T>( );
+        /// <summary>
+        /// The maximum amount of contents in a list
+        /// </summary>
         public uint Limit {
             get; set;
         }
+        /// <summary>
+        /// Create a new CappedList
+        /// </summary>
+        /// <param name="lim"><see cref="Limit"/></param>
         public CappedList(uint lim) {
             Limit = lim;
             Contents = new List<T>( );
         }
+        /// <summary>
+        /// Create a new CappedList, and call AddRange on the collection 
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="lim"></param>
         public CappedList(IEnumerable<T> collection, uint lim) : this(lim) => AddRange(collection);
 
         public T this[int key] {
             get => Contents[key];
             set => Contents[key] = value;
         }
+        /// <summary>
+        ///  
+        /// </summary>
         public int Count => Contents.Count;
 
         public bool LimitReached => Contents.Count == Limit;

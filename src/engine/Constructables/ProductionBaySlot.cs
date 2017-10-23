@@ -171,6 +171,11 @@ namespace Engine.Constructables {
         /// </summary>
         public void Think() => Compose(ManageWorkers, ManageProduction);
 
+        /// <summary>
+        /// Add a worker to the station
+        /// </summary>
+        /// <param name="wk">The worker to add</param>
+        /// <param name="onLimitMet">What to do if the max amount of workers has been reached, instead of throwing an error</param>
         public void AddWorker(Citizen wk, Action onLimitMet = null) => Perform(Workers.Count < Workers.Limit,
                 (onLimitMet, new LimitMetException( )),
                 () => Workers.Add(wk));

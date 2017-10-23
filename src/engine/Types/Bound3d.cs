@@ -25,9 +25,13 @@ namespace Engine.Types {
             Z = (Z1, Z2);
         }
 
+        /// <see cref="Bound3d(float, float, float, float, float, float)"/>
         public Bound3d((float, float) X, (float, float) Y, (float, float) Z) 
             : this(X.Item1, X.Item2, Y.Item1, Y.Item2, Z.Item1, Z.Item2) => DoNothing( );
-
+        /// <summary>
+        /// Clone an instance of a bound3d
+        /// </summary>
+        /// <param name="loc">The location to clone</param>
         public Bound3d(Bound3d loc) 
             : this(loc.X.Item1, loc.X.Item2, loc.Y.Item1, loc.Y.Item2, loc.Z.Item1, loc.Z.Item2) => DoNothing( );
        

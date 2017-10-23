@@ -12,7 +12,7 @@ namespace Engine.Constructables {
     /// <summary>
     /// A bay that produces a resource from a recipe of resources.
     /// </summary>
-    public class ProductionBay : Bay, IPowerable {
+    public class ProductionBay : PoweredBay {
         /// <summary>
         /// The recipes supported by the production bay
         /// </summary>
@@ -60,21 +60,17 @@ namespace Engine.Constructables {
         /// </summary>
         public int ProductionSlotCount => Stations.Count;
 
-        public List<IPowerSource> EnergySources {
-            get;
-            set;
-        }
-
         /// <summary>
         /// Create a new production bay
         /// </summary>
-        /// <param name="loc">Where the bay is located</param>
         /// <param name="occupantLimit">The maximum amount of people permitted in the bay (including workers)</param>
         /// <param name="recs">The list of recipes that are supported by the bay</param>
         /// <param name="prodStations">The (Max, Start) tuple for how many ProductionBaySlots should be in the bay</param>
         /// <param name="pool">The (Max, Start) tuple for how big the bay's energy pool should be</param>
         /// <param name="resv">The (Max, Start) tuple for how big the bay's reserve pool should be</param>
         /// <param name="cargoCapacity">The maximum amount of cargo supported by the bay</param>
+        /// <param name="energyGrid">The available power sources provided by the grid</param>
+        /// <param name="maxEnergyDraw">The maximum amount of energy this production bay is allowed to pull from the grid</param>
         /// <remarks>Note: If your "start" is ever bigger than the max, the max will be the start</remarks>
         public ProductionBay(uint occupantLimit, 
                 List<Recipe<Resource, Resource>> recs, 
@@ -83,7 +79,7 @@ namespace Engine.Constructables {
                 (uint max, uint start) resv, 
                 uint cargoCapacity,
                 List<IPowerSource> energyGrid,
-                uint maxEnergyDraw) : base(occupantLimit) {
+                uint maxEnergyDraw) : base(occupantLimit, energyGrid, maxEnergyDraw) {
             Stations = new CappedList<ProductionBaySlot>(Min(prodStations.start, prodStations.max));
             Pool = new RegeneratingBank {
                 Maximum = pool.max,
@@ -109,6 +105,7 @@ namespace Engine.Constructables {
         /// Add a new station to the bay
         /// </summary>
         /// <param name="onLimitMet">What to do instead of throwing LimitMetException</param>
+        /// <param name="seats">How many people are allowed in the production station</param>
         public void AddProductionStation(uint seats, Action onLimitMet = null) => Perform(ProductionSlotCount == Stations.Limit,
                 (onLimitMet, new LimitMetException( )), () => Stations.Add(new ProductionBaySlot(Pool, Reserve, Resources, seats)));
 
@@ -130,6 +127,7 @@ namespace Engine.Constructables {
         /// </summary>
         /// <param name="rec">The recipe to craft</param>
         /// <param name="slot">The slot to craft at</param>
+        /// <param name="onUnsupportedRecipe">What to do if the recipe is not supported, instead of throwing an error</param>
         /// <exception cref="IndexOutOfRangeException">Thrown when slot is not a valid index</exception>
         /// <exception cref="UnsupportedException">Thrown when the recipe is not supported by the bay</exception>
         public void Craft(Recipe<Resource, Resource> rec, int slot, Action onUnsupportedRecipe = null) => Perform(
@@ -164,47 +162,32 @@ namespace Engine.Constructables {
         /// <param name="wk">The worker to move</param>
         /// <param name="from">What station the worker is at</param>
         /// <param name="to">What station the worker is to move to</param>
+        /// <param name="onWorkerNotInFrom">What to do when the worker is not actually in the "from" production bay slot</param>
+        /// <param name="toLimitBreached">What to do when the limit is reached in the to production bay slot</param>
         public void TransferWorkerBetweenStations(Citizen wk, ProductionBaySlot from, ProductionBaySlot to, Action onWorkerNotInFrom = null, Action toLimitBreached = null) => Perform(from.Workers.Contains(wk),
             (onWorkerNotInFrom, new KeyNotFoundException("Worker not found in from")), () => {
                 from.RemoveWorker(wk);
                 to.AddWorker(wk, toLimitBreached);
             });
 
+        /// <summary>
+        /// Draw on the energy grid for more power
+        /// </summary>
         public void RegeneratePower() => Perform(!Pool.IsFull || !Reserve.IsFull, () => {
             var reserveNeeds = (Reserve.Maximum - Reserve.Quantity);
             var poolNeeds = (Pool.Maximum - Pool.Quantity);
-            (poolNeeds != 0 ? Pool : Reserve).Quantity += DrawEnergy(poolNeeds != 0 ? poolNeeds : reserveNeeds, DoNothing);
+            (poolNeeds != 0 ? Pool : Reserve).Quantity += DrawEnergy(Min(poolNeeds != 0 ? poolNeeds : reserveNeeds, EnergyMaxDraw), DoNothing);
         });
 
+        /// <summary>
+        /// Call think on all of the stations
+        /// </summary>
         private void ThinkAll() => Stations.ForEach(bay => bay.Think( ));
 
+        /// <summary>
+        /// ThinkAll and regenerate power on every cycle.
+        /// </summary>
         public override void Think() => Compose(ThinkAll, RegeneratePower);
 
-        /// <summary>
-        /// Draw either the amount requested or EnergyMaxDraw, whichever is smaller, from the energy source selected.
-        /// </summary>
-        /// <param name="amt"></param>
-        /// <param name="energySource"></param>
-        /// <param name="onNotEnoughEnergy"></param>
-        /// <returns>The energy expended</returns>
-        public uint DrawEnergy(uint amt, IPowerSource energySource, Action onNotEnoughEnergy = null) {
-            if (!EnergySwitch) {
-                return 0;
-            }
-            if (energySource == null || energySource.PowerAvailable < amt) {
-                DoOrThrow(onNotEnoughEnergy, new NotEnoughEnergyException( ));
-                return 0;
-            }
-            uint drawamt = Min(amt, EnergyMaxDraw);
-            energySource.ExpendEnergy(drawamt);
-            return drawamt;
-        }
-        /// <summary>
-        /// Draw energy from the first source with enough energy.
-        /// </summary>
-        /// <param name="amt"></param>
-        /// <param name="onNotEnoughEnergy"></param>
-        /// <returns></returns>
-        public uint DrawEnergy(uint amt, Action onNotEnoughEnergy = null) => DrawEnergy(amt, EnergySources.Find(src => src.PowerAvailable >= amt), onNotEnoughEnergy);
     }
 }
