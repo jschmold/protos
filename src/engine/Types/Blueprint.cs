@@ -4,9 +4,9 @@ using System.Text;
 using Engine.Constructables;
 using Engine.Interfaces;
 using Engine.Exceptions;
-using static System.MathF;
+using static System.Math;
 using Engine.Entities;
-
+using static LangRoids;
 
 namespace Engine.Types {
     /**
@@ -19,18 +19,34 @@ namespace Engine.Types {
         /// Create a new blueprint
         /// </summary>
         /// <param name="Ingredients"><see cref="Recipe{I, P}.Ingredients"/></param>
-        /// <param name="SkillReqs"><see cref="SkillRequiremenets"/></param>
         /// <param name="outfitReqs"><see cref="OutfittingRequirements"/></param>
         /// <param name="Bay"><see cref="Recipe{I, P}.Produces"/></param>
-        /// <param name="CleanupTime"><see cref="CleanupTime"/></param>
+        /// <param name="cleanTime"><see cref="CleanupTime"/></param>
         /// <param name="MinimumWorkers"><see cref="MinimumWorkers"/></param>
+        /// <param name="SkillReqs"><see cref="SkillRequirements"/></param>
+        /// <param name="resReqs"><see cref="Recipe{I, P}.ResearchRequirements"/></param>
         public Blueprint(IEnumerable<Ingredient<Resource>> Ingredients,
             IEnumerable<Skill> SkillReqs,
-            List<object> outfitReqs,
-            T Bay, uint CleanupTime,
-            uint MinimumWorkers) : base(Ingredients, SkillReqs, Bay, 1) {
+            IEnumerable<Skill> resReqs,
+            List<Equippable> outfitReqs,
+            T Bay,
+            uint cleanTime,
+            uint MinimumWorkers)
+            : base(Ingredients, resReqs, Bay, 1)
+            => CleanupTime = cleanTime;
 
-        }
+        /// <summary>
+        /// The location the bay is to be created at
+        /// </summary>
+        public Bound3d Location => Produces.Contents.Location;
+
+        /// <summary>
+        /// Clone a blueprint. Good for ensuring the progress isn't being meddled with.
+        /// </summary>
+        /// <param name="bp"></param>
+        public Blueprint(Blueprint<T> bp) 
+            : this(bp.Ingredients, bp.SkillRequirements, bp.ResearchRequirements, bp.OutfittingRequirements, bp.Produces.Contents, bp.CleanupTime, bp.MinimumWorkers) 
+            => DoNothing( );
         /// <summary>
         /// How many frames it will take to clean up and ready the created bay
         /// </summary>
@@ -51,9 +67,9 @@ namespace Engine.Types {
             get; set;
         }
         /// <summary>
-        /// The required skills to complete the job
+        /// The skills required by every worker to complete the task
         /// </summary>
-        public List<Skill> SkillRequiremenets {
+        public List<Skill> SkillRequirements {
             get;set;
         }
     }

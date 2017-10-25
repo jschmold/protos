@@ -20,7 +20,7 @@ namespace Engine.Types {
         }
 
         /// <summary>
-        /// List of research requirement identifiers required for
+        /// List of research requirements to create the resource
         /// </summary>
         public List<Skill> ResearchRequirements {
             get; set;
@@ -71,8 +71,13 @@ namespace Engine.Types {
         public Recipe(IEnumerable<Ingredient<I>> ings, IEnumerable<Skill> resReqs, P produces, uint quantity)
             : this(ings, resReqs, new Quantified<P> (produces, quantity)) { }
 
+        /// <summary>
+        /// Clone a recipe. Good for resetting progress.
+        /// </summary>
+        /// <param name="rec"></param>
         public Recipe(Recipe<I, P> rec)
-            : this(rec.Ingredients, rec.ResearchRequirements, rec.Produces.Contents, rec.Produces.Quantity) { }
+            : this(rec.Ingredients, rec.ResearchRequirements, rec.Produces.Contents, rec.Produces.Quantity) 
+            => DoNothing( );
 
         /// <summary>
         /// Does a citizen meet the requirements of a recipe

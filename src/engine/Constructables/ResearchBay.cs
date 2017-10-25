@@ -52,14 +52,13 @@ namespace Engine.Constructables {
         /// <summary>
         /// Create a new ResearchBay
         /// </summary>
-        /// <param name="occLimit">The maximum amount of people allowed in the bay</param>
         /// <param name="researcherLim">The maximum amount of researchers that are allowed to perform research in this bay</param>
         /// <param name="Supported"><see cref="SupportedResearches"/></param>
         /// <param name="cargoSize"><see cref="Bank.Maximum"/></param>
         /// <param name="energySources">The grid of energy to draw on</param>
         /// <param name="maxEnergyDraw"><see cref="PoweredBay.EnergyMaxDraw"/></param>
-        public ResearchBay(uint occLimit, uint researcherLim, List<Knowledge> Supported, uint cargoSize, List<IPowerSource> energySources, uint maxEnergyDraw) 
-            : base(occLimit, energySources, maxEnergyDraw) {
+        public ResearchBay(uint researcherLim, List<Knowledge> Supported, uint cargoSize, List<IPowerSource> energySources, uint maxEnergyDraw) 
+            : base(energySources, maxEnergyDraw) {
             SupportedResearches = new List<Knowledge>(Supported);
             Resources = new ResourceBank(cargoSize);
             Recovering = new List<Citizen>( );

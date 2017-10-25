@@ -63,7 +63,6 @@ namespace Engine.Constructables {
         /// <summary>
         /// Create a new production bay
         /// </summary>
-        /// <param name="occupantLimit">The maximum amount of people permitted in the bay (including workers)</param>
         /// <param name="recs">The list of recipes that are supported by the bay</param>
         /// <param name="prodStations">The (Max, Start) tuple for how many ProductionBaySlots should be in the bay</param>
         /// <param name="pool">The (Max, Start) tuple for how big the bay's energy pool should be</param>
@@ -72,14 +71,13 @@ namespace Engine.Constructables {
         /// <param name="energyGrid">The available power sources provided by the grid</param>
         /// <param name="maxEnergyDraw">The maximum amount of energy this production bay is allowed to pull from the grid</param>
         /// <remarks>Note: If your "start" is ever bigger than the max, the max will be the start</remarks>
-        public ProductionBay(uint occupantLimit, 
-                List<Recipe<Resource, Resource>> recs, 
+        public ProductionBay(List<Recipe<Resource, Resource>> recs, 
                 (uint max, uint start) prodStations, 
                 (uint max, uint start) pool, 
                 (uint max, uint start) resv, 
                 uint cargoCapacity,
                 List<IPowerSource> energyGrid,
-                uint maxEnergyDraw) : base(occupantLimit, energyGrid, maxEnergyDraw) {
+                uint maxEnergyDraw) : base(energyGrid, maxEnergyDraw) {
             Stations = new CappedList<ProductionBaySlot>(Min(prodStations.start, prodStations.max));
             Pool = new RegeneratingBank {
                 Maximum = pool.max,

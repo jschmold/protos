@@ -13,11 +13,10 @@ namespace Engine.Constructables
         /// <summary>
         /// Create a new bay that is capable of drawing from the energy grid
         /// </summary>
-        /// <param name="occLimit"><see cref="Bay"/></param>
         /// <param name="energyGrid"><see cref="EnergySources"/></param>
         /// <param name="maxEnergyDraw"><see cref="EnergyMaxDraw"/></param>
-        public PoweredBay(uint occLimit, List<IPowerSource> energyGrid,
-                uint maxEnergyDraw) : base(occLimit) {
+        public PoweredBay(List<IPowerSource> energyGrid,
+                uint maxEnergyDraw) : base() {
             EnergySwitch = true;
             EnergyMaxDraw = EnergyMaxDraw;
             EnergySources = energyGrid;

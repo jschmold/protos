@@ -46,10 +46,9 @@ namespace Engine.Constructables {
         /// <summary>
         /// Create a new power bay
         /// </summary>
-        /// <param name="occupantLimit">The maximum amount of people that are allowed in the power bay</param>
         /// <param name="cellLimit">The maximum quantity of cells that the cell cluster can contain</param>
-        public PowerProducingBay(uint occupantLimit, uint cellLimit) 
-            : base(occupantLimit) => Cells = new PowerCellCluster(cellLimit);
+        public PowerProducingBay(uint cellLimit) 
+            : base() => Cells = new PowerCellCluster(cellLimit);
 
         /// <summary>
         /// On every cycle, the energy draw and gain are calculated

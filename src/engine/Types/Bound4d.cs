@@ -30,6 +30,15 @@ namespace Engine.Types {
             => Q = (q1, q2);
 
         /// <summary>
+        /// Create a new Bound4d using (float, float) tuples
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
+        /// <param name="q"></param>
+        public Bound4d((float, float) x, (float, float) y, (float, float) z, (float, float) q) : base(x, y, z) => Q = q;
+
+        /// <summary>
         /// Duplicate a Bound4d
         /// </summary>
         /// <param name="bound"></param>

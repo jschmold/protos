@@ -52,7 +52,6 @@ namespace EngineTests.Types
         [TestMethod]
         public void Craft_FailsOnUnsupported() {
             ProductionBay bay = new ProductionBay(
-                100,
                 new List<Recipe<Resource, Resource>> {
                     MetalRecipe_WithSkillReq
                 },
@@ -71,7 +70,6 @@ namespace EngineTests.Types
             PowerCellCluster cluster = new PowerCellCluster(10);
             Repeat(10, _ => cluster.Add(1000, 1000, 0, 10));
             ProductionBay bay = new ProductionBay(
-                100,
                 new List<Recipe<Resource, Resource>> {
                     MetalRecipe_WithSkillReq
                 },
@@ -98,7 +96,6 @@ namespace EngineTests.Types
             PowerCellCluster cluster = new PowerCellCluster(10);
             Repeat(10, _ => cluster.Add(1000, 1000, 0, 10));
             ProductionBay bay = new ProductionBay(
-                100,
                 new List<Recipe<Resource, Resource>> {
                     MetalRecipe_WithSkillReq
                 },

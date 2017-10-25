@@ -20,53 +20,63 @@ namespace Engine.Constructables {
     /// A disc containing bays in the colony.
     /// </summary>
     public class Disc : IThinkable {
-        private (Bound3d Bound, Type Kind, Bay Obj)[] Spaces {
-            get; set;
-        } 
+        /// <summary>
+        /// The Disc's boundaries. Implicitly describes the dimensions
+        /// </summary>
+        public Bound3d Topology {
+            get; private set;
+        }
 
-        public List<IPowerSource> EnergyGrid {
+        /// <summary>
+        /// The structures contained within the disc
+        /// </summary>
+        public Dictionary<Bound3d, Bay> Structures {
+            get; private set;
+        }
+
+        /// <summary>
+        /// A collection of regions that are occupied
+        /// </summary>
+        public IEnumerable<Bound3d> Occupied => Structures.Keys;
+
+        /// <summary>
+        /// A collection of regions that are under construction
+        /// </summary>
+        public IEnumerable<Bound3d> OccupiedByConstruction => Construction.Select(bp => bp.Location);
+
+        /// <summary>
+        /// The bays within the disc
+        /// </summary>
+        private IEnumerable<Bay> Bays => Structures.Values;
+
+        /// <summary>
+        /// List of all the bays being actively constructed
+        /// </summary>
+        private List<Blueprint<Bay>> Construction {
             get; set;
         }
 
-        private List<int> ActiveConstructions {
-            get; set;
-        }
+        
 
-        public IEnumerable<Bound3d> AvailableSpaces {
-            get {
-                foreach ((Bound3d Bound, Type Kind, Bay obj) in Spaces) {
-                    if (obj == null) {
-                        yield return Bound;
-                    }
-                }
-            }
-        }
+        /// <summary>
+        /// Build a bay at a specified location
+        /// </summary>
+        /// <param name="blueprint">The blueprint to reference and build</param>
+        /// <param name="onSpaceOccupied"></param>
+        /// <param name="onOutOfBounds"></param>
+        public void Construct<T>(Blueprint<T> blueprint, Action onSpaceOccupied = null, Action onOutOfBounds = null) where T : Bay => Perform(
+            (!EngineMath.IsOverlapping(blueprint.Location, Occupied.ToArray( )), onSpaceOccupied, new Exception( )),
+            (EngineMath.IsContained(blueprint.Location, Topology), onOutOfBounds, new Exception( )),
+            () => {
+                Structures.Add(blueprint.Location, null);
+                Construction.Add(new Blueprint<Bay>(blueprint as Blueprint<Bay>));
+            });
 
-        public IEnumerable<(Bound3d Bound, Type Kind, Bay Obj)> Map => Spaces;
-
-        public void Construct(Recipe<Resource, Bay> recipe, Bound3d location, uint occLimit) {
+        public void Think() {
+            ForEach(Bays, bay => bay.Think( ));
             
         }
 
-        public void Think() => throw new NotImplementedException( );
-
-
-        public IEnumerable<T> GetBays<T>() where T : Bay {
-            foreach ((Bound3d Bound, Type Kind, Bay Obj) in Spaces) {
-                if (typeof(T) == Kind) {
-                    yield return Obj as T;
-                }
-            }
-        }
-
-        public (Type Kind, Bay Obj) AtBound(Bound3d bound) {
-            foreach ((Bound3d Bound, Type Kind, Bay Obj) in Spaces) {
-                if (bound == Bound) {
-                    return (Kind, Obj);
-                }
-            }
-            throw new KeyNotFoundException(nameof(bound));
-        }
 
     }
 }

@@ -34,6 +34,7 @@ namespace Engine.Types {
         /// Add a resource to the list
         /// </summary>
         /// <param name="res">The resource to add</param>
+        /// <param name="amt">The amount of res that there is</param>
         /// <param name="onFailure">The function to call when adding fails</param>
         public void Add(Resource res, uint amt = 1, Action onFailure = null) => Perform(amt != 0, () => {
             ThrowIf(res == null, new ArgumentNullException("res"));
