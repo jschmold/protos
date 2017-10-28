@@ -252,11 +252,11 @@ namespace Engine.Constructables {
             }
             int finishedOrWorkingOn = 0;
             foreach (var ingr in Active.Ingredients) {
+                if (finishedOrWorkingOn == Active.Ingredients.Count) {
+                    break;
+                }
                 if (WorkPairings.ContainsValue(ingr)) {
                     finishedOrWorkingOn += 1;
-                    if (finishedOrWorkingOn == Active.Ingredients.Count) {
-                        break;
-                    }
                     continue;
                 }
                 return ingr;
