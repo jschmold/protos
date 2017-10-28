@@ -31,18 +31,15 @@ namespace Engine.Entities {
         /// <param name="name"><see cref="Name"/></param>
         /// <param name="health"><see cref="Health"/></param>
         /// <param name="energy"><see cref="Energy"/></param>
-        /// <param name="pos"><see cref="Position"/></param>
         /// <param name="category"><see cref="CitizenCategory"/></param>
         /// <param name="bodyParts"><see cref="Outfit"/></param>
         public Citizen(string name,
             (uint max, uint start) health,
             (uint max, uint start) energy,
-            Location pos,
             CitizenCategory category,
             IEnumerable<EquippableCategory> bodyParts) : this() {
             Health = new Bank { Maximum = health.max, Quantity = health.start };
             Energy = new Bank { Maximum = energy.max, Quantity = energy.start };
-            Position = pos;
             Category = category;
             ForEach(bodyParts, cat => {
                 Outfit.Add(cat, new EquipSlot( ));
@@ -62,12 +59,7 @@ namespace Engine.Entities {
         public Bank Energy {
             get; set;
         }
-        /// <summary>
-        /// Where is the Citizen in the station
-        /// </summary>
-        public Location Position {
-            get; set;
-        }
+
         /// <summary>
         /// The category of the citizen (bot, human, etc)
         /// </summary>

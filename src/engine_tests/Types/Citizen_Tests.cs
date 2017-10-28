@@ -42,7 +42,6 @@ namespace EngineTests.Types
             "Humnannan", 
             (1000, 1000), 
             (1000, 1000), 
-            default, 
             CitizenCategory.Human, 
             new EquippableCategory[] { Head, Torso, Legs, LFoot, RFoot, LHand, RHand });
 
