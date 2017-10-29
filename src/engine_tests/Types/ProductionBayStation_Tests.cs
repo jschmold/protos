@@ -102,6 +102,7 @@ namespace EngineTests.Types {
                 new Quantified<Resource>(Scrap, 1000)
             }),
             seats);
+
         #region ExpendIngredient
         [TestMethod]
         public void ExpendIngredient_Works() {
@@ -316,7 +317,7 @@ namespace EngineTests.Types {
             };
             Assert.ThrowsException<NotYetCompletedException>(() => slot.FinishRecipe( ));
         }
-        
+
         [TestMethod]
         public void FinishRecipe_CreatesNewResourceOnComplete() {
             ProductionBaySlot slot = new ProductionBaySlot(
@@ -359,7 +360,7 @@ namespace EngineTests.Types {
             slot.FinishRecipe( );
             Assert.IsTrue(slot.Resources[0].Quantity == 1, $"Produced too many. Expected 1, actual {slot.Resources[0].Quantity}");
         }
-        
+
         [TestMethod]
         public void FinishRecipe_CallsClearActiveWhenComplete() {
             ProductionBaySlot slot = new ProductionBaySlot(
@@ -380,7 +381,7 @@ namespace EngineTests.Types {
             Assert.IsTrue(slot.Active == null, "Active is not null, must not have cleared");
         }
 
-        
+
         [TestMethod]
         public void FinishRecipe_AddsCorrectAmountOnComplete() {
             ProductionBaySlot slot = new ProductionBaySlot(
@@ -404,101 +405,6 @@ namespace EngineTests.Types {
         }
         #endregion
 
-        #region ManageWorkers
-        [TestMethod]
-        public void ManageWorkers_GivesLowEnergyWorkersRest() {
-            ProductionBaySlot slot = new ProductionBaySlot(null, null, null, 100, new List<Citizen> {
-                new Citizen {
-                    Energy = new Bank {
-                        Maximum = 100,
-                        Quantity = 4
-                    }
-                },
-                new Citizen {
-                    Energy = new Bank {
-                        Maximum = 100,
-                        Quantity = 80
-                    }
-                }
-            });
-
-            var WorkPairingsAccessor = typeof(ProductionBaySlot)
-                .GetField("WorkPairings", BindingFlags.NonPublic | BindingFlags.Instance);
-            WorkPairingsAccessor.SetValue(slot, new Dictionary<Citizen, Ingredient<Resource>> {
-                { slot.Workers[0], ScrapIng },
-                { slot.Workers[1], ScrapIng }
-            });
-            slot.ManageWorkers( );
-            int pairCount = (WorkPairingsAccessor.GetValue(slot) as Dictionary<Citizen, Ingredient<Resource>>).Count;
-            Assert.IsTrue(pairCount == 1, $"Expected only 1 workpairing, actual {pairCount}");
-
-        }
-        [TestMethod]
-        public void ManageWorkers_GivesRefreshedWorkersAJob() {
-            ProductionBaySlot slot = new ProductionBaySlot(null, null, null, new List<Citizen> {
-                    new Citizen {
-                        Energy = new Bank {
-                            Maximum = 100,
-                            Quantity = 80
-                        }
-                    },
-                    new Citizen {
-                        Energy = new Bank {
-                            Maximum = 100,
-                            Quantity = 80
-                        }
-                    }
-                });
-            slot.ManageWorkers( );
-            var WorkPairingsAccessor = typeof(ProductionBaySlot)
-                .GetField("WorkPairings", BindingFlags.NonPublic | BindingFlags.Instance);
-            var pairCount = (WorkPairingsAccessor.GetValue(slot) as Dictionary<Citizen, Ingredient<Resource>>).Count;
-            Assert.IsTrue(pairCount == 2, $"Expected 2 workpairings, actual {pairCount}");
-        }
-        [TestMethod]
-        public void ManageWorkers_OnlyGivesQualifiedWorkersAJob() {
-            var slot = new ProductionBaySlot(
-                new RegeneratingBank {
-                    Maximum = 1000,
-                    Quantity = 1000
-                },
-                new RegeneratingBank {
-                    Maximum = 1000,
-                    Quantity = 1000
-                },
-                new ResourceBank(100),
-                10);
-
-            slot.Resources.Add(Scrap, 1000);
-            for (int i = 0 ; i < 4 ; i++) {
-                slot.AddWorker(new Citizen {
-                    Energy = new Bank {
-                        Quantity = 10000,
-                        Maximum = 10000,
-                    }
-                });
-            }
-            slot.AddWorker(new Citizen {
-                Skills = new List<Skill> {
-                    MetalWork 
-                },
-                Energy = new Bank {
-                    Quantity = 10000,
-                    Maximum = 10000,
-                }
-            });
-
-            slot.ActivateRecipe(MetalRecipe_WithSkillReq);
-            while (!slot.Resources.Contains(Metal)) {
-                slot.Think( );   
-            }
-            Repeat(4, i => Assert.IsTrue(slot.Workers[i].Energy.IsFull, $"Took energy from worker {i}"));
-            string thing = "";
-            ForEach(slot.Workers, work => thing += work.Name + ": " + work.Energy.Quantity);
-            Assert.IsFalse(slot.Workers[slot.Workers.Count - 1].Energy.IsFull, "Worker 5 has full energy and should not.\n" + thing);
-        }
-        #endregion
-
         #region Think
         [TestMethod]
         public void Think_DoesStationEnergyWork() {
@@ -506,6 +412,7 @@ namespace EngineTests.Types {
             Slot.ActivateRecipe(MetalRecipe);
             for (int i = 0 ; i < 4 ; i++) {
                 Slot.Think( );
+                Slot.Workers.ForEach(cit => cit.Think( ));
             }
             Assert.IsTrue(Slot.Pool.IsFull == false, $"Expected some energy to go missing from thinking. Actual: {Slot.Pool.Quantity}");
         }
@@ -516,6 +423,7 @@ namespace EngineTests.Types {
             Slot.ActivateRecipe(MetalRecipe);
             while (!Slot.Resources.Contains(Metal)) {
                 Slot.Think( );
+                Slot.Workers.ForEach(cit => cit.Think( ));
             }
             Assert.IsTrue(Slot.Resources.Contains(Metal), "No metal added. Expected 1");
         }
@@ -524,13 +432,32 @@ namespace EngineTests.Types {
         public void Think_CanHandleLineup() {
             var Slot = GetWorkingStation( );
             Slot.ActivateRecipe(MetalRecipe);
-            Enumerable.Range(0, 5)
-                .ToList( )
-                .ForEach(met => Slot.Lineup.Add(MetalRecipe));
+            Repeat(5, _ => Slot.Lineup.Add(MetalRecipe));
             while (!Slot.Resources.Contains(Metal) || (Slot.Resources.Contains(Metal) && Slot.Resources[Metal] < 5)) {
                 Slot.Think( );
+                Slot.Workers.ForEach(cit => cit.Think( ));
             }
             Assert.IsTrue(Slot.Resources[Metal].Quantity == 5, $"Expected at least 5 metal, actual: {Slot.Resources[Metal].Quantity}");
+        }
+
+        [TestMethod]
+        public void Think_OnlyRestedWorkersDoWork() {
+            var Slot = GetWorkingStationNoWorkers( );
+            Slot.Workers.Limit = 10;
+            Repeat(5, i => Slot.AddWorker(new Citizen {
+                Energy = new Bank { Maximum = 1000, Quantity = 1000 },
+                Name = "RestedWorker_" + i
+            }));
+            Repeat(5, i => Slot.AddWorker(new Citizen {
+                Energy = new Bank { Maximum = 1000, Quantity = 5 },
+                Name = "TiredWorker_" + i
+            }));
+            Slot.ActivateRecipe(MetalRecipe);
+            while (!Slot.Resources.Contains(Metal)) {
+                Slot.Think( );
+                Slot.Workers.ForEach(cit => cit.Think( ));
+                Repeat(5, 5, i => Assert.IsTrue(Slot.Workers[i].Energy.Quantity == 5, "Worked a worker that needed rest."));
+            }
         }
         #endregion
 

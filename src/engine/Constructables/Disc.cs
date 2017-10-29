@@ -17,8 +17,6 @@ using Engine.Entities;
  */
 namespace Engine.Constructables {
 
-    struct 
-
     /// <summary>
     /// A disc containing bays in the colony.
     /// </summary>
@@ -73,7 +71,6 @@ namespace Engine.Constructables {
 
         public void Think() {
             ForEach(Structures, bay => bay.Think( ));
-            
         }
 
 

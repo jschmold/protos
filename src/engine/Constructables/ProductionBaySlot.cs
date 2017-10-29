@@ -84,7 +84,8 @@ namespace Engine.Constructables {
         /// <param name="resources">The ResourceBank of the ProductionBay</param>
         /// <param name="workers">The list of workers to add to the bay</param>
         public ProductionBaySlot(RegeneratingBank pool, RegeneratingBank reserve, ResourceBank resources, List<Citizen> workers)
-            : this(pool, reserve, resources, (uint)workers.Count) => workers.ForEach(wk => Workers.Add(wk));
+            : this(pool, reserve, resources, (uint)workers.Count)
+            => workers.ForEach(wk => Workers.Add(wk));
 
         /// <summary>
         /// Create a new ProductionBaySlot limiting the quantity of seats.
@@ -96,7 +97,8 @@ namespace Engine.Constructables {
         /// <param name="workers">The list of workers to grab from</param>
         /// <remarks>Note: If the list of workers is larger than the seat count, it'll just grab the first 'seats' quantity of workers</remarks>
         public ProductionBaySlot(RegeneratingBank pool, RegeneratingBank reserve, ResourceBank resources, uint seats, List<Citizen> workers)
-            : this(pool, reserve, resources, seats) => workers.ForEach(wk => AddWorker(wk));
+            : this(pool, reserve, resources, seats)
+            => workers.ForEach(wk => AddWorker(wk));
 
         /// <summary>
         /// Takes an ingredient from the resources repo and expends it.
@@ -169,7 +171,10 @@ namespace Engine.Constructables {
         /// The main function that is called on every loop to process this slot's functionality.
         /// Increments progress on all WorkPairings.
         /// </summary>
-        public void Think() => Compose(ManageWorkers, ManageProduction);
+        public void Think() {
+            DoLineup( );
+            ManageWorkers( );
+        }
 
         /// <summary>
         /// Add a worker to the station
@@ -189,59 +194,21 @@ namespace Engine.Constructables {
 
 
         /// <summary>
-        /// Gives workers a rest if their energy is not sufficient for the ingredient they're working on.
-        /// Workers that have enough energy to work and are not working are put to work.
+        /// If the worker is not doing anything, and there is something to do, give them a task
         /// </summary>
-        public void ManageWorkers() => Workers.ForEach(wk => Compose(wk, PrepIfQualifiedAndRested, ReleaseWorkerIfExhausted));
+        public void ManageWorkers() => Workers.ForEach(wk => Perform(wk.CurrentActivity == null && Active != null, () => wk.CurrentActivity = WorkerOnThink(wk)));
 
         /// <summary>
-        /// Prepare worker for work if nothing is active, or if they're both qualified and rested enough
+        /// Clear the current item if it is completed, and if there's another thing to do, make it active
         /// </summary>
-        /// <param name="cit"></param>
-        public void PrepIfQualifiedAndRested(Citizen cit) => Perform(Active?.MeetsRequirements(cit) ?? true, () => PrepWorkerIfRested(cit));
-
-        /// <summary>
-        /// Prepare worker if they're rested enough to continue
-        /// </summary>
-        /// <param name="cit"></param>
-        public void PrepWorkerIfRested(Citizen cit) => Perform(!WorkPairings.ContainsKey(cit) && cit.IsRested, () => WorkPairings.Add(cit, null));
-        /// <summary>
-        /// Release worker from working if in need of rest
-        /// </summary>
-        /// <param name="cit"></param>
-        public void ReleaseWorkerIfExhausted(Citizen cit) => Perform(WorkPairings.ContainsKey(cit) && cit.NeedsRest, () => WorkPairings.Remove(cit));
-
-        /// <summary>
-        /// Finish anything that is completed, and progress anything being worked on. Queue up the next thing if Active was finished.
-        /// Otherwise, continue working on things.
-        /// </summary>
-        public void ManageProduction() => Perform(Active != null && Workers.Count > 0, () => {
-            // Is what we are doing done? If so, finish it.
-            if (Active.Progress.IsFull) {
-                FinishRecipe( );
-                Perform(Lineup.Count > 0, () => ActivateRecipe(0));
-                return;
-            }
-            for (int num = 0 ; num < WorkPairings.Count ; num++) {
-                (Citizen worker, Ingredient<Resource> ingredient) = (WorkPairings.ElementAt(num));
-                if (ingredient == null || ingredient.IsComplete) {
-                    var next = NextAvailableIngredient( );
-                    if (next == null) {
-                        continue;
-                    }
-                    WorkPairings[worker] = next;
-                    ExpendIngredient(next);
-                    continue;
-                }
-                try {
-                    ExpendEnergy(ingredient.StationCost);
-                    worker.Energy.Quantity -= ingredient.WorkerCost;
-                    ingredient.Process(1);
-                } catch (NotEnoughEnergyException) {
-                    return;
-                }
-            }
+        public void DoLineup() => Perform(Active?.Progress.IsFull ?? false, () => {
+            FinishRecipe( );
+            Perform(Lineup.Count > 0, () => ActivateRecipe(0));
         });
+
+
+        private Ingredient<Resource> GetCurrentIngredient(Citizen wk) => WorkPairings.ContainsKey(wk) ? WorkPairings[wk] : null;
+
         /// <summary>
         /// Get the next ingredient that is not being worked on and not completed.
         /// </summary>
@@ -264,5 +231,47 @@ namespace Engine.Constructables {
             return default;
         }
 
+        private Activity WorkerOnThink(Citizen wk) => new Activity(
+            () => {
+                // Can the worker even do the job?
+                if (Active == null || !Active.MeetsRequirements(wk)) {
+                    wk.CurrentActivity.Complete( );
+                    return;
+                }
+
+                // Does the worker need rest? If so, make them rest
+                if (wk.NeedsRest) {
+                    WorkPairings.Remove(wk);
+                    return;
+                } else if (wk.IsRested && !WorkPairings.ContainsKey(wk)) {
+                    WorkPairings.Add(wk, null);
+                }
+
+                var ingredient = GetCurrentIngredient(wk);
+                if (ingredient == null) {
+                    ingredient = NextAvailableIngredient( );
+                    if (ingredient == null) {
+                        wk.CurrentActivity.Complete( );
+                        return;
+                    }
+                    ExpendIngredient(ingredient);
+                    WorkPairings[wk] = ingredient;
+                }
+
+                try {
+                    ExpendEnergy(ingredient.StationCost);
+                    if (wk.HasEnoughEnergy(ingredient.WorkerCost)) {
+                        wk.Energy.Quantity -= ingredient.WorkerCost;
+                        ingredient.Process(1);
+                    }
+                } catch (NotEnoughEnergyException) {
+                    return;
+                }
+            },
+            () => {
+                WorkPairings.Remove(wk);
+                wk.CurrentActivity = null;
+            },
+            true);
     }
 }

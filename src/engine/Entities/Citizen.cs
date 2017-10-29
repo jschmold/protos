@@ -87,7 +87,7 @@ namespace Engine.Entities {
         /// <summary>
         /// A user-friendly indicator of the task currently being performed, as well as a locking indicator for what is holding the task.
         /// </summary>
-        public CitizenActivity CurrentActivity {
+        public Activity CurrentActivity {
             get; set;
         }
         /// <summary>
@@ -196,6 +196,8 @@ namespace Engine.Entities {
         }
 
         // todo: Figure out what do
-        public void Think() => DoNothing( ); 
+        public void Think() {
+            CurrentActivity?.Think( );
+        } 
     }
 }
