@@ -16,6 +16,9 @@ using Engine.Entities;
  *      Expending worker energy towards progress of bay
  */
 namespace Engine.Constructables {
+
+    struct 
+
     /// <summary>
     /// A disc containing bays in the colony.
     /// </summary>
@@ -30,24 +33,20 @@ namespace Engine.Constructables {
         /// <summary>
         /// The structures contained within the disc
         /// </summary>
-        public Dictionary<Bound3d, Bay> Structures {
+        public List<Bay> Structures {
             get; private set;
         }
 
         /// <summary>
         /// A collection of regions that are occupied
         /// </summary>
-        public IEnumerable<Bound3d> Occupied => Structures.Keys;
+        public IEnumerable<Bound3d> Occupied => Structures.Select(str => str.Location);
 
         /// <summary>
         /// A collection of regions that are under construction
         /// </summary>
         public IEnumerable<Bound3d> OccupiedByConstruction => Construction.Select(bp => bp.Location);
 
-        /// <summary>
-        /// The bays within the disc
-        /// </summary>
-        private IEnumerable<Bay> Bays => Structures.Values;
 
         /// <summary>
         /// List of all the bays being actively constructed
@@ -68,12 +67,12 @@ namespace Engine.Constructables {
             (!EngineMath.IsOverlapping(blueprint.Location, Occupied.ToArray( )), onSpaceOccupied, new Exception( )),
             (EngineMath.IsContained(blueprint.Location, Topology), onOutOfBounds, new Exception( )),
             () => {
-                Structures.Add(blueprint.Location, null);
+                Structures.Add(blueprint.Produces.Contents);
                 Construction.Add(new Blueprint<Bay>(blueprint as Blueprint<Bay>));
             });
 
         public void Think() {
-            ForEach(Bays, bay => bay.Think( ));
+            ForEach(Structures, bay => bay.Think( ));
             
         }
 
