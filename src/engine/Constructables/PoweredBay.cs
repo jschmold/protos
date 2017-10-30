@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-using static Engine.Helpers.IPowerableUtils;
+using static Engine.Constructables.IPowerableUtils;
 
 namespace Engine.Constructables
 {

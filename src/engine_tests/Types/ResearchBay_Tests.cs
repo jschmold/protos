@@ -9,7 +9,6 @@ using System.Reflection;
 using Engine.Entities;
 using System.Timers;
 using Engine.Constructables;
-using Engine.Helpers;
 using Engine.Containers;
 
 namespace EngineTests.Types
