@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Engine.Types;
 using static LangRoids;
-namespace Engine
+
+namespace Engine.Math
 {
-    public static class EngineMath
+    public static class Collisions
     {
         /// <summary>
         /// Order a (float, float) tuple to be (smaller, larger)

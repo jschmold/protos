@@ -7,7 +7,7 @@
     <Configurations>Debug;Release;Win_Release_x64</Configurations>
     <Platforms>AnyCPU;x64</Platforms>
     <LangVersion>7.1</LangVersion>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <None Include="Constructables\PowerProducingBay.cs" />

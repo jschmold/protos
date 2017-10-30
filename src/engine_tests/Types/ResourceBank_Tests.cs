@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Timers;
-using Engine.Types;
+using Engine;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Engine.Entities;
 

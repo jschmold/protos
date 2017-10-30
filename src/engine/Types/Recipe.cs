@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using static LangRoids;
 using Engine.Entities;
+using Engine.Containers;
 
-namespace Engine.Types {
+namespace Engine {
     /// <summary>
     /// A recipe for creating an Amount of T, and the Resource R needed in the ingredients list
     /// </summary>
@@ -14,7 +15,6 @@ namespace Engine.Types {
         /// <summary>
         /// List of ingredients identifiers as the id, and the quantity as the value
         /// </summary>
-        /// I
         public List<Ingredient<I>> Ingredients {
             get; set;
         }

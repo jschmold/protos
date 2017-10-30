@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Engine.Interfaces;
+using Engine.Entities;
+using Engine.Constructables;
 using static LangRoids;
 using Engine.Exceptions;
 using static System.Math;
-namespace Engine.Helpers
+
+namespace Engine.Constructables
 {
     /// <summary>
     /// Utils for anything that is able to receive power

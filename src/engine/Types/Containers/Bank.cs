@@ -5,7 +5,7 @@ using Engine.Exceptions;
 using static System.Math;
 
 
-namespace Engine.Types {
+namespace Engine.Containers {
     /// <summary>
     /// A bank is when you want to limit the values on a uint amount of a thing. 
     /// For example, it makes no sense to have less than 0 of oxygen, but it does make sense to have a max amount of oxygen.

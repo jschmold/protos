@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static LangRoids;
-using Engine.Interfaces;
+
 using Engine.Exceptions;
-using Engine.Types;
+using Engine;
 using Engine.Constructables;
 
 namespace EngineTests.Types

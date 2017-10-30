@@ -7,7 +7,7 @@ using static System.Linq.Enumerable;
 using Engine.Entities;
 using static LangRoids;
 
-namespace Engine.Types {
+namespace Engine.Containers {
     public class ResourceBank : Bank {
         /// <summary>
         /// What is in the resource bank

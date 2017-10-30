@@ -2,12 +2,12 @@ using System;
 using System.Text;
 using System.Linq;
 using System.Collections.Generic;
+using Engine.Math;
 using static System.Math;
 using static LangRoids;
-using Engine.Interfaces;
+
 using Engine;
 using Engine.Exceptions;
-using Engine.Types;
 using Engine.Entities;
 /*
  * Construction: 
@@ -21,18 +21,35 @@ namespace Engine.Constructables {
     /// A disc containing bays in the colony.
     /// </summary>
     public class Disc : IThinkable {
+        struct ConstructionZone {
+            public Bound3d Location => Blueprint.Location;
+
+            public Blueprint<Bay> Blueprint {
+                get; set;
+            }
+
+            public List<Citizen> Workers {
+                get; set;
+            }
+
+            public ConstructionZone(Blueprint<Bay> bay, List<Citizen> workers = null) {
+                Blueprint = bay;
+                Workers = workers == null ? new List<Citizen>( ) : new List<Citizen>(workers);
+            }
+            
+        }
         /// <summary>
         /// The Disc's boundaries. Implicitly describes the dimensions
         /// </summary>
         public Bound3d Topology {
-            get; private set;
+            get; internal set;
         }
 
         /// <summary>
         /// The structures contained within the disc
         /// </summary>
         public List<Bay> Structures {
-            get; private set;
+            get; internal set;
         }
 
         /// <summary>
@@ -47,13 +64,11 @@ namespace Engine.Constructables {
 
 
         /// <summary>
-        /// List of all the bays being actively constructed
+        /// A c
         /// </summary>
-        private List<Blueprint<Bay>> Construction {
+        private List<ConstructionZone> Construction {
             get; set;
         }
-
-        
 
         /// <summary>
         /// Build a bay at a specified location
@@ -61,17 +76,19 @@ namespace Engine.Constructables {
         /// <param name="blueprint">The blueprint to reference and build</param>
         /// <param name="onSpaceOccupied"></param>
         /// <param name="onOutOfBounds"></param>
-        public void Construct<T>(Blueprint<T> blueprint, Action onSpaceOccupied = null, Action onOutOfBounds = null) where T : Bay => Perform(
-            (!EngineMath.IsOverlapping(blueprint.Location, Occupied.ToArray( )), onSpaceOccupied, new Exception( )),
-            (EngineMath.IsContained(blueprint.Location, Topology), onOutOfBounds, new Exception( )),
+        public void Construct<T>(Blueprint<Bay> blueprint, Action onSpaceOccupied = null, Action onOutOfBounds = null) where T : Bay => Perform(
+            (!Collisions.IsOverlapping(blueprint.Location, Occupied.ToArray( )), onSpaceOccupied, new Exception( )),
+            (Collisions.IsContained(blueprint.Location, Topology), onOutOfBounds, new Exception( )),
             () => {
-                Structures.Add(blueprint.Produces.Contents);
-                Construction.Add(new Blueprint<Bay>(blueprint as Blueprint<Bay>));
+                Construction.Add(new ConstructionZone(blueprint));
             });
+
+
 
         public void Think() {
             ForEach(Structures, bay => bay.Think( ));
         }
+
 
 
     }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Engine.Types {
+namespace Engine {
     public class CitizenActivity {
         public string Activity {
             get; set;

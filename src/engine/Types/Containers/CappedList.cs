@@ -6,7 +6,7 @@ using static LangRoids;
 using Engine.Exceptions;
 using System.Collections;
 
-namespace Engine.Types {
+namespace Engine.Containers {
     /// <summary>
     /// Full encapsulation for a List<typeparamref name="T"/>, but errors when adding is attempted past a certain limit.
     /// </summary>

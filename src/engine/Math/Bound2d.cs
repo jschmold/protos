@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using static LangRoids;
 using Engine;
-namespace Engine.Types
+namespace Engine.Math
 {
     /// <summary>
     /// Describing the boundaries of a box (width x height)

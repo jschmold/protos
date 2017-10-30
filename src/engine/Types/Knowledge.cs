@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using static LangRoids;
 using Engine.Entities;
+using Engine.Containers;
 
-namespace Engine.Types {
+namespace Engine {
     public class Knowledge {
         public int Identifier {
             get; set;

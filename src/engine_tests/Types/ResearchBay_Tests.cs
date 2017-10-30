@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Engine.Types;
+using Engine;
 using Engine.Exceptions;
 using System.Reflection;
 using Engine.Entities;
 using System.Timers;
 using Engine.Constructables;
 using Engine.Helpers;
-using Engine.Interfaces;
+using Engine.Containers;
 
 namespace EngineTests.Types
 {

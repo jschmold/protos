@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using static LangRoids;
 
-namespace Engine.Types {
+namespace Engine.Math {
     /// <summary>
     /// The type representing the Region of something. These are declared by Spires, used by discs, and distributed to Bays. A disc will occupy a 3d grid a spire's 4d bounds.
     /// </summary>

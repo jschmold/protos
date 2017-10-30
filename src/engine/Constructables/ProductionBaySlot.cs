@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Engine.Exceptions;
-using Engine.Types;
-using static LangRoids;
 using Engine;
-using Engine.Interfaces;
+using static LangRoids;
+using Engine.Containers;
+
 using Engine.Entities;
 
 namespace Engine.Constructables {
@@ -119,7 +119,7 @@ namespace Engine.Constructables {
         public void ExpendEnergy(uint amt, Action onNotEnoughEnergy = null) => Perform(Reserve.HasEnoughFor(amt) || Pool.HasEnoughFor(amt),
             (onNotEnoughEnergy, new NotEnoughEnergyException( )), () => {
                 int result = (int)(Pool - amt);
-                Pool.Quantity -= Math.Min(Pool.Quantity, amt);
+                Pool.Quantity -= System.Math.Min(Pool.Quantity, amt);
                 Reserve.Quantity += (uint)(result < 0 ? result : 0);
             }
         );

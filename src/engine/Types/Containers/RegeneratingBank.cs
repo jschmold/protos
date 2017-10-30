@@ -5,7 +5,7 @@ using Engine.Exceptions;
 using static System.Math;
 using static LangRoids;
 
-namespace Engine.Types {
+namespace Engine.Containers {
     /// <summary>
     /// A bank with regeneration and decay added on.
     /// </summary>

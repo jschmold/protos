@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using static LangRoids;
 
-namespace Engine.Types {
+namespace Engine.Math {
     /// <summary>
     /// A 4d set of bounds
     /// </summary>

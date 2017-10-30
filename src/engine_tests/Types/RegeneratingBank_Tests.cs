@@ -1,5 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Engine.Types;
+using Engine;
 
 namespace Engine_Tests.Types {
     [TestClass]

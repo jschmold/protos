@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using Engine.Exceptions;
-using Engine.Types;
+using Engine;
 using static LangRoids;
 using static System.Math;
 using Engine.Entities;
-using Engine;
-using Engine.Interfaces;
+using Engine.Containers;
 
 namespace Engine.Constructables {
     /// <summary>
@@ -90,7 +89,7 @@ namespace Engine.Constructables {
             Resources = new ResourceBank(cargoCapacity);
 
             // Create the slots
-            for (int i = 0 ; i < Math.Min(prodStations.start, prodStations.max) ; i++) {
+            for (int i = 0 ; i < Min(prodStations.start, prodStations.max) ; i++) {
                 Stations.Add(new ProductionBaySlot(Pool, Reserve, Resources, 0));
             }
             SupportedRecipes = new List<Recipe<Resource, Resource>>(recs);

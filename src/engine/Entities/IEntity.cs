@@ -3,9 +3,10 @@ using System.Linq;
 using System.Collections.Generic;
 using static System.Math;
 using static LangRoids;
-using Engine.Types;
+using Engine;
+using Engine.Containers;
 
-namespace Engine.Interfaces {
+namespace Engine.Entities {
     /// <summary>
     /// Describing an object that can exist in the game directly. 
     /// </summary>

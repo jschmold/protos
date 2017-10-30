@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Engine.Exceptions;
-using Engine.Types;
-using static LangRoids;
 using Engine;
-using Engine.Interfaces;
+using static LangRoids;
+
+using Engine.Math;
 using Engine.Entities;
 
 namespace Engine.Constructables {
@@ -14,13 +14,16 @@ namespace Engine.Constructables {
     /// </summary>
     public abstract class Bay : IThinkable, IZone {
 
+        public Bound3d Location {
+            get;
+            set;
+        }
+
         /// <summary>
         /// A function that needs to be called every frame.
         /// </summary>
         public abstract void Think();
 
-        public Bound3d Location {
-            get; set;
-        }
+
     }
 }

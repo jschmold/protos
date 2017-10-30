@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Engine.Entities;
 
-namespace Engine.Types {
+namespace Engine.Containers {
     public class EquipSlot {
         public EquippableCategory Category {
             get; set;

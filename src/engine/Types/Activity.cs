@@ -3,9 +3,9 @@ using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 using static LangRoids;
-using Engine.Interfaces;
 
-namespace Engine.Types {
+
+namespace Engine {
     /// <summary>
     /// An action performed on every think, with an optional "onfinish" to be performed.
     /// </summary>

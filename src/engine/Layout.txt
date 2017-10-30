@@ -3,4 +3,4 @@ Engine.Entities   : Things that are instantiated in the game
 Engine.Exceptions : Errors that can occur
 Engine.Interfaces : Interfaces to make adhering to a structure easier
 Engine.Helpers	  : Static classes to assist with common tasks
-Engine.Types	  : Datatypes created for the game.
+Engine	  : Datatypes created for the game.

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Engine.Types {
+namespace Engine.Containers {
     /// <summary>
     /// A Quantified is a type that indicates a given quantity of one instance of T
     /// </summary>

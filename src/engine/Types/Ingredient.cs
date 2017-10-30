@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Engine.Containers;
 
-namespace Engine.Types {
+namespace Engine {
     /// <summary>
     /// A datatype containing the information required to process the production of a Recipe
     /// </summary>

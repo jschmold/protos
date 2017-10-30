@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Engine.Types;
+using Engine;
 
 
-namespace Engine.Interfaces {
+namespace Engine.Constructables {
     /// <summary>
     /// Indicating something that can be powered by the energy grid
     /// </summary>

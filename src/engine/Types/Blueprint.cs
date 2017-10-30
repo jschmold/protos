@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 using Engine.Constructables;
-using Engine.Interfaces;
+using Engine.Math;
 using Engine.Exceptions;
 using static System.Math;
 using Engine.Entities;
 using static LangRoids;
 
-namespace Engine.Types {
+namespace Engine {
     /**
      *  Needs a recipe
      *      - Enhance by having quantity of worker required, and the requirement.

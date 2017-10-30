@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Engine.Types {
+namespace Engine {
     public struct EquippableCategory {
         public string Name {
             get; set;

@@ -4,9 +4,11 @@ using System.Text;
 using static LangRoids;
 using static System.Math;
 using Engine.Exceptions;
-using Engine.Interfaces;
+using Engine;
+using Engine.Constructables;
+using Engine.Containers;
 
-namespace Engine.Types {
+namespace Engine {
     /// <summary>
     /// A cluster of cells that are used for PowerProducingBays, or anything else that may need them. Regenerates and decays automatically on Think.
     /// </summary>

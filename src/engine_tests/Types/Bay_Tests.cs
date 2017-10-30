@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Engine.Types;
+using Engine;
 using Engine.Exceptions;
 using Engine.Constructables;
 using static LangRoids;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Engine.Interfaces
+namespace Engine
 {
     /// <summary>
     /// Something that does processing each frame
