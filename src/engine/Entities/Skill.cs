@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Engine
+namespace Engine.Entities
 {
     public class Skill
     {

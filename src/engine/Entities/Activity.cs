@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using static LangRoids;
 
 
-namespace Engine {
+namespace Engine.Entities {
     /// <summary>
     /// An action performed on every think, with an optional "onfinish" to be performed.
     /// </summary>
